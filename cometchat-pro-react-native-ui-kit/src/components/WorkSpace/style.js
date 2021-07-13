@@ -38,4 +38,21 @@ module.exports = StyleSheet.create({
   textStyle: {
     fontSize: 11,
   },
+  textBoxBordered: {
+    backgroundColor: '#D3D3D3',
+    borderRadius: 5,
+    height: 25,
+    width: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#3498fb',
+  },
+  imgBorderStyle: {
+    height: 25,
+    width: 25,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#3498fb',
+  },
 });

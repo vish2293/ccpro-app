@@ -4,5 +4,6 @@ export const AUTH_FAIL = 'AUTH_FAIL';
 export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 export const WORK_SPACE_LIST = 'WORK_SPACE_LIST';
 export const JWT_TOKEN = 'JWT_TOKEN';
+export const SELECTED_WORKSPACE = 'SELECTED_WORKSPACE';
 
 export const SET_AUTH_REDIRECT_PATH = 'SET_AUTH_REDIRECT_PATH';

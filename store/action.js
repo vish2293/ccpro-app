@@ -167,3 +167,10 @@ export const jwtToken = () => {
     }
   };
 };
+
+export const selectWorkSpace = (data) => {
+  return {
+    type: actionTypes.SELECTED_WORKSPACE,
+    payload: data,
+  };
+};

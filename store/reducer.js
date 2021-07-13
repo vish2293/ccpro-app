@@ -8,6 +8,7 @@ const initialState = {
   authRedirectPath: '/',
   workSpace: {},
   jwtToken: null,
+  selectedWorkSpace: {},
 };
 
 const authStart = (state, action) => {
@@ -60,10 +61,17 @@ const setWorkSpaceList = (state, action) => {
 };
 
 const setJwtToken = (state, action) => {
-  console.log('jwt token reducer:::::', action.payload);
   return {
     ...state,
     jwtToken: action.payload.token,
+  };
+};
+
+const setSelectedWorkSpace = (state, action) => {
+  console.log('superrrr', action);
+  return {
+    ...state,
+    selectedWorkSpace: action.payload,
   };
 };
 
@@ -83,6 +91,8 @@ const reducer = (state = initialState, action) => {
       return setWorkSpaceList(state, action);
     case actionTypes.JWT_TOKEN:
       return setJwtToken(state, action);
+    case actionTypes.SELECTED_WORKSPACE:
+      return setSelectedWorkSpace(state, action);
     default:
       return state;
   }

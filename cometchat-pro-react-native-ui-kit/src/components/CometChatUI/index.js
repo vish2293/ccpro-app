@@ -15,6 +15,7 @@ import { heightRatio } from '../../utils/consts';
 import WorkSpace from '../WorkSpace/index';
 import { workSpaceList } from '../../../../store/action';
 import { useDispatch, useSelector } from 'react-redux';
+import { CometChatTeamList } from '../Teams';
 
 const Tab = createBottomTabNavigator();
 
@@ -77,7 +78,7 @@ function CometChatUI() {
                 }
                 if (route.name === 'Users') {
                   iconName = 'ios-person-circle-sharp';
-                } else if (route.name === 'Groups') {
+                } else if (route.name === 'Teams') {
                   iconName = 'people';
                 }
 
@@ -111,10 +112,7 @@ function CometChatUI() {
               />
             )}
             {tabs.isGroupListEnabled && (
-              <Tab.Screen
-                name="Groups"
-                component={CometChatGroupListWithMessages}
-              />
+              <Tab.Screen name="Teams" component={CometChatTeamList} />
             )}
             {tabs.isUserSettingsEnabled && (
               <Tab.Screen name="More" component={CometChatUserProfile} />
