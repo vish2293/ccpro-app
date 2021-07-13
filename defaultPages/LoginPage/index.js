@@ -1,10 +1,10 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {CometChatAvatar} from '../../cometchat-pro-react-native-ui-kit';
-import {COMETCHAT_CONSTANTS} from '../../CONSTS';
+import { connect } from 'react-redux';
+import { CometChatAvatar } from '../../cometchat-pro-react-native-ui-kit';
+import { COMETCHAT_CONSTANTS } from '../../CONSTS';
 import style from './style';
 import * as actions from '../../store/action';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import {ActivityIndicator} from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import DropDownAlert from '../../cometchat-pro-react-native-ui-kit/src/components/Shared/DropDownAlert';
 
 class LoginPage extends React.PureComponent {
@@ -31,10 +31,11 @@ class LoginPage extends React.PureComponent {
       uid = this.state.uid;
     }
     this.uid = uid;
-    this.setState({showError: true});
+    this.setState({ showError: true });
     this.props.dispatch(
-      actions.auth(this.uid, COMETCHAT_CONSTANTS.AUTH_KEY, createUser),
+      actions.auth(this.uid, COMETCHAT_CONSTANTS.AUTH_KEY, createUser)
     ); //dispatch( actions.auth( uid, authKey ) )
+    this.props.dispatch(actions.jwtToken());
   };
 
   componentDidUpdate() {
@@ -63,7 +64,7 @@ class LoginPage extends React.PureComponent {
     }
 
     return (
-      <KeyboardAvoidingView style={{flex: 1}}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         {loader}
 
         <ScrollView>
@@ -76,7 +77,8 @@ class LoginPage extends React.PureComponent {
             <View style={style.userContainerStyle}>
               <TouchableOpacity
                 style={style.userWrapperStyle}
-                onPress={() => this.login('superhero1')}>
+                onPress={() => this.login('superhero1')}
+              >
                 <View style={style.thumbnailWrapperStyle}>
                   <CometChatAvatar
                     image={{
@@ -89,7 +91,8 @@ class LoginPage extends React.PureComponent {
               </TouchableOpacity>
               <TouchableOpacity
                 style={style.userWrapperStyle}
-                onPress={() => this.login('superhero2')}>
+                onPress={() => this.login('superhero2')}
+              >
                 <View style={style.thumbnailWrapperStyle}>
                   <CometChatAvatar
                     image={{
@@ -102,7 +105,8 @@ class LoginPage extends React.PureComponent {
               </TouchableOpacity>
               <TouchableOpacity
                 style={style.userWrapperStyle}
-                onPress={() => this.login('superhero3')}>
+                onPress={() => this.login('superhero3')}
+              >
                 <View style={style.thumbnailWrapperStyle}>
                   <CometChatAvatar
                     image={{
@@ -115,7 +119,8 @@ class LoginPage extends React.PureComponent {
               </TouchableOpacity>
               <TouchableOpacity
                 style={style.userWrapperStyle}
-                onPress={() => this.login('superhero4')}>
+                onPress={() => this.login('superhero4')}
+              >
                 <View style={style.thumbnailWrapperStyle}>
                   <CometChatAvatar
                     image={{
@@ -128,7 +133,8 @@ class LoginPage extends React.PureComponent {
               </TouchableOpacity>
               <TouchableOpacity
                 style={style.userWrapperStyle}
-                onPress={() => this.login('superhero5')}>
+                onPress={() => this.login('superhero5')}
+              >
                 <View style={style.thumbnailWrapperStyle}>
                   <CometChatAvatar
                     image={{
@@ -150,20 +156,21 @@ class LoginPage extends React.PureComponent {
                   // ref={this.myRef}
                   onSubmitEditing={() => this.login('', true)}
                   onChangeText={(value) => {
-                    this.setState({uid: value});
+                    this.setState({ uid: value });
                   }}
                   placeholder="Enter your UID here"
                 />
               </View>
               <TouchableOpacity
                 style={style.loginBtn}
-                onPress={() => this.login('', true)}>
+                onPress={() => this.login('', true)}
+              >
                 <Text style={style.btnText}>Login</Text>
               </TouchableOpacity>
             </View>
           </View>
           <DropDownAlert
-            onClose={() => this.setState({showError: false})}
+            onClose={() => this.setState({ showError: false })}
             ref={(ref) => (this.dropDownAlertRef = ref)}
           />
         </ScrollView>
@@ -172,7 +179,7 @@ class LoginPage extends React.PureComponent {
   }
 }
 
-const mapStateToProps = ({reducer}) => {
+const mapStateToProps = ({ reducer }) => {
   return {
     loading: reducer.loading,
     error: reducer.error,

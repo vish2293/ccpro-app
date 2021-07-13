@@ -7,6 +7,7 @@ const initialState = {
   loading: false,
   authRedirectPath: '/',
   workSpace: {},
+  jwtToken: null,
 };
 
 const authStart = (state, action) => {
@@ -40,6 +41,7 @@ const authLogout = (state, action) => {
     ...state,
     isLoggedIn: false,
     user: null,
+    jwtToken: null,
   };
 };
 
@@ -57,6 +59,14 @@ const setWorkSpaceList = (state, action) => {
   };
 };
 
+const setJwtToken = (state, action) => {
+  console.log('jwt token reducer:::::', action.payload);
+  return {
+    ...state,
+    jwtToken: action.payload.token,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -71,6 +81,8 @@ const reducer = (state = initialState, action) => {
       return setAuthRedirectPath(state, action);
     case actionTypes.WORK_SPACE_LIST:
       return setWorkSpaceList(state, action);
+    case actionTypes.JWT_TOKEN:
+      return setJwtToken(state, action);
     default:
       return state;
   }

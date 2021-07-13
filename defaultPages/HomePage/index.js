@@ -1,10 +1,10 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import styles from './styles';
 import * as actions from '../../store/action';
-import {Text, View, ScrollView, TouchableOpacity} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomePage = (props) => {
   if (!props.isLoggedIn) {
@@ -42,7 +42,8 @@ const HomePage = (props) => {
                     style={styles.linkWrapperStyle}
                     onPress={() => {
                       props.navigation.navigate('CometChatUI');
-                    }}>
+                    }}
+                  >
                     <Text style={styles.linkStyle}>Launch</Text>
                   </TouchableOpacity>
                 </View>
@@ -70,7 +71,8 @@ const HomePage = (props) => {
                     style={styles.linkWrapperStyle}
                     onPress={() => {
                       props.navigation.navigate('Conversation');
-                    }}>
+                    }}
+                  >
                     <Text style={styles.linkStyle}>Launch</Text>
                   </TouchableOpacity>
                 </View>
@@ -99,7 +101,8 @@ const HomePage = (props) => {
                     style={styles.linkWrapperStyle}
                     onPress={() => {
                       props.navigation.navigate('Group');
-                    }}>
+                    }}
+                  >
                     <Text style={styles.linkStyle}>Launch</Text>
                   </TouchableOpacity>
                 </View>
@@ -126,7 +129,8 @@ const HomePage = (props) => {
                       style={styles.linkWrapperStyle}
                       onPress={() => {
                         props.navigation.navigate('Users');
-                      }}>
+                      }}
+                    >
                       <Text style={styles.linkStyle}>Launch</Text>
                     </TouchableOpacity>
                   </View>
@@ -156,7 +160,8 @@ const HomePage = (props) => {
                     style={styles.linkWrapperStyle}
                     onPress={() => {
                       props.navigation.navigate('ConversationComponent');
-                    }}>
+                    }}
+                  >
                     <Text style={styles.linkStyle}>Launch</Text>
                   </TouchableOpacity>
                 </View>
@@ -181,7 +186,8 @@ const HomePage = (props) => {
                     style={styles.linkWrapperStyle}
                     onPress={() => {
                       props.navigation.navigate('GroupComponent');
-                    }}>
+                    }}
+                  >
                     <Text style={styles.linkStyle}>Launch</Text>
                   </TouchableOpacity>
                 </View>
@@ -206,7 +212,8 @@ const HomePage = (props) => {
                     style={styles.linkWrapperStyle}
                     onPress={() => {
                       props.navigation.navigate('UsersComponent');
-                    }}>
+                    }}
+                  >
                     <Text style={styles.linkStyle}>Launch</Text>
                   </TouchableOpacity>
                 </View>
@@ -215,7 +222,8 @@ const HomePage = (props) => {
           </View>
           <TouchableOpacity
             style={styles.logoutBtn}
-            onPress={() => props.dispatch(actions.logout())}>
+            onPress={() => props.dispatch(actions.logout())}
+          >
             <Text style={styles.btnText}>Logout</Text>
           </TouchableOpacity>
         </View>
@@ -224,7 +232,7 @@ const HomePage = (props) => {
   );
 };
 
-const mapStateToProps = ({reducer}) => {
+const mapStateToProps = ({ reducer }) => {
   return {
     loading: reducer.loading,
     error: reducer.error,

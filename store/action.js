@@ -1,4 +1,8 @@
 import * as actionTypes from './actionTypes';
+import {
+  isExpired,
+  getExpirationDate,
+} from '../cometchat-pro-react-native-ui-kit/src/utils/functions';
 
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import axios from 'axios';
@@ -84,8 +88,10 @@ export const auth = (uid, authKey, createUser) => {
 
 export const authCheckState = () => {
   return (dispatch) => {
+    console.log('Hello I am Called');
     CometChat.getLoggedinUser()
       .then((user) => {
+        console.log('response::::::', user);
         if (user) {
           dispatch(authSuccess(user));
         } else {
@@ -106,7 +112,8 @@ export const setAuthRedirectPath = (path) => {
 };
 
 export const workSpaceList = () => {
-  return (dispatch) => {
+  return (dispatch, state) => {
+    const token = state().reducer.jwtToken;
     axios({
       url: serverUrl + 'user/workspaces',
       method: 'get',
@@ -114,8 +121,7 @@ export const workSpaceList = () => {
         user_id: 'superhero1',
       },
       headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidWlkXzEiLCJpYXQiOjE2MjYxNjE2MDAsImV4cCI6MTYyNjE2NTIwMH0.kSNcOI-7mkD4KrIt9X5fd3qjeTqyTAfTdiYOIqg6ytw',
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
@@ -130,5 +136,34 @@ export const workSpaceList = () => {
         console.log('error:', err.response);
         return err.response;
       });
+  };
+};
+
+export const jwtToken = () => {
+  return (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+    console.log('check karen::::::', token);
+
+    if (!token || isExpired(getExpirationDate(token))) {
+      axios({
+        url: serverUrl + 'auth/get_token',
+        method: 'post',
+        headers: {
+          app_key: 'b2hVnob8NqU4qFLq6un6QFQSMJkk01dI',
+          user_id: 'uid_1',
+        },
+      })
+        .then((res) => {
+          dispatch({
+            type: actionTypes.JWT_TOKEN,
+            payload: res.headers,
+          });
+        })
+        .catch((err) => {
+          // console.log('error:', err);
+          console.log('error jwt:', err.response);
+          return err.response;
+        });
+    }
   };
 };

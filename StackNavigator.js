@@ -1,7 +1,7 @@
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import React from 'react';
-import {connect} from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
 
 import LoginPage from './defaultPages/LoginPage';
 import HomePage from './defaultPages/HomePage';
@@ -16,15 +16,22 @@ import {
   CometChatConversationListWithMessages,
   CometChatConversationList,
 } from './cometchat-pro-react-native-ui-kit';
+import { authCheckState, jwtToken } from './store/action';
 
 function StackNavigator(props) {
   const Stack = createStackNavigator();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(jwtToken());
+  }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator
         headerMode="none"
-        initialRouteName={props.isLoggedIn ? 'HomePage' : null}>
+        initialRouteName={props.isLoggedIn ? 'HomePage' : null}
+      >
         <Stack.Screen name="LoginPage" component={LoginPage} />
         <Stack.Screen name="HomePage" component={HomePage} />
         <Stack.Screen name="CometChatUI" component={CometChatUI} />
@@ -46,7 +53,7 @@ function StackNavigator(props) {
   );
 }
 
-const mapStateToProps = ({reducer}) => {
+const mapStateToProps = ({ reducer }) => {
   return {
     loading: reducer.loading,
     error: reducer.error,
