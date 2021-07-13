@@ -6,6 +6,7 @@ const initialState = {
   error: null,
   loading: false,
   authRedirectPath: '/',
+  workSpace: {},
 };
 
 const authStart = (state, action) => {
@@ -49,6 +50,13 @@ const setAuthRedirectPath = (state, action) => {
   };
 };
 
+const setWorkSpaceList = (state, action) => {
+  return {
+    ...state,
+    workSpace: action.payload,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -61,6 +69,8 @@ const reducer = (state = initialState, action) => {
       return authLogout(state, action);
     case actionTypes.SET_AUTH_REDIRECT_PATH:
       return setAuthRedirectPath(state, action);
+    case actionTypes.WORK_SPACE_LIST:
+      return setWorkSpaceList(state, action);
     default:
       return state;
   }

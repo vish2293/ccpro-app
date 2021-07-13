@@ -13,16 +13,26 @@ import MCIIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import theme from '../../resources/theme';
 import { heightRatio } from '../../utils/consts';
 import WorkSpace from '../WorkSpace/index';
+import { workSpaceList } from '../../../../store/action';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 
 function CometChatUI() {
   const [tabs, setTabs] = useState(null);
   const contextRef = useRef(null);
+  const dispatch = useDispatch();
+  const workList = useSelector((state) => state.reducer.workSpace);
 
   useEffect(() => {
     checkRestrictions();
+    getWorkSpaceList();
   }, []);
+
+  const getWorkSpaceList = () => {
+    dispatch(workSpaceList());
+  };
+
   const checkRestrictions = async () => {
     let isChatEnabled = await contextRef.current.state.FeatureRestriction.isRecentChatListEnabled();
     let isGroupListEnabled = await contextRef.current.state.FeatureRestriction.isGroupListEnabled();
@@ -40,7 +50,7 @@ function CometChatUI() {
   return (
     <CometChatContextProvider ref={contextRef}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
-        <WorkSpace />
+        <WorkSpace workList={workList} />
         {tabs ? (
           <Tab.Navigator
             screenOptions={({ route }) => ({

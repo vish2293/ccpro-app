@@ -18,4 +18,24 @@ module.exports = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  boxStyle: {
+    padding: 10,
+    alignItems: 'center',
+  },
+  imgStyle: {
+    height: 25,
+    width: 25,
+    borderRadius: 5,
+  },
+  textBox: {
+    backgroundColor: '#D3D3D3',
+    borderRadius: 5,
+    height: 25,
+    width: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textStyle: {
+    fontSize: 11,
+  },
 });

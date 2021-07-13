@@ -8,3 +8,5 @@ export const widthRatio = deviceWidth / 375;
 export const calc = (x = 100) => {
   return deviceHeight - x * heightRatio;
 };
+
+export const serverUrl = 'http://ccpro.webcase.me:3001/';
