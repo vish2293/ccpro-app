@@ -64,6 +64,7 @@ class LoginPage extends React.PureComponent {
     }
 
     return (
+      <SafeAreaView style={{flex:1}}>
       <KeyboardAvoidingView style={{ flex: 1 }}>
         {loader}
 
@@ -175,6 +176,7 @@ class LoginPage extends React.PureComponent {
           />
         </ScrollView>
       </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 }

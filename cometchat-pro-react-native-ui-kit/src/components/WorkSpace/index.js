@@ -26,7 +26,9 @@ export default function WorkSpace(props) {
   }, [getSelectedSpace]);
 
   const { workList } = props;
-  const global = workList.globals.ws_upload_url;
+  const global = workList?.globals?.ws_upload_url
+    ? workList.globals.ws_upload_url
+    : '';
 
   const onTab = (workspace) => {
     console.log('tab', workspace);
@@ -37,37 +39,38 @@ export default function WorkSpace(props) {
     <SafeAreaView style={style.safeArea}>
       <View style={style.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          {workList.data.map((item) => {
-            const imageName = item.st_name.split(' ');
-            return (
-              <TouchableOpacity
-                onPress={() => onTab(item)}
-                style={style.boxStyle}>
-                {item.st_featured_image ? (
-                  <Image
-                    style={
-                      item.st_guid === getSelectedSpace.st_guid
-                        ? style.imgBorderStyle
-                        : style.imgStyle
-                    }
-                    source={{ uri: global + item.st_featured_image }}
-                  />
-                ) : (
-                  <View
-                    style={
-                      item.st_guid === getSelectedSpace.st_guid
-                        ? style.textBoxBordered
-                        : style.textBox
-                    }>
-                    <Text style={style.textStyle}>
-                      {imageName[0].slice(0, 1) + imageName[1].slice(0, 1)}{' '}
-                    </Text>
-                  </View>
-                )}
-                {/* <MaterialIcons name={a} size={25 * heightRatio} color={'grey'} /> */}
-              </TouchableOpacity>
-            );
-          })}
+          {workList?.data &&
+            workList.data.map((item) => {
+              const imageName = item.st_name.split(' ');
+              return (
+                <TouchableOpacity
+                  onPress={() => onTab(item)}
+                  style={style.boxStyle}>
+                  {item.st_featured_image ? (
+                    <Image
+                      style={
+                        item.st_guid === getSelectedSpace.st_guid
+                          ? style.imgBorderStyle
+                          : style.imgStyle
+                      }
+                      source={{ uri: global + item.st_featured_image }}
+                    />
+                  ) : (
+                    <View
+                      style={
+                        item.st_guid === getSelectedSpace.st_guid
+                          ? style.textBoxBordered
+                          : style.textBox
+                      }>
+                      <Text style={style.textStyle}>
+                        {imageName[0].slice(0, 1) + imageName[1].slice(0, 1)}{' '}
+                      </Text>
+                    </View>
+                  )}
+                  {/* <MaterialIcons name={a} size={25 * heightRatio} color={'grey'} /> */}
+                </TouchableOpacity>
+              );
+            })}
         </ScrollView>
       </View>
     </SafeAreaView>
