@@ -9,6 +9,7 @@ export default StyleSheet.create({
     maxHeight: 64,
     paddingHorizontal: 16,
     marginBottom: 16,
+    alignItems: 'center',
   },
   avatarStyle: {
     flexWrap: 'wrap',
@@ -19,6 +20,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(51,153,255,0.25)',
     borderRadius: 25,
+    marginBottom: 10,
   },
   groupDetailsContainer: {
     borderBottomWidth: 1,
@@ -27,6 +29,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
+    // backgroundColor: 'red',
   },
   memberCountStyle: {
     fontSize: 12,

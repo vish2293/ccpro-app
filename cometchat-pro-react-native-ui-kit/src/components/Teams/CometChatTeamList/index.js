@@ -74,6 +74,8 @@ class CometChatTeamList extends React.Component {
       groupType: null,
       passwordFeedback: null,
       teamList: [],
+      isCollapse: -1,
+      toggleIndex: false,
     };
     this.groupListRef = React.createRef(null); //group list
     this.theme = { ...theme, ...this.props.theme };
@@ -790,6 +792,13 @@ class CometChatTeamList extends React.Component {
     );
   };
 
+  toggleList = (index, expand) => {
+    this.setState({
+      toggleIndex: index,
+      isCollapse: expand,
+    });
+  };
+
   render() {
     let passwordScreen = null;
     if (this.state.showPasswordScreen) {
@@ -930,11 +939,17 @@ class CometChatTeamList extends React.Component {
                 contentContainerStyle={{ flexGrow: 1 }}
                 scrollEnabled
                 keyExtractor={(item, index) => item.uid + '_' + index}
-                renderItem={({ item }) => {
+                renderItem={({ item, index }) => {
                   return (
-                    <Collapse>
+                    <Collapse
+                      onToggle={(isCollapsed) =>
+                        this.toggleList(index, isCollapsed)
+                      }>
                       <CollapseHeader>
                         <CometChatTeamListItem
+                          index={index}
+                          isCollapse={this.state.isCollapse}
+                          toggleIndex={this.state.toggleIndex}
                           theme={this.theme}
                           group={item}
                           selectedGroup={this.state.selectedGroup}
@@ -942,7 +957,7 @@ class CometChatTeamList extends React.Component {
                         />
                       </CollapseHeader>
                       <CollapseBody>
-                        <View style={{ marginLeft: 20 }}>
+                        <View style={{ marginLeft: 40 }}>
                           <FlatList
                             data={this.state.grouplist.filter(
                               (a) =>

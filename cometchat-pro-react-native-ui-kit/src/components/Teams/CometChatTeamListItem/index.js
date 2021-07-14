@@ -6,6 +6,7 @@ import theme from '../../../resources/theme';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
 import { CometChat } from '@cometchat-pro/react-native-chat';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const CometChatTeamListItem = (props) => {
   const viewTheme = { ...theme, ...props.theme };
@@ -28,6 +29,19 @@ const CometChatTeamListItem = (props) => {
     <View
       style={style.listItem}
       onPress={() => props.clickHandler(props.group)}>
+      {props.index === props.toggleIndex && props.isCollapse ? (
+        <FontAwesome5
+          name="chevron-down"
+          size={15}
+          style={{ marginRight: 10, paddingBottom: 10 }}
+        />
+      ) : (
+        <FontAwesome5
+          name="chevron-right"
+          size={15}
+          style={{ marginRight: 10, paddingBottom: 10 }}
+        />
+      )}
       <View style={style.avatarStyle}>
         <CometChatAvatar
           image={{ uri: props.group.icon }}
