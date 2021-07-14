@@ -141,7 +141,7 @@ class CometChatTeamList extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     try {
       if (
-        prevProps.selectedWorkSpace.st_guid ===
+        prevProps.selectedWorkSpace.st_guid !==
         this.props.selectedWorkSpace.st_guid
       ) {
         this.getTeams();
