@@ -50,7 +50,10 @@ function CometChatUI() {
   };
   return (
     <CometChatContextProvider ref={contextRef}>
-      <View style={{ flex: 1, flexDirection: 'row' }}>
+      <View
+        style={{
+          flex: 1,
+        }}>
         <WorkSpace workList={workList} />
         {tabs ? (
           <Tab.Navigator
