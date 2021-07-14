@@ -40,6 +40,12 @@ import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import { deviceHeight, heightRatio } from '../../../utils/consts';
 import BottomSheet from 'reanimated-bottom-sheet';
 import { logger } from '../../../utils/common';
+import {
+  Collapse,
+  CollapseHeader,
+  CollapseBody,
+} from 'accordion-collapse-react-native';
+import CometChatTeamListItem from '../CometChatTeamListItem';
 
 class CometChatTeamList extends React.Component {
   timeout;
@@ -67,6 +73,7 @@ class CometChatTeamList extends React.Component {
       guid: null,
       groupType: null,
       passwordFeedback: null,
+      teamList: [],
     };
     this.groupListRef = React.createRef(null); //group list
     this.theme = { ...theme, ...this.props.theme };
@@ -81,15 +88,21 @@ class CometChatTeamList extends React.Component {
     this.GroupListManager.fetchNextGroups().then((groupList) => {
       console.log('groupsss:::', groupList);
 
-      // if (groupList.length === 0) {
-      // 	if (this.state.grouplist.length === 0) {
-      // 		this.setState({ decoratorMessage: Translator.translate("NO_TEAMS_FOUND", this.state.lang) });
-      // 	}
-      // } else {
-      // 	this.setState({ grouplist: [...this.state.grouplist, ...groupList], decoratorMessage: "" });
-      // 	this.getGroups();
-
-      // }
+      if (groupList.length === 0) {
+        this.decoratorMessage = 'No Team Found!';
+        // if (this.state.teamList.length === 0) {
+        this.setState({
+          teamList: [],
+          decoratorMessage: 'No Teams found',
+        });
+        // }
+      } else {
+        this.setState({
+          teamList: [...groupList],
+          decoratorMessage: '',
+        });
+        // this.getGroups();
+      }
     });
   };
 
@@ -102,8 +115,8 @@ class CometChatTeamList extends React.Component {
         }
         this.setState({ grouplist: [] });
         this.GroupListManager = new GroupListManager();
-        // this.getGroups(); //you are getting groups here.
         this.getTeams();
+        this.getGroups(); //you are getting groups here.
         this.GroupListManager.attachListeners(this.groupUpdated);
         this.checkRestrictions();
       });
@@ -127,6 +140,12 @@ class CometChatTeamList extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     try {
+      if (
+        prevProps.selectedWorkSpace.st_guid ===
+        this.props.selectedWorkSpace.st_guid
+      ) {
+        this.getTeams();
+      }
       if (prevState.textInputFocused !== this.state.textInputFocused) {
         this.textInputRef.current.focus();
       }
@@ -513,7 +532,7 @@ class CometChatTeamList extends React.Component {
 
         this.timeout = setTimeout(() => {
           this.GroupListManager = new GroupListManager(e);
-          this.setState({ grouplist: [] }, () => this.getGroups());
+          this.setState({ teamList: [] }, () => this.getTeams());
         }, 500);
       },
     );
@@ -552,35 +571,60 @@ class CometChatTeamList extends React.Component {
    */
 
   getGroups = () => {
-    new CometChatManager()
-      .getLoggedInUser()
-      .then((user) => {
-        this.loggedInUser = user;
-        this.GroupListManager.fetchNextGroups()
-          .then((groupList) => {
-            if (groupList.length === 0) {
-              this.decoratorMessage = 'No groups found';
-            }
+    let val = '-group-';
+
+    this.GroupListManager = new GroupListManager(val);
+    console.log(GroupListManager);
+
+    this.GroupListManager.fetchNextGroups()
+      .then((allTeamgroupList) => {
+        console.log('groupsss::', allTeamgroupList);
+        if (allTeamgroupList.length === 0) {
+          if (this.state.teamgrouplist.length === 0) {
             this.setState({
-              grouplist: [...this.state.grouplist, ...groupList],
+              decoratorMessage: 'No Group Found',
             });
-          })
-          .catch((error) => {
-            const errorCode = error?.message || 'ERROR';
-            this.dropDownAlertRef?.showMessage('error', errorCode);
-            this.decoratorMessage = 'Error';
-            logger(
-              '[CometChatGroupList] getGroups fetchNextGroups error',
-              error,
-            );
+          }
+        } else {
+          this.setState({
+            grouplist: [...allTeamgroupList],
           });
+        }
       })
-      .catch((error) => {
-        const errorCode = error?.message || 'ERROR';
-        this.dropDownAlertRef?.showMessage('error', errorCode);
-        this.decoratorMessage = 'Error';
-        logger('[CometChatGroupList] getUsers getLoggedInUser error', error);
-      });
+      .catch((error) =>
+        this.setState({
+          decoratorMessage: 'Something went wrong!',
+        }),
+      );
+    // new CometChatManager()
+    //   .getLoggedInUser()
+    //   .then((user) => {
+    //     this.loggedInUser = user;
+    //     this.GroupListManager.fetchNextGroups()
+    //       .then((groupList) => {
+    //         if (groupList.length === 0) {
+    //           this.decoratorMessage = 'No groups found';
+    //         }
+    //         this.setState({
+    //           grouplist: [...this.state.grouplist, ...groupList],
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         const errorCode = error?.message || 'ERROR';
+    //         this.dropDownAlertRef?.showMessage('error', errorCode);
+    //         this.decoratorMessage = 'Error';
+    //         logger(
+    //           '[CometChatGroupList] getGroups fetchNextGroups error',
+    //           error,
+    //         );
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error?.message || 'ERROR';
+    //     this.dropDownAlertRef?.showMessage('error', errorCode);
+    //     this.decoratorMessage = 'Error';
+    //     logger('[CometChatGroupList] getUsers getLoggedInUser error', error);
+    //   });
   };
 
   /**
@@ -882,18 +926,48 @@ class CometChatTeamList extends React.Component {
               </View>
               {this.ListHeaderComponent()}
               <FlatList
-                data={this.state.grouplist}
+                data={this.state.teamList}
                 contentContainerStyle={{ flexGrow: 1 }}
                 scrollEnabled
                 keyExtractor={(item, index) => item.uid + '_' + index}
                 renderItem={({ item }) => {
                   return (
-                    <CometChatGroupListItem
-                      theme={this.theme}
-                      group={item}
-                      selectedGroup={this.state.selectedGroup}
-                      clickHandler={this.handleClick}
-                    />
+                    <Collapse>
+                      <CollapseHeader>
+                        <CometChatTeamListItem
+                          theme={this.theme}
+                          group={item}
+                          selectedGroup={this.state.selectedGroup}
+                          clickHandler={this.handleClick}
+                        />
+                      </CollapseHeader>
+                      <CollapseBody>
+                        <View style={{ marginLeft: 20 }}>
+                          <FlatList
+                            data={this.state.grouplist.filter(
+                              (a) =>
+                                a.guid.includes(item.guid.split('-team-')[0]) &&
+                                a.guid.includes(item.guid.split('-team-')[1]),
+                            )}
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            scrollEnabled
+                            keyExtractor={(item, index) =>
+                              item.uid + '_' + index
+                            }
+                            renderItem={({ item }) => {
+                              return (
+                                <CometChatGroupListItem
+                                  theme={this.theme}
+                                  group={item}
+                                  selectedGroup={this.state.selectedGroup}
+                                  clickHandler={this.handleClick}
+                                />
+                              );
+                            }}
+                          />
+                        </View>
+                      </CollapseBody>
+                    </Collapse>
                   );
                 }}
                 ListEmptyComponent={this.listEmptyContainer}
