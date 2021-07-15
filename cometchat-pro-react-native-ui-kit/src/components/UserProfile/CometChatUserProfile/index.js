@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CometChatManager } from '../../../utils/controller';
 import { CometChatAvatar } from '../../Shared';
 import styles from './styles';
-import { View, Text, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native';
 import theme from '../../../resources/theme';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -19,6 +19,7 @@ const helpIcon = <Icon color={theme.color.helpText} name="help" size={28} />;
 const problemIcon = (
   <Icon color={theme.color.helpText} name="report-problem" size={28} />
 );
+const workIcon = <Icon color={theme.color.helpText} name="work" size={28} />;
 
 const CometChatUserProfile = (props) => {
   const [user, setUser] = useState({});
@@ -60,6 +61,11 @@ const CometChatUserProfile = (props) => {
     );
   }
 
+  const goToWorkScreen = () => {
+    const { navigation } = props;
+    navigation.navigate('WorkSpaceList');
+  };
+
   return (
     <SafeAreaView style={styles.userInfoScreenStyle}>
       <View style={styles.headingContainer}>
@@ -93,6 +99,10 @@ const CometChatUserProfile = (props) => {
             {chatIcon}
             <Text style={styles.infoItemText}>Chats</Text>
           </View>
+          <TouchableOpacity onPress={goToWorkScreen} style={styles.infoItem}>
+            {workIcon}
+            <Text style={styles.infoItemText}>Workspaces</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.infoItemHeadingContainer}>
           <Text style={styles.infoItemHeadingText}>Other</Text>

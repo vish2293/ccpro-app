@@ -17,6 +17,7 @@ import {
   CometChatConversationList,
 } from './cometchat-pro-react-native-ui-kit';
 import { authCheckState, jwtToken } from './store/action';
+import WorkSpaceList from './cometchat-pro-react-native-ui-kit/src/components/WorkSpace/WorkSpaceList';
 
 function StackNavigator(props) {
   const Stack = createStackNavigator();
@@ -48,6 +49,7 @@ function StackNavigator(props) {
         <Stack.Screen name="Users" component={CometChatUserListWithMessages} />
         <Stack.Screen name="UsersComponent" component={CometChatUserList} />
         <Stack.Screen name="CometChatMessages" component={CometChatMessages} />
+        <Stack.Screen name="WorkSpaceList" component={WorkSpaceList} />
       </Stack.Navigator>
     </NavigationContainer>
   );
