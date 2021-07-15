@@ -53,7 +53,7 @@ export default function WorkSpace(props) {
                 {item.st_featured_image ? (
                   <Image
                     style={
-                      item.st_guid === getSelectedSpace.st_guid
+                      item.st_guid === getSelectedSpace?.st_guid
                         ? style.imgBorderStyle
                         : style.imgStyle
                     }
@@ -62,7 +62,7 @@ export default function WorkSpace(props) {
                 ) : (
                   <View
                     style={
-                      item.st_guid === getSelectedSpace.st_guid
+                      item.st_guid === getSelectedSpace?.st_guid
                         ? style.textBoxBordered
                         : style.textBox
                     }>
@@ -94,7 +94,7 @@ export default function WorkSpace(props) {
                       <View style={style.whiteBorder}>
                         <Image
                           style={
-                            item.st_guid === getSelectedSpace.st_guid
+                            item.st_guid === getSelectedSpace?.st_guid
                               ? style.imgBorderStyle
                               : style.imgStyle
                           }
@@ -105,7 +105,7 @@ export default function WorkSpace(props) {
                       <View style={style.whiteBorder}>
                         <View
                           style={
-                            item.st_guid === getSelectedSpace.st_guid
+                            item.st_guid === getSelectedSpace?.st_guid
                               ? style.textBoxBordered
                               : style.textBox
                           }>
