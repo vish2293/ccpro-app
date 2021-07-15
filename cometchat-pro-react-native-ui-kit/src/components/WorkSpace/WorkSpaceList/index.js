@@ -34,6 +34,11 @@ const WorkSpaceList = (props) => {
     navigation.goBack();
   };
 
+  const goToAdd = () => {
+    const { navigation } = props;
+    navigation.navigate('AddWorkSpace');
+  };
+
   return (
     <SafeAreaView style={styles.workScreenStyle}>
       <View style={styles.mainContainer}>
@@ -42,7 +47,10 @@ const WorkSpaceList = (props) => {
             <Icon name="arrow-back" size={25} />
           </TouchableOpacity>
           <Text style={styles.headerTitleStyle}>Workspace</Text>
-          <TouchableOpacity activeOpacity={0.8} style={styles.buttonStyle}>
+          <TouchableOpacity
+            onPress={goToAdd}
+            activeOpacity={0.8}
+            style={styles.buttonStyle}>
             <Text style={styles.buttonText}>Add New</Text>
           </TouchableOpacity>
         </View>
