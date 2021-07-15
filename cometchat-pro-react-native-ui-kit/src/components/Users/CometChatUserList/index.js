@@ -27,6 +27,7 @@ import { logger } from '../../../utils/common';
 import * as enums from '../../../utils/enums';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import DropDownAlert from '../../Shared/DropDownAlert';
+import { connect } from 'react-redux';
 class CometChatUserList extends React.PureComponent {
   static contextType = CometChatContext;
 
@@ -66,20 +67,31 @@ class CometChatUserList extends React.PureComponent {
           this.UserListManager.removeListeners();
         }
         this.setState({ userList: [] });
-        this.UserListManager = new UserListManager();
-        this.UserListManager.initializeUsersRequest()
-          .then((response) => {
-            this.getUsers();
-            this.UserListManager.attachListeners(this.userUpdated);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        this.UserListManager = new UserListManager('', [
+          this.props.selectedWorkSpace.st_guid,
+        ]);
+        if (Object.keys(this.props.selectedWorkSpace).length === 0) {
+          this.decoratorMessage = 'No users found';
+        } else {
+          this.fetchingUsers();
+        }
       });
     } catch (error) {
       logger(error);
     }
   }
+
+  fetchingUsers = () =>
+    this.UserListManager.initializeUsersRequest([
+      this.props.selectedWorkSpace.st_guid,
+    ])
+      .then((response) => {
+        this.getUsers();
+        this.UserListManager.attachListeners(this.userUpdated);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
   checkRestrictions = async () => {
     let context = this.contextProviderRef.state;
@@ -89,6 +101,12 @@ class CometChatUserList extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     try {
+      if (
+        prevProps.selectedWorkSpace.st_guid !==
+        this.props.selectedWorkSpace.st_guid
+      ) {
+        this.fetchingUsers();
+      }
       if (this.state.textInputFocused) {
         this.textInputRef.current.focus();
       }
@@ -206,7 +224,10 @@ class CometChatUserList extends React.PureComponent {
         }
 
         this.timeout = setTimeout(() => {
-          this.UserListManager = new UserListManager(val);
+          console.log('hello search');
+          this.UserListManager = new UserListManager(val, [
+            this.props.selectedWorkSpace.st_guid,
+          ]);
           this.setState({ userList: [] }, () => this.getUsers());
         }, 500);
       },
@@ -223,10 +244,11 @@ class CometChatUserList extends React.PureComponent {
       .then(() => {
         this.UserListManager.fetchNextUsers()
           .then((userList) => {
+            console.log('users:', userList);
             if (userList.length === 0) {
               this.decoratorMessage = 'No users found';
             }
-            this.setState({ userList: [...this.state.userList, ...userList] });
+            this.setState({ userList: [...userList] });
           })
           .catch((error) => {
             const errorCode = error?.message || 'ERROR';
@@ -435,4 +457,10 @@ class CometChatUserList extends React.PureComponent {
   }
 }
 
-export default CometChatUserList;
+const mapStateToProps = ({ reducer }) => {
+  return {
+    selectedWorkSpace: reducer.selectedWorkSpace,
+  };
+};
+
+export default connect(mapStateToProps)(CometChatUserList);

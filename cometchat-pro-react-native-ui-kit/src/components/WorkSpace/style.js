@@ -64,6 +64,7 @@ module.exports = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 9,
+    marginVertical: 10,
   },
   popStyle: {
     backgroundColor: 'transparent',

@@ -6,12 +6,12 @@ export class UserListManager {
 
   userListenerId = `userlist_${new Date().getTime()}`;
 
-  constructor(searchKey) {
+  constructor(searchKey, wsId) {
     this.searchKey = searchKey;
-    this.initializeUsersRequest();
+    this.initializeUsersRequest(wsId);
   }
 
-  initializeUsersRequest = () => {
+  initializeUsersRequest = (wsId) => {
     let UIKitSettingsBuilder = new UIKitSettings();
     const userListMode = UIKitSettingsBuilder.userListMode;
     const userListModeOptions = UIKitSettings.userListFilterOptions;
@@ -20,11 +20,15 @@ export class UserListManager {
       if (userListMode === userListModeOptions['ALL']) {
         if (this.searchKey) {
           this.usersRequest = new CometChat.UsersRequestBuilder()
+            .setTags(wsId)
+            .withTags(true)
             .setLimit(30)
             .setSearchKeyword(this.searchKey)
             .build();
         } else {
           this.usersRequest = new CometChat.UsersRequestBuilder()
+            .setTags(wsId)
+            .withTags(true)
             .setLimit(30)
             .build();
         }
@@ -33,12 +37,16 @@ export class UserListManager {
       } else if (userListMode === userListModeOptions['FRIENDS']) {
         if (this.searchKey) {
           this.usersRequest = new CometChat.UsersRequestBuilder()
+            .setTags(wsId)
+            .withTags(true)
             .setLimit(30)
             .friendsOnly(true)
             .setSearchKeyword(this.searchKey)
             .build();
         } else {
           this.usersRequest = new CometChat.UsersRequestBuilder()
+            .setTags(wsId)
+            .withTags(true)
             .setLimit(30)
             .friendsOnly(true)
             .build();
