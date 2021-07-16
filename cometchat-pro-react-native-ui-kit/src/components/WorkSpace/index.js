@@ -67,7 +67,9 @@ export default function WorkSpace(props) {
                         : style.textBox
                     }>
                     <Text style={style.textStyle}>
-                      {imageName[0].slice(0, 1) + imageName[1].slice(0, 1)}{' '}
+                      {imageName
+                        ? imageName[0].slice(0, 1) + imageName[1].slice(0, 1)
+                        : 'WD'}{' '}
                     </Text>
                   </View>
                 )}
@@ -110,8 +112,8 @@ export default function WorkSpace(props) {
                               : style.textBox
                           }>
                           <Text style={style.textStyle}>
-                            {imageName[0].slice(0, 1) +
-                              imageName[1].slice(0, 1)}{' '}
+                            {imageName[0]?.slice(0, 1) +
+                              imageName[1]?.slice(0, 1)}{' '}
                           </Text>
                         </View>
                       </View>

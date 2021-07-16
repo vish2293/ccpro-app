@@ -25,10 +25,6 @@ const WorkSpaceList = (props) => {
    * @param
    */
 
-  useEffect(() => {
-    console.log('list here:', workList);
-  }, []);
-
   const goBack = () => {
     const { navigation } = props;
     navigation.goBack();
@@ -70,7 +66,8 @@ const WorkSpaceList = (props) => {
                     ) : (
                       <View style={styles.textImage}>
                         <Text style={styles.textStyle}>
-                          {imageName[0].slice(0, 1) + imageName[1].slice(0, 1)}{' '}
+                          {imageName[0]?.slice(0, 1) +
+                            imageName[1]?.slice(0, 1)}{' '}
                         </Text>
                       </View>
                     )}

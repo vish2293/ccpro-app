@@ -65,11 +65,12 @@ export default StyleSheet.create({
   uploadImg: {
     height: 100,
     width: 100,
+    borderRadius: 100 / 2,
   },
   crossIcon: {
     position: 'absolute',
     zIndex: 1,
-    right: -5,
+    right: 0,
     top: -5,
     backgroundColor: 'gray',
     height: 25,
@@ -77,5 +78,28 @@ export default StyleSheet.create({
     borderRadius: 100 / 2,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  memberView: {
+    marginTop: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  memberText: {
+    color: '#338ce2',
+    fontSize: 17,
+    marginLeft: 5,
+  },
+  saveButton: {
+    height: 40,
+    width: '100%',
+    borderRadius: 5,
+    backgroundColor: '#236f91',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  saveText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

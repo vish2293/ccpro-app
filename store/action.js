@@ -174,3 +174,29 @@ export const selectWorkSpace = (data) => {
     payload: data,
   };
 };
+
+export const onAddWorkSpace = (data) => {
+  console.log('credentials', data);
+  return (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+    axios
+      .post(serverUrl + 'workspace', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log('response:::::', res.data);
+        dispatch({
+          type: actionTypes.ADD_WORK_SPACE,
+          payload: '',
+        });
+      })
+      .catch((err) => {
+        console.log('error:', err);
+        console.log('error:', err.response);
+        return err.response;
+      });
+  };
+};
