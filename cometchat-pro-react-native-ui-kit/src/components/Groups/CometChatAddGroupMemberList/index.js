@@ -234,10 +234,8 @@ class CometChatAddGroupMemberList extends React.Component {
    */
 
   updateMembers = () => {
-    try {
+    if (this.props.workspace) {
       const group = this.context;
-
-      const { guid } = this.props.item;
       const membersList = [];
 
       this.state.membersToAdd.forEach((newMember) => {
@@ -252,39 +250,66 @@ class CometChatAddGroupMemberList extends React.Component {
             CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT,
           );
           membersList.push(newMemberAdded);
-
-          newMemberAdded.type = 'add';
         }
+        this.props.selectedMembers(membersList);
       });
+      this.props.close();
+    } else {
+      try {
+        const group = this.context;
 
-      if (membersList.length) {
-        const membersToAdd = [];
-        this.props.close();
-        CometChat.addMembersToGroup(guid, membersList, [])
-          .then((response) => {
-            if (Object.keys(response).length) {
-              for (const member in response) {
-                if (response[member] === 'success') {
-                  const found = this.state.userList.find(
-                    (user) => user.uid === member,
-                  );
-                  found.scope = CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT;
-                  membersToAdd.push(found);
+        const { guid } = this.props.item;
+        const membersList = [];
+
+        this.state.membersToAdd.forEach((newMember) => {
+          // if a selected member is already part of the member list, don't add
+          const indexFound = group.memberList.findIndex(
+            (member) => member.uid === newMember.uid,
+          );
+
+          if (indexFound === -1) {
+            const newMemberAdded = new CometChat.GroupMember(
+              newMember.uid,
+              CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT,
+            );
+            membersList.push(newMemberAdded);
+
+            newMemberAdded.type = 'add';
+          }
+        });
+
+        if (membersList.length) {
+          const membersToAdd = [];
+          this.props.close();
+          CometChat.addMembersToGroup(guid, membersList, [])
+            .then((response) => {
+              if (Object.keys(response).length) {
+                for (const member in response) {
+                  if (response[member] === 'success') {
+                    const found = this.state.userList.find(
+                      (user) => user.uid === member,
+                    );
+                    found.scope = CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT;
+                    membersToAdd.push(found);
+                  }
                 }
+                this.props.actionGenerated(
+                  'addGroupParticipants',
+                  membersToAdd,
+                );
               }
-              this.props.actionGenerated('addGroupParticipants', membersToAdd);
-            }
-          })
-          .catch((error) => {
-            const errorCode = error?.message || 'ERROR';
-            this.dropDownAlertRef?.showMessage('error', errorCode);
-            logger('addMembersToGroup failed with exception:', error);
-          });
+            })
+            .catch((error) => {
+              const errorCode = error?.message || 'ERROR';
+              this.dropDownAlertRef?.showMessage('error', errorCode);
+              logger('addMembersToGroup failed with exception:', error);
+            });
+        }
+      } catch (error) {
+        const errorCode = error?.message || 'ERROR';
+        this.dropDownAlertRef?.showMessage('error', errorCode);
+        logger('121', error);
       }
-    } catch (error) {
-      const errorCode = error?.message || 'ERROR';
-      this.dropDownAlertRef?.showMessage('error', errorCode);
-      logger('121', error);
     }
   };
 

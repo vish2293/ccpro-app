@@ -113,19 +113,21 @@ export const setAuthRedirectPath = (path) => {
 
 export const workSpaceList = () => {
   return (dispatch, state) => {
+    console.log('userID:', state().reducer.user.uid);
     const token = state().reducer.jwtToken;
+    const uid = state().reducer.user.uid;
     axios({
       url: serverUrl + 'user/workspaces',
       method: 'get',
       params: {
-        user_id: 'superhero1',
+        user_id: uid,
       },
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        console.log('response:::::', res.data.data);
+        console.log('response:::::aaa', res.data.data);
         dispatch({
           type: actionTypes.WORK_SPACE_LIST,
           payload: res.data,
@@ -172,5 +174,115 @@ export const selectWorkSpace = (data) => {
   return {
     type: actionTypes.SELECTED_WORKSPACE,
     payload: data,
+  };
+};
+
+export const onAddWorkSpace = (data) => {
+  console.log('credentials', data);
+  return async (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+    return await axios
+      .post(serverUrl + 'workspace', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log('response:::::', res.data);
+        const myData = {
+          ...data,
+          dt_created_at: new Date(),
+          dt_updated_at: new Date(),
+          in_workspace_id: res.data.insert_id,
+          st_guid: `ws-${res.data.insert_id}`,
+          st_name: data.ws_name,
+        };
+
+        dispatch(getSingleWorkSpaces(res.data.insert_id));
+        return res.data;
+      })
+      .catch((err) => {
+        console.log('error:', err);
+        console.log('error:', err.response);
+        return err.response;
+      });
+  };
+};
+
+export const getWorkSpacesTypes = (data) => {
+  return (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+    console.log('token:', token);
+    axios({
+      url: serverUrl + 'workspaces/types',
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log('response:::::', res.data);
+        dispatch({
+          type: actionTypes.GET_WORKSPACE_TYPES,
+          payload: res.data.data,
+        });
+      })
+      .catch((err) => {
+        console.log('error:', err);
+        console.log('error:', err.response);
+        return err.response;
+      });
+  };
+};
+
+export const getAllWorkSpaces = () => {
+  return (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+
+    axios({
+      url: serverUrl + 'workspaces',
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log('all work', res.data);
+        dispatch({
+          type: actionTypes.GET_ALL_WORKSPACES,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log('error:', err);
+        console.log('error:', err.response);
+        return err.response;
+      });
+  };
+};
+
+export const getSingleWorkSpaces = (id) => {
+  return (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+
+    axios({
+      url: serverUrl + `workspace/${id}`,
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log('single work', res.data);
+        dispatch({
+          type: actionTypes.ADD_WORK_SPACE,
+          payload: res.data.data,
+        });
+      })
+      .catch((err) => {
+        console.log('error:', err);
+        console.log('error:', err.response);
+        return err.response;
+      });
   };
 };
