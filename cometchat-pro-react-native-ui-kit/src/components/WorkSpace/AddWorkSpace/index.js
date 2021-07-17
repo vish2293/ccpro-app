@@ -62,14 +62,15 @@ const AddWorkSpace = (props) => {
   useEffect(() => {
     customTypes = [];
     console.log('Types here::::', workSpaceTypes);
-    for (var i = 0; i < workSpaceTypes.length; i++) {
-      console.log('shallow:', workSpaceTypes[i]);
-      const customObj = {
-        label: workSpaceTypes[i].st_type_name,
-        value: workSpaceTypes[i].in_type_id,
-      };
-      customTypes.push(customObj);
-    }
+    if (workSpaceTypes)
+      for (var i = 0; i < workSpaceTypes.length; i++) {
+        console.log('shallow:', workSpaceTypes[i]);
+        const customObj = {
+          label: workSpaceTypes[i].st_type_name,
+          value: workSpaceTypes[i].in_type_id,
+        };
+        customTypes.push(customObj);
+      }
   }, [workSpaceTypes]);
 
   const onChangeHandler = (name, val) => {
