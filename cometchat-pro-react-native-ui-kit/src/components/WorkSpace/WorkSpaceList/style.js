@@ -89,4 +89,8 @@ export default StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
   },
+  loadingView: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
 });

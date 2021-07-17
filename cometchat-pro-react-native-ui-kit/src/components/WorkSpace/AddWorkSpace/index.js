@@ -22,7 +22,11 @@ import ImagePicker from 'react-native-image-crop-picker';
 import CometChatAddGroupMemberList from '../../Groups/CometChatAddGroupMemberList';
 import CustomInput from '../../../common/CustomInput/CustomInput';
 import CustomPicker from '../../../common/CustomPicker/CustomPicker';
-import { onAddWorkSpace } from '../../../../../store/action';
+import {
+  onAddWorkSpace,
+  getWorkSpacesTypes,
+  selectWorkSpace,
+} from '../../../../../store/action';
 
 const workTypes = [
   { label: 'Non-Profit', value: 1 },
@@ -30,13 +34,17 @@ const workTypes = [
 ];
 
 const workVerified = [
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
+  { label: 'No', value: '0' },
+  { label: 'Yes', value: '1' },
 ];
+
+let customTypes = [];
 
 const AddWorkSpace = (props) => {
   const dispatch = useDispatch();
-  const [workspaceType, setType] = useState(1);
+  const workSpaceTypes = useSelector((state) => state.reducer.workspaceTypes);
+  const uid = useSelector((state) => state.reducer.user.uid);
+  const [workspaceType, setType] = useState('1');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
@@ -45,7 +53,24 @@ const AddWorkSpace = (props) => {
     workspaceName: '',
     description: '',
   });
-  const [isVerified, setVerified] = useState(false);
+  const [isVerified, setVerified] = useState('0');
+
+  useEffect(() => {
+    dispatch(getWorkSpacesTypes());
+  }, []);
+
+  useEffect(() => {
+    customTypes = [];
+    console.log('Types here::::', workSpaceTypes);
+    for (var i = 0; i < workSpaceTypes.length; i++) {
+      console.log('shallow:', workSpaceTypes[i]);
+      const customObj = {
+        label: workSpaceTypes[i].st_type_name,
+        value: workSpaceTypes[i].in_type_id,
+      };
+      customTypes.push(customObj);
+    }
+  }, [workSpaceTypes]);
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
@@ -71,6 +96,7 @@ const AddWorkSpace = (props) => {
       // height: 400,
       cropperCircleOverlay: true,
       cropping: true,
+      includeBase64: true,
     }).then((image) => {
       console.log('pics:', image);
       setAvatar(image);
@@ -93,7 +119,8 @@ const AddWorkSpace = (props) => {
     setMembersList(list);
   };
 
-  const onSave = () => {
+  const onSave = async () => {
+    const usersData = [uid];
     setLoader(true);
     if (state.workspaceName === '') {
       alert('Workspace name is required!');
@@ -108,36 +135,41 @@ const AddWorkSpace = (props) => {
       alert('At least select one member');
       setLoader(false);
     } else {
-      console.log(
-        'data:',
-        state.workspaceName,
-        state.description,
-        avatar,
-        membersList,
-        workspaceType,
-        isVerified,
-      );
+      membersList.forEach((user) => {
+        usersData.push(user.uid);
+      });
 
-      const data = new FormData();
-
-      const imgObj = {
-        type: avatar.mime,
-        uri: avatar.path,
-        name: 'multiple file',
+      const data = {
+        addMember: false,
+        viewMember: false,
+        ws_name: state.workspaceName,
+        ws_description: state.description,
+        ws_users: usersData,
+        ws_type: JSON.stringify(workspaceType),
+        ws_is_verified: isVerified,
+        ws_featured_image: `data:image/jpeg;base64,${avatar.data}`,
+        ws_type_options: workSpaceTypes,
       };
 
-      membersList.forEach((user) => {
-        data.append('ws_users', { uuid: user.uid });
-      });
-      data.append('name', state.workspaceName);
-      data.append('ws_description', state.description);
-      data.append('ws_type', workspaceType);
-      data.append('ws_is_verified', isVerified);
-      data.append('ws_featured_image', imgObj);
+      console.log('data to watch:', data);
 
       try {
-        dispatch(onAddWorkSpace(data));
+        const response = await dispatch(onAddWorkSpace(data));
+        console.log('succcess:', response);
         setLoader(false);
+        if (response.error_code) {
+          alert('workspace not added!');
+        } else {
+          alert('Workspace added successfully!');
+          setState({
+            workspaceName: '',
+            description: '',
+          });
+          setAvatar('');
+          setType('1');
+          setVerified('0');
+          setMembersList([]);
+        }
       } catch (err) {
         setLoader(false);
         console.log('err in catch', err);
@@ -176,7 +208,7 @@ const AddWorkSpace = (props) => {
               <Text style={styles.labelStyle}>Workspace Type</Text>
               <View style={styles.pickerInput}>
                 <CustomPicker
-                  data={workTypes}
+                  data={customTypes}
                   value={workspaceType}
                   onChangeHandler={(itemValue, itemIndex) => setType(itemValue)}
                 />

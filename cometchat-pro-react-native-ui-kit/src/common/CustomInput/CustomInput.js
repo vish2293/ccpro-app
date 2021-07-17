@@ -9,7 +9,7 @@ const CustomInput = (props) => {
     <TextInput
       value={name}
       onChangeText={onChangeHandler}
-      style={styles.textInput}
+      style={[styles.textInput, { textAlignVertical: 'top' }]}
       multiline={multiline ? true : false}
       numberOfLines={multiline ? 5 : undefined}
     />

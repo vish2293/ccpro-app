@@ -9,6 +9,9 @@ const initialState = {
   workSpace: {},
   jwtToken: null,
   selectedWorkSpace: {},
+  workspaceTypes: [],
+  allWorkspaces: {},
+  loader: true,
 };
 
 const authStart = (state, action) => {
@@ -75,6 +78,35 @@ const setSelectedWorkSpace = (state, action) => {
   };
 };
 
+const setWorkSpaceTypes = (state, action) => {
+  console.log('superrrr', action);
+  return {
+    ...state,
+    workspaceTypes: action.payload,
+  };
+};
+
+const setAllWorkspaces = (state, action) => {
+  return {
+    ...state,
+    allWorkspaces: action.payload,
+    loader: false,
+  };
+};
+
+const addNewWorkSpace = (state, action) => {
+  console.log('reducer called:::', action.payload);
+  const copyOfAllList = { ...state.allWorkspaces };
+  const copyofUserWorkList = { ...state.workSpace };
+  copyOfAllList.data.push(action.payload);
+  copyofUserWorkList.data.push(action.payload);
+  return {
+    ...state,
+    allWorkspaces: copyOfAllList,
+    workSpace: copyofUserWorkList,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -93,6 +125,12 @@ const reducer = (state = initialState, action) => {
       return setJwtToken(state, action);
     case actionTypes.SELECTED_WORKSPACE:
       return setSelectedWorkSpace(state, action);
+    case actionTypes.GET_WORKSPACE_TYPES:
+      return setWorkSpaceTypes(state, action);
+    case actionTypes.GET_ALL_WORKSPACES:
+      return setAllWorkspaces(state, action);
+    case actionTypes.ADD_WORK_SPACE:
+      return addNewWorkSpace(state, action);
     default:
       return state;
   }

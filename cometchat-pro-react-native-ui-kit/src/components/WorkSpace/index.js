@@ -45,7 +45,6 @@ export default function WorkSpace(props) {
         </View>
         {workList?.data &&
           workList.data.slice(0, 4).map((item) => {
-            const imageName = item.st_name.split(' ');
             return (
               <TouchableOpacity
                 onPress={() => onTab(item)}
@@ -67,9 +66,7 @@ export default function WorkSpace(props) {
                         : style.textBox
                     }>
                     <Text style={style.textStyle}>
-                      {imageName
-                        ? imageName[0].slice(0, 1) + imageName[1].slice(0, 1)
-                        : 'WD'}{' '}
+                      {`${item.st_name.slice(0, 1)} ${item.in_workspace_id}`}
                     </Text>
                   </View>
                 )}
@@ -87,7 +84,6 @@ export default function WorkSpace(props) {
           <ScrollView showsVerticalScrollIndicator={false}>
             {workList?.data &&
               workList.data.map((item) => {
-                const imageName = item.st_name.split(' ');
                 return (
                   <TouchableOpacity
                     onPress={() => onTab(item)}
@@ -112,8 +108,9 @@ export default function WorkSpace(props) {
                               : style.textBox
                           }>
                           <Text style={style.textStyle}>
-                            {imageName[0]?.slice(0, 1) +
-                              imageName[1]?.slice(0, 1)}{' '}
+                            {`${item.st_name.slice(0, 1)} ${
+                              item.in_workspace_id
+                            }`}
                           </Text>
                         </View>
                       </View>
