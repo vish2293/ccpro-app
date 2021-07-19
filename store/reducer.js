@@ -12,6 +12,8 @@ const initialState = {
   workspaceTypes: [],
   allWorkspaces: {},
   loader: true,
+  teamLoader: true,
+  allTeamsList: [],
 };
 
 const authStart = (state, action) => {
@@ -107,6 +109,15 @@ const addNewWorkSpace = (state, action) => {
   };
 };
 
+const getAllTeams = (state, action) => {
+  console.log('data in reducer:', action.payload);
+  return {
+    ...state,
+    allTeamsList: action.payload,
+    teamLoader: false,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -131,6 +142,8 @@ const reducer = (state = initialState, action) => {
       return setAllWorkspaces(state, action);
     case actionTypes.ADD_WORK_SPACE:
       return addNewWorkSpace(state, action);
+    case actionTypes.GET_ALL_TEAMS:
+      return getAllTeams(state, action);
     default:
       return state;
   }

@@ -6,6 +6,7 @@ import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native';
 import theme from '../../../resources/theme';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { logger } from '../../../utils/common';
 
 const notificationIcon = (
@@ -20,6 +21,9 @@ const problemIcon = (
   <Icon color={theme.color.helpText} name="report-problem" size={28} />
 );
 const workIcon = <Icon color={theme.color.helpText} name="work" size={28} />;
+const teamIcon = (
+  <FontAwesome color={theme.color.helpText} name="slideshare" size={28} />
+);
 
 const CometChatUserProfile = (props) => {
   const [user, setUser] = useState({});
@@ -66,6 +70,11 @@ const CometChatUserProfile = (props) => {
     navigation.navigate('WorkSpaceList');
   };
 
+  const goToTeamsList = () => {
+    const { navigation } = props;
+    navigation.navigate('TeamList');
+  };
+
   return (
     <SafeAreaView style={styles.userInfoScreenStyle}>
       <View style={styles.headingContainer}>
@@ -102,6 +111,10 @@ const CometChatUserProfile = (props) => {
           <TouchableOpacity onPress={goToWorkScreen} style={styles.infoItem}>
             {workIcon}
             <Text style={styles.infoItemText}>Workspaces</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={goToTeamsList} style={styles.infoItem}>
+            {teamIcon}
+            <Text style={styles.infoItemText}>Teams</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.infoItemHeadingContainer}>

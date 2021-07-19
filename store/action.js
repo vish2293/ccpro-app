@@ -286,3 +286,10 @@ export const getSingleWorkSpaces = (id) => {
       });
   };
 };
+
+export const onGetAllTeams = (data) => {
+  return {
+    type: actionTypes.GET_ALL_TEAMS,
+    payload: data,
+  };
+};
