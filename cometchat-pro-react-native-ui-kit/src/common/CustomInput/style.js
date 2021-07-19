@@ -6,5 +6,6 @@ export default StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.2)',
     paddingLeft: 10,
     borderRadius: 5,
+    height: 45,
   },
 });

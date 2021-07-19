@@ -9,20 +9,31 @@ import {
   TextInput,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
 import styles from './style';
 
 const CustomPicker = (props) => {
   const { value, onChangeHandler, data } = props;
   return (
-    <Picker
-      mode="dropdown"
-      style={styles.pickerInput}
-      selectedValue={value}
-      onValueChange={onChangeHandler}>
-      {data.map((item, index) => (
-        <Picker.Item label={item.label} value={item.value} key={index} />
-      ))}
-    </Picker>
+    <RNPickerSelect
+      value={value}
+      onValueChange={onChangeHandler}
+      items={data}
+      style={{ color: '#000' }}
+      pickerProps={{
+        mode: 'dropdown',
+        style: { color: '#000' },
+      }}
+    />
+    // <Picker
+    //   mode="dropdown"
+    //   style={styles.pickerInput}
+    //   selectedValue={value}
+    //   onValueChange={onChangeHandler}>
+    //   {data.map((item, index) => (
+    //     <Picker.Item label={item.label} value={item.value} key={index} />
+    //   ))}
+    // </Picker>
   );
 };
 

@@ -4,12 +4,12 @@ import { Picker } from '@react-native-picker/picker';
 import styles from './style';
 
 const CustomInput = (props) => {
-  const { name, onChangeHandler, multiline } = props;
+  const { name, onChangeHandler, multiline, customStyle } = props;
   return (
     <TextInput
       value={name}
       onChangeText={onChangeHandler}
-      style={[styles.textInput, { textAlignVertical: 'top' }]}
+      style={[styles.textInput, customStyle]}
       multiline={multiline ? true : false}
       numberOfLines={multiline ? 5 : undefined}
     />

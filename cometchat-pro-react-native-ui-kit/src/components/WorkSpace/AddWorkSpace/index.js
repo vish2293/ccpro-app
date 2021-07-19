@@ -203,15 +203,16 @@ const AddWorkSpace = (props) => {
                 name={state.description}
                 onChangeHandler={(val) => onChangeHandler('description', val)}
                 multiline={true}
+                customStyle={styles.customInputStyle}
               />
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.labelStyle}>Workspace Type</Text>
               <View style={styles.pickerInput}>
                 <CustomPicker
-                  data={customTypes}
+                  data={customTypes ? customTypes : workTypes}
                   value={workspaceType}
-                  onChangeHandler={(itemValue, itemIndex) => setType(itemValue)}
+                  onChangeHandler={(itemValue) => setType(itemValue)}
                 />
               </View>
             </View>
@@ -222,9 +223,7 @@ const AddWorkSpace = (props) => {
                 <CustomPicker
                   data={workVerified}
                   value={isVerified}
-                  onChangeHandler={(itemValue, itemIndex) =>
-                    setVerified(itemValue)
-                  }
+                  onChangeHandler={(itemValue) => setVerified(itemValue)}
                 />
               </View>
             </View>

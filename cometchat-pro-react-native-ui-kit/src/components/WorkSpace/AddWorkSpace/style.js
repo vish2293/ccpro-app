@@ -102,4 +102,8 @@ export default StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  customInputStyle: {
+    textAlignVertical: 'top',
+    height: 110,
+  },
 });
