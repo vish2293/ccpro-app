@@ -286,6 +286,7 @@ const AddWorkSpace = (props) => {
       </View>
       {addMembers ? (
         <CometChatAddGroupMemberList
+          theme={theme}
           workspace
           selectedMembers={selectedMembers}
           open={addMembers}

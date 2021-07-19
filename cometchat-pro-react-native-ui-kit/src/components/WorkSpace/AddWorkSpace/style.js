@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { widthRatio, heightRatio } from '../../../utils/consts';
 import theme from '../../../resources/theme';
 export default StyleSheet.create({
@@ -46,6 +46,9 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.2)',
     borderRadius: 5,
+    height: 45,
+    justifyContent: 'center',
+    paddingLeft: Platform.OS === 'ios' ? 15 : 0,
   },
   buttonStyle: {
     flexDirection: 'row',
