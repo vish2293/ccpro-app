@@ -378,7 +378,7 @@ class CometChatAddGroupMemberList extends React.Component {
     return (
       <React.Fragment>
         <Modal
-          transparent
+          transparent={this.props.workspace ? false : true}
           animated
           animationType="fade"
           visible={this.props.open}>

@@ -10,13 +10,12 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
+import { CometChat } from '@cometchat-pro/chat';
 import theme from '../../../resources/theme';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { Picker } from '@react-native-picker/picker';
-import { logger } from '../../../utils/common';
 // import { launchImageLibrary } from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import CometChatAddGroupMemberList from '../../Groups/CometChatAddGroupMemberList';
@@ -27,51 +26,39 @@ import {
   getWorkSpacesTypes,
   selectWorkSpace,
 } from '../../../../../store/action';
-
-const workTypes = [
-  { label: 'Non-Profit', value: 1 },
-  { label: 'Profit', value: 2 },
-];
-
-const workVerified = [
-  { label: 'No', value: '0' },
-  { label: 'Yes', value: '1' },
-];
+import axios from 'axios';
+import { serverUrl } from '../../../utils/consts';
 
 let customTypes = [];
 
-const AddWorkSpace = (props) => {
+const AddTeam = (props) => {
   const dispatch = useDispatch();
-  const workSpaceTypes = useSelector((state) => state.reducer.workspaceTypes);
+  const workList = useSelector((state) => state.reducer.allWorkspaces);
   const uid = useSelector((state) => state.reducer.user.uid);
   const [workspaceType, setType] = useState('1');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [imageLoader, setImageLoader] = useState(false);
   const [state, setState] = useState({
-    workspaceName: '',
+    teamName: '',
     description: '',
   });
-  const [isVerified, setVerified] = useState('0');
 
   useEffect(() => {
-    dispatch(getWorkSpacesTypes());
-  }, []);
-
-  useEffect(() => {
+    console.log('work list', workList.data);
     customTypes = [];
-    console.log('Types here::::', workSpaceTypes);
-    if (workSpaceTypes)
-      for (var i = 0; i < workSpaceTypes.length; i++) {
-        console.log('shallow:', workSpaceTypes[i]);
+    const workListData = workList.data;
+    if (workList.data)
+      for (var i = 0; i < workListData.length; i++) {
         const customObj = {
-          label: workSpaceTypes[i].st_type_name,
-          value: workSpaceTypes[i].in_type_id,
+          label: workListData[i].st_name,
+          value: workListData[i].in_workspace_id,
         };
         customTypes.push(customObj);
       }
-  }, [workSpaceTypes]);
+  }, []);
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
@@ -101,6 +88,26 @@ const AddWorkSpace = (props) => {
     }).then((image) => {
       console.log('pics:', image);
       setAvatar(image);
+      setImageLoader(true);
+
+      const data = {
+        image: `data:image/jpeg;base64,${image.data}`,
+      };
+
+      axios({
+        url: serverUrl + 'global/image',
+        method: 'post',
+        data,
+      })
+        .then((response) => {
+          console.log('image response:', response);
+          setImageLoader(false);
+        })
+        .catch((err) => {
+          console.log('error in Image:', err);
+          console.log('error in Image:', err.response);
+          setImageLoader(false);
+        });
     });
   };
 
@@ -123,7 +130,7 @@ const AddWorkSpace = (props) => {
   const onSave = async () => {
     const usersData = [uid];
     setLoader(true);
-    if (state.workspaceName === '') {
+    if (state.teamName === '') {
       alert('Workspace name is required!');
       setLoader(false);
     } else if (state.description === '') {
@@ -141,40 +148,72 @@ const AddWorkSpace = (props) => {
       });
 
       const data = {
-        addMember: false,
-        viewMember: false,
-        ws_name: state.workspaceName,
+        ws_name: state.teamName,
         ws_description: state.description,
         ws_users: usersData,
-        ws_type: JSON.stringify(workspaceType),
-        ws_is_verified: isVerified,
+        ws_type: workspaceType,
         ws_featured_image: `data:image/jpeg;base64,${avatar.data}`,
-        ws_type_options: workSpaceTypes,
       };
 
       console.log('data to watch:', data);
 
-      try {
-        const response = await dispatch(onAddWorkSpace(data));
-        console.log('succcess:', response);
-        setLoader(false);
-        if (response.error_code) {
-          alert('workspace not added!');
-        } else {
-          alert('Workspace added successfully!');
-          setState({
-            workspaceName: '',
-            description: '',
-          });
-          setAvatar('');
-          setType('1');
-          setVerified('0');
-          setMembersList([]);
-        }
-      } catch (err) {
-        setLoader(false);
-        console.log('err in catch', err);
-      }
+      var GUID = `ws-${workspaceType}-team-${new Date().getTime()}`;
+      var groupName = state.teamName;
+      var groupDescription = state.description;
+      var groupMetaData = {
+        workspace_id: workspaceType,
+        workspace_name: customTypes.find((a) => a.value === workspaceType)
+          .label,
+      };
+      var groupType = CometChat.GROUP_TYPE.PUBLIC;
+      var password = '';
+      var icon = 'https://homepages.cae.wisc.edu/~ece533/images/cat.png';
+      var group = new CometChat.Group(
+        GUID,
+        groupName,
+        groupType,
+        password,
+        icon,
+        groupDescription,
+        '',
+      );
+
+      group.setMetadata(groupMetaData);
+
+      console.log('group:::', group);
+
+      CometChat.createGroup(group).then(
+        (group) => {
+          setLoader(false);
+          alert('Team created successfully');
+        },
+        (error) => {
+          setLoader(false);
+          console.log('Team creation failed with exception:', error);
+        },
+      );
+
+      //   try {
+      //     const response = await dispatch(onAddWorkSpace(data));
+      //     console.log('succcess:', response);
+      //     setLoader(false);
+      //     if (response.error_code) {
+      //       alert('workspace not added!');
+      //     } else {
+      //       alert('Workspace added successfully!');
+      //       setState({
+      //         teamName: '',
+      //         description: '',
+      //       });
+      //       setAvatar('');
+      //       setType('1');
+      //       setVerified('0');
+      //       setMembersList([]);
+      //     }
+      //   } catch (err) {
+      //     setLoader(false);
+      //     console.log('err in catch', err);
+      //   }
     }
   };
 
@@ -185,20 +224,20 @@ const AddWorkSpace = (props) => {
           <TouchableOpacity onPress={goBack} style={styles.iconStyle}>
             <Icon name="arrow-back" size={25} />
           </TouchableOpacity>
-          <Text style={styles.headerTitleStyle}>Add Workspace</Text>
+          <Text style={styles.headerTitleStyle}>Add Team</Text>
         </View>
 
         <ScrollView>
           <View style={styles.bodyContainer}>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Workspace Name</Text>
+              <Text style={styles.labelStyle}>Team Name</Text>
               <CustomInput
-                name={state.workspaceName}
-                onChangeHandler={(val) => onChangeHandler('workspaceName', val)}
+                name={state.teamName}
+                onChangeHandler={(val) => onChangeHandler('teamName', val)}
               />
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Workspace Description</Text>
+              <Text style={styles.labelStyle}>Team Description</Text>
               <CustomInput
                 name={state.description}
                 onChangeHandler={(val) => onChangeHandler('description', val)}
@@ -207,23 +246,12 @@ const AddWorkSpace = (props) => {
               />
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Workspace Type</Text>
+              <Text style={styles.labelStyle}>Workspace</Text>
               <View style={styles.pickerInput}>
                 <CustomPicker
-                  data={customTypes ? customTypes : workTypes}
+                  data={customTypes}
                   value={workspaceType}
                   onChangeHandler={(itemValue) => setType(itemValue)}
-                />
-              </View>
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Is Verified</Text>
-              <View style={styles.pickerInput}>
-                <CustomPicker
-                  data={workVerified}
-                  value={isVerified}
-                  onChangeHandler={(itemValue) => setVerified(itemValue)}
                 />
               </View>
             </View>
@@ -233,8 +261,14 @@ const AddWorkSpace = (props) => {
                 onPress={openPicker}
                 activeOpacity={0.7}
                 style={styles.buttonStyle}>
-                <Entypo name="camera" size={20} color="#fff" />
-                <Text style={styles.buttonText}>Add photo</Text>
+                {imageLoader ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <>
+                    <Entypo name="camera" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>Add photo</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -296,4 +330,4 @@ const AddWorkSpace = (props) => {
     </SafeAreaView>
   );
 };
-export default AddWorkSpace;
+export default AddTeam;
