@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,11 @@ import styles from './style';
 
 const CustomPicker = (props) => {
   const { value, onChangeHandler, data } = props;
+
+  useEffect(() => {
+    console.log('dddddddd::::', data);
+  }, []);
+
   return (
     <RNPickerSelect
       value={value}

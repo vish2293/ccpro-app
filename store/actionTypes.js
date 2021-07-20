@@ -11,3 +11,5 @@ export const ADD_WORK_SPACE = 'ADD_WORK_SPACE';
 export const GET_WORKSPACE_TYPES = 'GET_WORKSPACE_TYPES';
 export const GET_ALL_WORKSPACES = 'GET_ALL_WORKSPACES';
 export const GET_ALL_TEAMS = 'GET_ALL_TEAMS';
+
+export const GET_NEW_TEAM = 'GET_NEW_TEAM';

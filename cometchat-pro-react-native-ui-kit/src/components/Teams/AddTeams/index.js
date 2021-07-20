@@ -10,7 +10,7 @@ import {
   TextInput,
   ActivityIndicator,
 } from 'react-native';
-import { CometChat } from '@cometchat-pro/chat';
+import { CometChat } from '@cometchat-pro/react-native-chat';
 import theme from '../../../resources/theme';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -25,6 +25,7 @@ import {
   onAddWorkSpace,
   getWorkSpacesTypes,
   selectWorkSpace,
+  addNewTeam,
 } from '../../../../../store/action';
 import axios from 'axios';
 import { serverUrl } from '../../../utils/consts';
@@ -33,6 +34,7 @@ let customTypes = [];
 
 const AddTeam = (props) => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.reducer.jwtToken);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const uid = useSelector((state) => state.reducer.user.uid);
   const [workspaceType, setType] = useState('1');
@@ -41,13 +43,14 @@ const AddTeam = (props) => {
   const [membersList, setMembersList] = useState([]);
   const [loader, setLoader] = useState(false);
   const [imageLoader, setImageLoader] = useState(false);
+  const [workSpacesArray, setWorkArray] = useState([]);
   const [state, setState] = useState({
     teamName: '',
     description: '',
   });
 
   useEffect(() => {
-    console.log('work list', workList.data);
+    console.log('work list***', workList.data);
     customTypes = [];
     const workListData = workList.data;
     if (workList.data)
@@ -58,7 +61,8 @@ const AddTeam = (props) => {
         };
         customTypes.push(customObj);
       }
-  }, []);
+    setWorkArray(customTypes);
+  }, [workList]);
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
@@ -87,20 +91,24 @@ const AddTeam = (props) => {
       includeBase64: true,
     }).then((image) => {
       console.log('pics:', image);
-      setAvatar(image);
       setImageLoader(true);
+      // setAvatar(image.data);
 
       const data = {
-        image: `data:image/jpeg;base64,${image.data}`,
+        image: `data:image/image/png;base64,${image.data}`,
       };
 
       axios({
         url: serverUrl + 'global/image',
         method: 'post',
         data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
         .then((response) => {
-          console.log('image response:', response);
+          console.log('image response:', response.data.globals.file_upload_url);
+          setAvatar(response.data.globals.file_upload_url);
           setImageLoader(false);
         })
         .catch((err) => {
@@ -147,16 +155,6 @@ const AddTeam = (props) => {
         usersData.push(user.uid);
       });
 
-      const data = {
-        ws_name: state.teamName,
-        ws_description: state.description,
-        ws_users: usersData,
-        ws_type: workspaceType,
-        ws_featured_image: `data:image/jpeg;base64,${avatar.data}`,
-      };
-
-      console.log('data to watch:', data);
-
       var GUID = `ws-${workspaceType}-team-${new Date().getTime()}`;
       var groupName = state.teamName;
       var groupDescription = state.description;
@@ -167,7 +165,7 @@ const AddTeam = (props) => {
       };
       var groupType = CometChat.GROUP_TYPE.PUBLIC;
       var password = '';
-      var icon = 'https://homepages.cae.wisc.edu/~ece533/images/cat.png';
+      var icon = avatar;
       var group = new CometChat.Group(
         GUID,
         groupName,
@@ -179,41 +177,28 @@ const AddTeam = (props) => {
       );
 
       group.setMetadata(groupMetaData);
-
       console.log('group:::', group);
 
       CometChat.createGroup(group).then(
         (group) => {
+          console.log('Team data:', group);
+          dispatch(addNewTeam(group));
           setLoader(false);
+          setState({
+            teamName: '',
+            description: '',
+          });
+          setAvatar('');
+          setMembersList([]);
+          setType('1');
           alert('Team created successfully');
         },
         (error) => {
           setLoader(false);
+          alert('Something went wrong!');
           console.log('Team creation failed with exception:', error);
         },
       );
-
-      //   try {
-      //     const response = await dispatch(onAddWorkSpace(data));
-      //     console.log('succcess:', response);
-      //     setLoader(false);
-      //     if (response.error_code) {
-      //       alert('workspace not added!');
-      //     } else {
-      //       alert('Workspace added successfully!');
-      //       setState({
-      //         teamName: '',
-      //         description: '',
-      //       });
-      //       setAvatar('');
-      //       setType('1');
-      //       setVerified('0');
-      //       setMembersList([]);
-      //     }
-      //   } catch (err) {
-      //     setLoader(false);
-      //     console.log('err in catch', err);
-      //   }
     }
   };
 
@@ -249,7 +234,7 @@ const AddTeam = (props) => {
               <Text style={styles.labelStyle}>Workspace</Text>
               <View style={styles.pickerInput}>
                 <CustomPicker
-                  data={customTypes}
+                  data={workSpacesArray}
                   value={workspaceType}
                   onChangeHandler={(itemValue) => setType(itemValue)}
                 />
@@ -275,10 +260,7 @@ const AddTeam = (props) => {
             {avatar ? (
               <View style={[styles.inputContainer, { alignItems: 'center' }]}>
                 <View style={{ position: 'relative' }}>
-                  <Image
-                    style={styles.uploadImg}
-                    source={{ uri: avatar.path }}
-                  />
+                  <Image style={styles.uploadImg} source={{ uri: avatar }} />
                   <TouchableOpacity
                     onPress={cancelImage}
                     style={styles.crossIcon}>
@@ -305,7 +287,7 @@ const AddTeam = (props) => {
 
             <View style={styles.inputContainer}>
               <TouchableOpacity
-                onPress={onSave}
+                onPress={loader ? () => {} : onSave}
                 style={styles.saveButton}
                 activeOpacity={0.7}>
                 {loader ? (

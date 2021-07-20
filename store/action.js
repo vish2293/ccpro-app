@@ -293,3 +293,10 @@ export const onGetAllTeams = (data) => {
     payload: data,
   };
 };
+
+export const addNewTeam = (data) => {
+  return {
+    type: actionTypes.GET_NEW_TEAM,
+    payload: data,
+  };
+};

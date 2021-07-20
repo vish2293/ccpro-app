@@ -110,11 +110,22 @@ const addNewWorkSpace = (state, action) => {
 };
 
 const getAllTeams = (state, action) => {
-  console.log('data in reducer:', action.payload);
+  console.log('data in reducer:***:::', action.payload);
   return {
     ...state,
     allTeamsList: action.payload,
     teamLoader: false,
+  };
+};
+
+const setNewTeam = (state, action) => {
+  console.log('data in reducer:***:::', action.payload);
+  const copyOfList = Array.from(state.allTeamsList);
+  copyOfList.push(action.payload);
+
+  return {
+    ...state,
+    allTeamsList: copyOfList,
   };
 };
 
@@ -144,6 +155,8 @@ const reducer = (state = initialState, action) => {
       return addNewWorkSpace(state, action);
     case actionTypes.GET_ALL_TEAMS:
       return getAllTeams(state, action);
+    case actionTypes.GET_NEW_TEAM:
+      return setNewTeam(state, action);
     default:
       return state;
   }

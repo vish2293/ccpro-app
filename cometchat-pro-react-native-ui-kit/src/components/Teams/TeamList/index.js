@@ -18,50 +18,47 @@ import { getAllWorkSpaces, onGetAllTeams } from '../../../../../store/action';
 import { GroupListManager } from '../CometChatTeamList/controller';
 
 const TeamList = (props) => {
-  const isLoading = useSelector((state) => state.reducer.loader);
+  const isLoading = useSelector((state) => state.reducer.teamLoader);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const getAllTeams = useSelector((state) => state.reducer.allTeamsList);
-  const global = workList?.globals?.ws_upload_url
-    ? workList.globals.ws_upload_url
-    : '';
+
+  const userInfo = useSelector((state) => state.reducer.user);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log('user info:', userInfo.uid);
+    console.log('check out teams:::::', getAllTeams);
+  }, [getAllTeams]);
 
   const getTeams = async () => {
     const copyList = [];
-    console.log('work list:', workList);
 
-    const workdata = workList.data;
+    let val = `-team-`;
+    console.log('value::', val);
+    const GroupListManagerObject = new GroupListManager(val);
+    await GroupListManagerObject.fetchNextGroups().then(async (groupList) => {
+      console.log('groupsss:::', groupList);
 
-    for (var i = 0; i < workdata.length; i++) {
-      console.log('work id:', workdata[i].st_guid);
-
-      let val = `${workList.data[0]?.st_guid}-team-`;
-      console.log('value::', val);
-      const GroupListManagerObject = new GroupListManager(val);
-      GroupListManagerObject.fetchNextGroups().then((groupList) => {
-        console.log('groupsss:::', groupList);
-
-        if (groupList.length === 0) {
-        } else {
-          for (var a = 0; a < groupList.length; a++) {
-            copyList.push(groupList[a]);
-          }
-          console.log('copy List', copyList);
-          dispatch(onGetAllTeams(copyList));
+      if (groupList.length === 0) {
+      } else {
+        for (var a = 0; a < groupList.length; a++) {
+          copyList.push(groupList[a]);
         }
-      });
-    }
+        console.log('copy List', copyList);
+        return true;
+      }
+    });
+    dispatch(onGetAllTeams(copyList));
   };
 
   useLayoutEffect(() => {
-    if (workList?.data && workList.data.length === 0) {
-      dispatch(getAllWorkSpaces());
-    }
+    dispatch(getAllWorkSpaces());
   }, []);
 
   useEffect(() => {
     getTeams();
-  }, [workList]);
+  }, []);
 
   /**
    * Retrieve logged in user details
@@ -126,7 +123,11 @@ const TeamList = (props) => {
                             ? `${item?.name?.slice(0, 12)}..`
                             : item.name}
                         </Text>
-                        <Text style={styles.textNote}>{item.name}</Text>
+                        <Text style={styles.textNote}>
+                          {item?.name?.length > 10
+                            ? `${item?.name?.slice(0, 12)}..`
+                            : item.name}
+                        </Text>
                       </View>
                     </View>
                     <Text style={styles.bottomText}>{item.description}</Text>
