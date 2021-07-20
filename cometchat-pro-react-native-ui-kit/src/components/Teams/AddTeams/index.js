@@ -37,7 +37,7 @@ const AddTeam = (props) => {
   const token = useSelector((state) => state.reducer.jwtToken);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const uid = useSelector((state) => state.reducer.user.uid);
-  const [workspaceType, setType] = useState('1');
+  const [workspaceType, setType] = useState('');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
@@ -92,7 +92,7 @@ const AddTeam = (props) => {
     }).then((image) => {
       console.log('pics:', image);
       setImageLoader(true);
-      // setAvatar(image.data);
+      setAvatar(image.data);
 
       const data = {
         image: `data:image/image/png;base64,${image.data}`,
@@ -139,10 +139,13 @@ const AddTeam = (props) => {
     const usersData = [uid];
     setLoader(true);
     if (state.teamName === '') {
-      alert('Workspace name is required!');
+      alert('Team name is required!');
       setLoader(false);
     } else if (state.description === '') {
       alert('Description is required');
+      setLoader(false);
+    } else if (workspaceType === null) {
+      alert('Workspace is required');
       setLoader(false);
     } else if (!avatar) {
       alert('Image is required');
@@ -154,6 +157,8 @@ const AddTeam = (props) => {
       membersList.forEach((user) => {
         usersData.push(user.uid);
       });
+
+      console.log('typeeee:', workspaceType);
 
       var GUID = `ws-${workspaceType}-team-${new Date().getTime()}`;
       var groupName = state.teamName;
@@ -190,7 +195,7 @@ const AddTeam = (props) => {
           });
           setAvatar('');
           setMembersList([]);
-          setType('1');
+          setType('');
           alert('Team created successfully');
         },
         (error) => {

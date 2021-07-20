@@ -88,7 +88,11 @@ const WorkSpaceList = (props) => {
                         </View>
                       )}
                       <View style={styles.textBox}>
-                        <Text style={styles.heading}>{item.st_name}</Text>
+                        <Text style={styles.heading}>
+                          {item.st_name.length > 10
+                            ? `${item.st_name.slice(0, 10)}..`
+                            : item.st_name}
+                        </Text>
                         <Text style={styles.textNote}>
                           {item.in_type_id === 2 ? 'Profit' : 'Non-Profit'}
                         </Text>
