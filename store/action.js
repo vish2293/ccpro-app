@@ -189,14 +189,6 @@ export const onAddWorkSpace = (data) => {
       })
       .then((res) => {
         console.log('response:::::', res.data);
-        const myData = {
-          ...data,
-          dt_created_at: new Date(),
-          dt_updated_at: new Date(),
-          in_workspace_id: res.data.insert_id,
-          st_guid: `ws-${res.data.insert_id}`,
-          st_name: data.ws_name,
-        };
 
         dispatch(getSingleWorkSpaces(res.data.insert_id));
         return res.data;

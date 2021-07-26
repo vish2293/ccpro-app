@@ -230,6 +230,7 @@ class CometChatOutgoingCall extends React.PureComponent {
           }
         },
         onUserLeft: (user) => {
+          console.log('userLeft::', user);
           if (
             call.callInitiator.uid !== this.props.loggedInUser.uid &&
             call.callInitiator.uid !== user.uid
@@ -253,6 +254,7 @@ class CometChatOutgoingCall extends React.PureComponent {
           }
         },
         onCallEnded: (endedCall) => {
+          console.log('call ended::', endedCall);
           this.setState({
             outgoingCallScreen: false,
             callInProgress: null,
@@ -262,6 +264,7 @@ class CometChatOutgoingCall extends React.PureComponent {
           this.props.actionGenerated(actions.CALL_ENDED, endedCall);
         },
         onError: (error) => {
+          console.log('error in call:', error);
           // logger('[OngoingCallListener] Call Error: ', error);
           this.props.actionGenerated(actions.CALL_ERROR, error);
         },

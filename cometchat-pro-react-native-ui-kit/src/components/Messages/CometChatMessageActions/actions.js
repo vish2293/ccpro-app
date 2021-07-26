@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
   Text,
   View,
@@ -13,11 +13,14 @@ import * as actions from '../../../utils/actions';
 import * as enums from '../../../utils/enums';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Toast from 'react-native-easy-toast';
 
 const actionIconSize = 26;
 
 export default (props) => {
   const [restrictions, setRestrictions] = useState(null);
+  let toastRef = useRef(null);
   const context = useContext(CometChatContext);
   useEffect(() => {
     checkRestrictions();
@@ -46,6 +49,12 @@ export default (props) => {
       enableDeleteMessageForModerator,
       enableMessageInPrivate,
     });
+  };
+
+  const onCopy = () => {
+    console.log('copy message:', props.message.text);
+    Clipboard.setString(props.message.text);
+    toastRef.show('Copied!', 500);
   };
 
   let sendMessage = null;
@@ -118,6 +127,13 @@ export default (props) => {
     </TouchableOpacity>
   );
 
+  let copyMessage = (
+    <TouchableOpacity style={styles.action} onPress={onCopy}>
+      <IonIcon name="copy-outline" size={actionIconSize} />
+      <Text style={styles.actionsText}>Copy Text</Text>
+    </TouchableOpacity>
+  );
+
   // if editing messages need to be disabled
   if (
     props.message.messageFrom === enums.MESSAGE_FROM_RECEIVER ||
@@ -128,13 +144,24 @@ export default (props) => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => {}}>
-      <View style={styles.actionsContainer}>
-        {sendMessage}
-        {threadedChats}
-        {editMessage}
-        {deleteMessage}
-      </View>
-    </TouchableWithoutFeedback>
+    <>
+      <TouchableWithoutFeedback onPress={() => {}}>
+        <View style={styles.actionsContainer}>
+          {sendMessage}
+          {threadedChats}
+          {editMessage}
+          {deleteMessage}
+          {copyMessage}
+        </View>
+      </TouchableWithoutFeedback>
+      <Toast
+        style={{ backgroundColor: 'rgba(0,0,0, 0.7)' }}
+        position="top"
+        fadeInDuration={750}
+        fadeOutDuration={1000}
+        // opacity={0.8}
+        ref={(toast) => (toastRef = toast)}
+      />
+    </>
   );
 };

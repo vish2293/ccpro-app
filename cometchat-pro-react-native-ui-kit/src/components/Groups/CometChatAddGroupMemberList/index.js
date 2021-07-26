@@ -127,31 +127,35 @@ class CometChatAddGroupMemberList extends React.Component {
    */
 
   searchUsers = (val) => {
-    try {
-      this.setState(
-        { textInputValue: val },
+    this.setState({
+      textInputValue: val,
+    });
+    // try {
+    //   this.setState(
+    //     { textInputValue: val },
 
-        () => {
-          if (this.timeout) {
-            clearTimeout(this.timeout);
-          }
+    //     () => {
+    //       if (this.timeout) {
+    //         clearTimeout(this.timeout);
+    //       }
 
-          this.timeout = setTimeout(() => {
-            this.AddMembersManager = new AddMembersManager(val);
-            this.setState(
-              {
-                userList: [],
-                membersToRemove: [],
-                filteredList: [],
-              },
-              () => this.getUsers(),
-            );
-          }, 500);
-        },
-      );
-    } catch (error) {
-      logger(error);
-    }
+    //       this.timeout = setTimeout(() => {
+    //         this.AddMembersManager = new AddMembersManager(val);
+    //         console.log('test:::', this.AddMembersManager);
+    //         this.setState(
+    //           {
+    //             userList: [],
+    //             membersToRemove: [],
+    //             filteredList: [],
+    //           },
+    //           () => this.getUsers(),
+    //         );
+    //       }, 500);
+    //     },
+    //   );
+    // } catch (error) {
+    //   logger(error);
+    // }
   };
 
   /**
@@ -373,7 +377,13 @@ class CometChatAddGroupMemberList extends React.Component {
     const group = this.context;
 
     let currentLetter = '';
-    const filteredUserList = [...this.state.filteredList];
+    const filteredUserList = this.state.filteredList.filter((item) => {
+      return (
+        item.name
+          ?.toLowerCase()
+          .indexOf(this.state.textInputValue.toLowerCase()) !== -1
+      );
+    });
 
     return (
       <React.Fragment>

@@ -106,6 +106,7 @@ class CometChatCreateGroup extends React.Component {
 
     try {
       if (!groupName) {
+        alert('Group name cannot be blank.');
         this.dropDownAlertRef?.showMessage(
           'error',
           'Group name cannot be blank.',
@@ -114,6 +115,7 @@ class CometChatCreateGroup extends React.Component {
       }
 
       if (!groupType || groupType === 'Select group type') {
+        alert('Group type cannot be blank.');
         this.dropDownAlertRef?.showMessage(
           'error',
           'Group type cannot be blank.',
@@ -126,6 +128,7 @@ class CometChatCreateGroup extends React.Component {
         password = this.state.password;
 
         if (!password.length) {
+          alert('Group password cannot be blank.');
           this.dropDownAlertRef?.showMessage(
             'error',
             'Group password cannot be blank.',
@@ -243,7 +246,8 @@ class CometChatCreateGroup extends React.Component {
                         </View>
                         <View>
                           <TextInput
-                            autoCompleteType="off"
+                            value={this.state.name}
+                            // autoCompleteType="off"
                             style={[
                               style.inputStyle,
                               {
@@ -258,7 +262,6 @@ class CometChatCreateGroup extends React.Component {
                             onChangeText={(value) => {
                               this.nameChangeHandler(value);
                             }}
-                            value={this.state.name}
                           />
                         </View>
                         <View>

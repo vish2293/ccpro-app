@@ -82,9 +82,7 @@ class CometChatUserList extends React.PureComponent {
   }
 
   fetchingUsers = () =>
-    this.UserListManager.initializeUsersRequest([
-      this.props.selectedWorkSpace.st_guid,
-    ])
+    this.UserListManager.initializeUsersRequest()
       .then((response) => {
         this.getUsers();
         this.UserListManager.attachListeners(this.userUpdated);
@@ -241,7 +239,8 @@ class CometChatUserList extends React.PureComponent {
   getUsers = () => {
     new CometChatManager()
       .getLoggedInUser()
-      .then(() => {
+      .then((res) => {
+        console.log('response:', res);
         this.UserListManager.fetchNextUsers()
           .then((userList) => {
             console.log('users:', userList);

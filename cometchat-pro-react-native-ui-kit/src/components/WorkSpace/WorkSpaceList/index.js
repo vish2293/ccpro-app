@@ -98,7 +98,11 @@ const WorkSpaceList = (props) => {
                         </Text>
                       </View>
                     </View>
-                    <Text style={styles.bottomText}>{item.st_description}</Text>
+                    <Text style={styles.bottomText}>
+                      {item.st_description.length > 26
+                        ? `${item.st_description.slice(0, 26)}...`
+                        : item.st_description}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}

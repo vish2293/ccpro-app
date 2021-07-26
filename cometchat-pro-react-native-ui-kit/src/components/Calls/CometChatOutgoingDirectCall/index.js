@@ -88,6 +88,7 @@ class CometChatOutgoingDirectCall extends React.Component {
     let defaultLayout = true;
     let callListener = new CometChat.OngoingCallListener({
       onCallEnded: (call) => {
+        console.log('On End call:::', call);
         this.props.close();
       },
       onError: (error) => {
