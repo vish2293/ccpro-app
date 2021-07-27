@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import 'react-native-gesture-handler';
-import {CometChat} from '@cometchat-pro/react-native-chat';
-import {Provider} from 'react-redux';
-import {store, persistor} from './store/store';
+import { CometChat } from '@cometchat-pro/react-native-chat';
+import { Provider } from 'react-redux';
+import { store, persistor } from './store/store';
 import StackNavigator from './StackNavigator';
-import {COMETCHAT_CONSTANTS} from './CONSTS';
+import { COMETCHAT_CONSTANTS } from './CONSTS';
 import {
   LogBox,
   PermissionsAndroid,
@@ -12,7 +12,7 @@ import {
   Text,
   Platform,
 } from 'react-native';
-import {PersistGate} from 'redux-persist/integration/react';
+import { PersistGate } from 'redux-persist/integration/react';
 import theme from './cometchat-pro-react-native-ui-kit/src/resources/theme';
 
 const styles = StyleSheet.create({
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const customProps = {style: styles.defaultFontFamily};
+const customProps = { style: styles.defaultFontFamily };
 
 // To set default font family, avoiding issues with specific android fonts like OnePlus Slate
 function setDefaultFontFamily() {
@@ -33,7 +33,7 @@ function setDefaultFontFamily() {
   };
   Text.render = function render(props) {
     let oldProps = props;
-    props = {...props, style: [customProps.style, props.style]};
+    props = { ...props, style: [customProps.style, props.style] };
     try {
       return TextRender.apply(this, arguments);
     } finally {

@@ -21,6 +21,7 @@ import WorkSpaceList from './cometchat-pro-react-native-ui-kit/src/components/Wo
 import AddWorkSpace from './cometchat-pro-react-native-ui-kit/src/components/WorkSpace/AddWorkSpace';
 import TeamList from './cometchat-pro-react-native-ui-kit/src/components/Teams/TeamList';
 import AddTeam from './cometchat-pro-react-native-ui-kit/src/components/Teams/AddTeams';
+import OfflineNotice from './OfflineNotice';
 
 function StackNavigator(props) {
   const Stack = createStackNavigator();
@@ -31,33 +32,45 @@ function StackNavigator(props) {
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        headerMode="none"
-        initialRouteName={props.isLoggedIn ? 'HomePage' : null}
-      >
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-        <Stack.Screen name="HomePage" component={HomePage} />
-        <Stack.Screen name="CometChatUI" component={CometChatUI} />
-        <Stack.Screen
-          name="Conversation"
-          component={CometChatConversationListWithMessages}
-        />
-        <Stack.Screen
-          name="ConversationComponent"
-          component={CometChatConversationList}
-        />
-        <Stack.Screen name="Group" component={CometChatGroupListWithMessages} />
-        <Stack.Screen name="GroupComponent" component={CometChatGroupList} />
-        <Stack.Screen name="Users" component={CometChatUserListWithMessages} />
-        <Stack.Screen name="UsersComponent" component={CometChatUserList} />
-        <Stack.Screen name="CometChatMessages" component={CometChatMessages} />
-        <Stack.Screen name="WorkSpaceList" component={WorkSpaceList} />
-        <Stack.Screen name="AddWorkSpace" component={AddWorkSpace} />
-        <Stack.Screen name="TeamList" component={TeamList} />
-        <Stack.Screen name="AddTeam" component={AddTeam} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <OfflineNotice />
+      <NavigationContainer>
+        <Stack.Navigator
+          headerMode="none"
+          initialRouteName={props.isLoggedIn ? 'HomePage' : null}
+        >
+          <Stack.Screen name="LoginPage" component={LoginPage} />
+          <Stack.Screen name="HomePage" component={HomePage} />
+          <Stack.Screen name="CometChatUI" component={CometChatUI} />
+          <Stack.Screen
+            name="Conversation"
+            component={CometChatConversationListWithMessages}
+          />
+          <Stack.Screen
+            name="ConversationComponent"
+            component={CometChatConversationList}
+          />
+          <Stack.Screen
+            name="Group"
+            component={CometChatGroupListWithMessages}
+          />
+          <Stack.Screen name="GroupComponent" component={CometChatGroupList} />
+          <Stack.Screen
+            name="Users"
+            component={CometChatUserListWithMessages}
+          />
+          <Stack.Screen name="UsersComponent" component={CometChatUserList} />
+          <Stack.Screen
+            name="CometChatMessages"
+            component={CometChatMessages}
+          />
+          <Stack.Screen name="WorkSpaceList" component={WorkSpaceList} />
+          <Stack.Screen name="AddWorkSpace" component={AddWorkSpace} />
+          <Stack.Screen name="TeamList" component={TeamList} />
+          <Stack.Screen name="AddTeam" component={AddTeam} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 

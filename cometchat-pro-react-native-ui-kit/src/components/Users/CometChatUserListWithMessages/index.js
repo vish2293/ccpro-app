@@ -269,6 +269,7 @@ class CometChatUserListWithMessages extends React.Component {
    * @param call: call object
    */
   acceptIncomingCall = (call) => {
+    console.log('call:::::', call);
     try {
       this.setState({ incomingCall: call });
 

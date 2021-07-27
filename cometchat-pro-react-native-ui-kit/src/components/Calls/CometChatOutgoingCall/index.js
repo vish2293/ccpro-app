@@ -17,6 +17,8 @@ import theme from '../../../resources/theme';
 
 import style from './styles';
 import { logger } from '../../../utils/common';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 class CometChatOutgoingCall extends React.PureComponent {
   constructor(props) {
@@ -28,6 +30,8 @@ class CometChatOutgoingCall extends React.PureComponent {
       errorMessage: null,
       callInProgress: null,
       outgoingCallScreen: false,
+      muteAudio: false,
+      pauseVideo: false,
     };
 
     this.callScreenManager = null;
@@ -174,6 +178,7 @@ class CometChatOutgoingCall extends React.PureComponent {
    * @param
    */
   acceptCall = () => {
+    console.log('user ID:', this.props.incomingCall.sessionId);
     CometChatManager.acceptCall(this.props.incomingCall.sessionId)
       .then((response) => {
         const call = { ...response };
@@ -272,7 +277,7 @@ class CometChatOutgoingCall extends React.PureComponent {
 
       const callSettings = new CometChat.CallSettingsBuilder()
         .setSessionID(sessionId)
-        .enableDefaultLayout(true)
+        .enableDefaultLayout(false)
         .setIsAudioOnlyCall(audioOnly)
         .setCallEventListener(callListener)
         .build();
@@ -359,6 +364,44 @@ class CometChatOutgoingCall extends React.PureComponent {
     }
   };
 
+  endCall = () => {
+    CometChat.endCall(this.state.callInProgress.sessionId).then(
+      (call) => {
+        console.log('call ended', call);
+        this.props.actionGenerated(actions.CALL_ENDED, call);
+        this.setState({
+          outgoingCallScreen: false,
+          callInProgress: null,
+          callSettings: null,
+        });
+      },
+      (error) => {
+        console.log('Mine error', error);
+      },
+    );
+  };
+
+  onSwitchCamera = () => {
+    let callController = CometChat.CallController.getInstance();
+    callController.switchCamera();
+  };
+
+  onMute = () => {
+    let callController = CometChat.CallController.getInstance();
+    callController.muteAudio(!this.state.muteAudio);
+    this.setState({
+      muteAudio: !this.state.muteAudio,
+    });
+  };
+
+  onPauseVideo = () => {
+    let callController = CometChat.CallController.getInstance();
+    callController.pauseVideo(!this.state.pauseVideo);
+    this.setState({
+      pauseVideo: !this.state.pauseVideo,
+    });
+  };
+
   render() {
     if (this.state.callSettings) {
       return (
@@ -368,6 +411,37 @@ class CometChatOutgoingCall extends React.PureComponent {
             <CometChat.CallingComponent
               callsettings={this.state.callSettings}
             />
+            <View style={style.footer}>
+              <TouchableOpacity onPress={this.endCall} style={style.endBtn}>
+                <Icon name="call-end" color="#FFFFFF" size={22} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.onSwitchCamera}
+                style={style.defaultBtn}>
+                <Ionicons name="md-camera-reverse" color="#FFFFFF" size={22} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.onMute} style={style.defaultBtn}>
+                {this.state.muteAudio ? (
+                  <FontAwesome
+                    name="microphone-slash"
+                    color="#FFFFFF"
+                    size={22}
+                  />
+                ) : (
+                  <FontAwesome name="microphone" color="#FFFFFF" size={22} />
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={this.onPauseVideo}
+                style={style.defaultBtn}>
+                {this.state.pauseVideo ? (
+                  <Icon name="videocam-off" color="#FFFFFF" size={22} />
+                ) : (
+                  <Icon name="videocam" color="#FFFFFF" size={22} />
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         </Modal>
       );

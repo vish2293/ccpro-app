@@ -14,6 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectWorkSpace } from '../../../../store/action';
 import Popover from 'react-native-popover-view';
+import OfflineNotice from '../../../../OfflineNotice';
 
 const data = ['sms', 'calendar-today', 'more-horiz'];
 

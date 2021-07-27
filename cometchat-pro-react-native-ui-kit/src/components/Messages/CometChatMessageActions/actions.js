@@ -15,6 +15,8 @@ import { CometChat } from '@cometchat-pro/react-native-chat';
 import { CometChatContext } from '../../../utils/CometChatContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-easy-toast';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Share from 'react-native-share';
 
 const actionIconSize = 26;
 
@@ -55,6 +57,22 @@ export default (props) => {
     console.log('copy message:', props.message.text);
     Clipboard.setString(props.message.text);
     toastRef.show('Copied!', 500);
+  };
+
+  const onShare = () => {
+    console.log('copy message:', props.message);
+
+    const options = {
+      url: props.message.data.url,
+    };
+
+    Share.open(options)
+      .then((res) => {
+        console.log('shared:', res);
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });
   };
 
   let sendMessage = null;
@@ -134,6 +152,13 @@ export default (props) => {
     </TouchableOpacity>
   );
 
+  let shareMessage = (
+    <TouchableOpacity style={styles.action} onPress={onShare}>
+      <AntDesign name="sharealt" size={actionIconSize} />
+      <Text style={styles.actionsText}>Share</Text>
+    </TouchableOpacity>
+  );
+
   // if editing messages need to be disabled
   if (
     props.message.messageFrom === enums.MESSAGE_FROM_RECEIVER ||
@@ -152,6 +177,7 @@ export default (props) => {
           {editMessage}
           {deleteMessage}
           {copyMessage}
+          {props.message.type === 'text' ? null : shareMessage}
         </View>
       </TouchableWithoutFeedback>
       <Toast

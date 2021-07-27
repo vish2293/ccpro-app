@@ -418,6 +418,9 @@ class CometChatConversationListWithMessages extends React.Component {
    * @param call: call object
    */
   acceptIncomingCall = (call) => {
+    console.log('call 1:::::', call);
+    console.log('user id:', call.sender.uid);
+    console.log('reciever id:', call.receiverId);
     try {
       this.setState({ incomingCall: call });
 
@@ -426,6 +429,7 @@ class CometChatConversationListWithMessages extends React.Component {
 
       CometChat.getConversation(id, type)
         .then((conversation) => {
+          console.log('conversation::::::::', conversation);
           this.itemClicked(conversation.conversationWith, type);
         })
         .catch((error) => {
