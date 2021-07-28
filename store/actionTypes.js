@@ -13,3 +13,5 @@ export const GET_ALL_WORKSPACES = 'GET_ALL_WORKSPACES';
 export const GET_ALL_TEAMS = 'GET_ALL_TEAMS';
 
 export const GET_NEW_TEAM = 'GET_NEW_TEAM';
+
+export const READ_ALL = 'READ_ALL';

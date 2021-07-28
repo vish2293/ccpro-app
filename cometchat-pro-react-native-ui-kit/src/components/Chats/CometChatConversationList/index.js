@@ -12,6 +12,7 @@ import styles from './styles';
 import Sound from 'react-native-sound';
 import DropDownAlert from '../../Shared/DropDownAlert';
 import { UIKitSettings } from '../../../utils/UIKitSettings';
+import { connect } from 'react-redux';
 import {
   CometChatContextProvider,
   CometChatContext,
@@ -28,6 +29,7 @@ import {
 } from 'react-native';
 import { logger } from '../../../utils/common';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import { READ_ALL } from '../../../../../store/actionTypes';
 class CometChatConversationList extends React.Component {
   loggedInUser = null;
 
@@ -77,8 +79,7 @@ class CometChatConversationList extends React.Component {
   }
 
   checkRestrictions = async () => {
-    let isMessagesSoundEnabled =
-      await this.context.FeatureRestriction.isMessagesSoundEnabled();
+    let isMessagesSoundEnabled = await this.context.FeatureRestriction.isMessagesSoundEnabled();
     this.setState({ isMessagesSoundEnabled });
   };
 
@@ -181,13 +182,19 @@ class CometChatConversationList extends React.Component {
         }
       }
 
+      console.log('messageToMarkRead:::');
+
       if (prevProps.messageToMarkRead !== this.props.messageToMarkRead) {
+        console.log('hello Iam in');
         const message = this.props.messageToMarkRead;
         this.makeConversation(message)
           .then((response) => {
-            const { conversationKey, conversationObj, conversationList } =
-              response;
-
+            const {
+              conversationKey,
+              conversationObj,
+              conversationList,
+            } = response;
+            console.log('conversationKey', conversationKey);
             if (conversationKey > -1) {
               const unreadMessageCount = this.makeUnreadMessageCount(
                 conversationObj,
@@ -209,6 +216,7 @@ class CometChatConversationList extends React.Component {
             }
           })
           .catch((error) => {
+            console.log('error', error);
             const errorCode = error?.message || 'ERROR';
             this.dropDownAlertRef?.showMessage('error', errorCode);
             logger(
@@ -433,9 +441,12 @@ class CometChatConversationList extends React.Component {
    * @param message : message object
    */
   makeConversation = (message) => {
+    console.log('hello make');
     const promise = new Promise((resolve, reject) => {
+      console.log('Helloaaaa');
       CometChat.CometChatHelper.getConversationFromMessage(message)
         .then((conversation) => {
+          console.log('AAAAA');
           const conversationList = [...this.state.conversationList];
           const conversationKey = conversationList.findIndex(
             (c) => c.conversationId === conversation.conversationId,
@@ -445,13 +456,18 @@ class CometChatConversationList extends React.Component {
             conversationObj = { ...conversationList[conversationKey] };
           }
 
+          console.log('Iam Heere', conversationKey);
+
           resolve({
             conversationKey,
             conversationObj,
             conversationList,
           });
         })
-        .catch((error) => reject(error));
+        .catch((error) => {
+          console.log('errrrrrr', error);
+          reject(error);
+        });
     });
 
     return promise;
@@ -474,7 +490,7 @@ class CometChatConversationList extends React.Component {
       } else {
         unreadMessageCount += 1;
       }
-
+      console.log('unreadmessagecount:::', unreadMessageCount);
       return unreadMessageCount;
     } catch (error) {
       logger(error);
@@ -495,15 +511,15 @@ class CometChatConversationList extends React.Component {
    * @param message: message object
    * @param notification: boolean to play audio alert @default : true
    */
-  updateConversation = (message, notification = true) => {
+  updateConversation = (message, notification = true, markAllRead = false) => {
     this.makeConversation(message)
       .then((response) => {
         const { conversationKey, conversationObj, conversationList } = response;
 
         if (conversationKey > -1) {
-          const unreadMessageCount = this.makeUnreadMessageCount(
-            conversationList[conversationKey],
-          );
+          const unreadMessageCount = markAllRead
+            ? 0
+            : this.makeUnreadMessageCount(conversationList[conversationKey]);
           const lastMessageObj = this.makeLastMessage(message, conversationObj);
 
           const newConversationObj = {
@@ -511,6 +527,7 @@ class CometChatConversationList extends React.Component {
             lastMessage: lastMessageObj,
             unreadMessageCount,
           };
+          this.props.readAll({ [conversationKey]: false });
           conversationList.splice(conversationKey, 1);
           conversationList.unshift(newConversationObj);
           this.setState({ conversationList: conversationList });
@@ -583,8 +600,9 @@ class CometChatConversationList extends React.Component {
         const { conversationKey, conversationObj, conversationList } = response;
 
         if (conversationKey > -1) {
-          const unreadMessageCount =
-            this.makeUnreadMessageCount(conversationObj);
+          const unreadMessageCount = this.makeUnreadMessageCount(
+            conversationObj,
+          );
           const lastMessageObj = this.makeLastMessage(message, conversationObj);
 
           const conversationWithObj = { ...conversationObj.conversationWith };
@@ -652,8 +670,9 @@ class CometChatConversationList extends React.Component {
             conversationList.splice(conversationKey, 1);
             this.setState({ conversationList: conversationList });
           } else {
-            const unreadMessageCount =
-              this.makeUnreadMessageCount(conversationObj);
+            const unreadMessageCount = this.makeUnreadMessageCount(
+              conversationObj,
+            );
             const lastMessageObj = this.makeLastMessage(
               message,
               conversationObj,
@@ -697,8 +716,9 @@ class CometChatConversationList extends React.Component {
         const { conversationKey, conversationObj, conversationList } = response;
 
         if (conversationKey > -1) {
-          const unreadMessageCount =
-            this.makeUnreadMessageCount(conversationObj);
+          const unreadMessageCount = this.makeUnreadMessageCount(
+            conversationObj,
+          );
           const lastMessageObj = this.makeLastMessage(message, conversationObj);
 
           const conversationWithObj = { ...conversationObj.conversationWith };
@@ -745,8 +765,9 @@ class CometChatConversationList extends React.Component {
         const { conversationKey, conversationObj, conversationList } = response;
         if (conversationKey > -1) {
           if (options && this.loggedInUser.uid !== options.user.uid) {
-            const unreadMessageCount =
-              this.makeUnreadMessageCount(conversationObj);
+            const unreadMessageCount = this.makeUnreadMessageCount(
+              conversationObj,
+            );
             const lastMessageObj = this.makeLastMessage(
               message,
               conversationObj,
@@ -789,7 +810,7 @@ class CometChatConversationList extends React.Component {
   handleClick = (conversation) => {
     try {
       if (!this.props.onItemClick) return;
-
+      this.props.readAll({ [conversation.conversationId]: true });
       this.props.onItemClick(
         conversation.conversationWith,
         conversation.conversationType,
@@ -1002,6 +1023,7 @@ class CometChatConversationList extends React.Component {
                     selectedConversation={this.state.selectedConversation}
                     loggedInUser={this.loggedInUser}
                     handleClick={this.handleClick}
+                    chatRead={this.props.chatRead}
                   />
                 );
               }}
@@ -1019,4 +1041,25 @@ class CometChatConversationList extends React.Component {
     );
   }
 }
-export default CometChatConversationList;
+
+const mapStateToProps = ({ reducer }) => {
+  console.log('reducer::::', reducer.chatRead);
+  return {
+    chatRead: reducer.chatRead,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    readAll: (payload) =>
+      dispatch({
+        type: READ_ALL,
+        payload,
+      }),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CometChatConversationList);

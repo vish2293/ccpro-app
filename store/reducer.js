@@ -9,6 +9,7 @@ const initialState = {
   workSpace: {},
   jwtToken: null,
   selectedWorkSpace: {},
+  chatRead: {},
   workspaceTypes: [],
   allWorkspaces: {},
   loader: true,
@@ -158,6 +159,12 @@ const reducer = (state = initialState, action) => {
       return getAllTeams(state, action);
     case actionTypes.GET_NEW_TEAM:
       return setNewTeam(state, action);
+    case actionTypes.READ_ALL:
+      console.log('acctionnonon', action.payload);
+      return {
+        ...state,
+        chatRead: { ...state.chatRead, ...action.payload },
+      };
     default:
       return state;
   }

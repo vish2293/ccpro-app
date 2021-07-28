@@ -406,7 +406,10 @@ class CometChatConversationListItem extends React.Component {
                   this.state.lastMessage}
               </Text>
 
-              {this.state.restrictions?.isUnreadCountEnabled ? (
+              {this.props.loggedInUser.uid !==
+                this.props.conversation.lastMessage.sender.uid &&
+              this.state.restrictions?.isUnreadCountEnabled &&
+              !this.props.chatRead?.[this.props.conversation.conversationId] ? (
                 <CometChatBadgeCount
                   theme={this.props.theme}
                   count={this.props.conversation.unreadMessageCount}

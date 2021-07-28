@@ -86,21 +86,28 @@ class CometChatConversationListWithMessages extends React.Component {
    * @param type: clicked conversation type - "user" or "group"
    */
   itemClicked = (item, type) => {
-    this.setState({ item: { ...item }, type, viewDetailScreen: false }, () => {
-      this.props.navigation.navigate(
-        enums.NAVIGATION_CONSTANTS.COMET_CHAT_MESSAGES,
-        {
-          theme: this.theme,
-          item: { ...item },
-          tab: this.state.tab,
-          type,
-          composedThreadMessage: this.state.composedThreadMessage,
-          callMessage: this.state.callMessage,
-          loggedInUser: this.loggedInUser,
-          actionGenerated: this.actionHandler,
-        },
-      );
-    });
+    this.setState(
+      {
+        item: { ...item },
+        type,
+        viewDetailScreen: false,
+      },
+      () => {
+        this.props.navigation.navigate(
+          enums.NAVIGATION_CONSTANTS.COMET_CHAT_MESSAGES,
+          {
+            theme: this.theme,
+            item: { ...item },
+            tab: this.state.tab,
+            type,
+            composedThreadMessage: this.state.composedThreadMessage,
+            callMessage: this.state.callMessage,
+            loggedInUser: this.loggedInUser,
+            actionGenerated: this.actionHandler,
+          },
+        );
+      },
+    );
   };
 
   /**
@@ -134,6 +141,9 @@ class CometChatConversationListWithMessages extends React.Component {
       case actions.MENU_CLICKED:
         this.toggleSideBar();
         this.setState({ item: {} });
+        break;
+      case actions.MESSAGE_READ:
+        this.markMessageAsRead(item);
         break;
       case actions.GROUP_UPDATED:
         this.groupUpdated(item, count, ...otherProps);
@@ -209,6 +219,8 @@ class CometChatConversationListWithMessages extends React.Component {
         break;
     }
   };
+
+  markMessageAsRead = (message) => {};
 
   /**
    * Update last message
@@ -426,7 +438,6 @@ class CometChatConversationListWithMessages extends React.Component {
 
       const type = call.receiverType;
       const id = type === 'user' ? call.sender.uid : call.receiverId;
-
       CometChat.getConversation(id, type)
         .then((conversation) => {
           console.log('conversation::::::::', conversation);
