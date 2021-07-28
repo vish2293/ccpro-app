@@ -136,6 +136,7 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -197,6 +198,10 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation(project(':cometchat-pro_react-native-calls')) {
+        exclude group: 'com.facebook.react',module:'react-native-community-async-storage'
+        exclude group: 'com.facebook.react',module:'react-native-community_netinfo'
+    }
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
