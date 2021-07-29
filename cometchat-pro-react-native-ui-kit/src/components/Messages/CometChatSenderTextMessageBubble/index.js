@@ -66,8 +66,7 @@ const CometChatSenderTextMessageBubble = (props) => {
                 {
                   pattern: new RegExp(props.regex),
                   style: {
-                    textDecorationLine: 'underline',
-                    backgroundColor: 'blue',
+                    fontWeight: 'bold',
                   },
                 },
               ]}>
