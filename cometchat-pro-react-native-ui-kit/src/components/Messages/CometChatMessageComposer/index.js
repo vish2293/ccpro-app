@@ -36,6 +36,7 @@ import UserSuggestions from '../../../common/UserSuggestions/UserSuggestions';
 import CometChatManager from '../../../utils/controller';
 import { GroupDetailManager } from '../../Groups/CometChatGroupDetails/controller';
 import ParsedText from 'react-native-parsed-text';
+import { parseEmojis } from '../../../functions';
 
 export default class CometChatMessageComposer extends React.PureComponent {
   static contextType = CometChatContext;
@@ -174,7 +175,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
     this.startTyping();
     console.log('showUsers::', text, this.state.showUsers);
     this.setState({
-      messageInput: text,
+      messageInput: parseEmojis(text),
       messageType: 'text',
       showUsers:
         !(text === '') &&

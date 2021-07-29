@@ -28,6 +28,7 @@
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
+    "react-emoji-render": "^1.2.4",
     "react-native": "^0.64.2",
     "react-native-autolink": "^3.0.0",
     "react-native-document-picker": "^4.1.1",
