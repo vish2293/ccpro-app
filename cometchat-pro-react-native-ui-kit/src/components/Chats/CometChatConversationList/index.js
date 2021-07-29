@@ -131,7 +131,7 @@ class CometChatConversationList extends React.Component {
         prevProps.item &&
         Object.keys(prevProps.item).length &&
         prevProps.item.uid === this.props.item.uid &&
-        prevProps.item.blockedByMe !== this.props.item.blockedByMe
+        prevProps.item?.blockedByMe !== this.props.item?.blockedByMe
       ) {
         const conversationList = [...this.state.conversationList];
 

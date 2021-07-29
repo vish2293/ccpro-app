@@ -32,6 +32,10 @@ import * as actions from '../../../utils/actions';
 import { heightRatio } from '../../../utils/consts';
 import { logger } from '../../../utils/common';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import UserSuggestions from '../../../common/UserSuggestions/UserSuggestions';
+import CometChatManager from '../../../utils/controller';
+import { GroupDetailManager } from '../../Groups/CometChatGroupDetails/controller';
+import ParsedText from 'react-native-parsed-text';
 
 export default class CometChatMessageComposer extends React.PureComponent {
   static contextType = CometChatContext;
@@ -61,6 +65,13 @@ export default class CometChatMessageComposer extends React.PureComponent {
       user: null,
       keyboardActivity: false,
       restrictions: null,
+      showUsers: false,
+      memberList: [],
+      moderatorsList: [],
+      administratorsList: [],
+      memberName: '',
+      selectedName: '',
+      regex: ' ',
     };
 
     this.audio = new Sound(outgoingMessageAlert);
@@ -81,16 +92,18 @@ export default class CometChatMessageComposer extends React.PureComponent {
       'keyboardDidHide',
       this._keyboardDidHide,
     );
+    const { guid } = this.props.item;
+    if (guid) {
+      this.GroupDetailManager = new GroupDetailManager(guid);
+      this.getGroupMembers();
+    }
     this.checkRestrictions();
   }
 
   checkRestrictions = async () => {
-    let isLiveReactionsEnabled =
-      await this.context.FeatureRestriction.isLiveReactionsEnabled();
-    let isTypingIndicatorsEnabled =
-      await this.context.FeatureRestriction.isTypingIndicatorsEnabled();
-    let isSmartRepliesEnabled =
-      await this.context.FeatureRestriction.isSmartRepliesEnabled();
+    let isLiveReactionsEnabled = await this.context.FeatureRestriction.isLiveReactionsEnabled();
+    let isTypingIndicatorsEnabled = await this.context.FeatureRestriction.isTypingIndicatorsEnabled();
+    let isSmartRepliesEnabled = await this.context.FeatureRestriction.isSmartRepliesEnabled();
     this.setState({
       restrictions: {
         isLiveReactionsEnabled,
@@ -160,7 +173,26 @@ export default class CometChatMessageComposer extends React.PureComponent {
 
   changeHandler = (text) => {
     this.startTyping();
-    this.setState({ messageInput: text, messageType: 'text' });
+    console.log('showUsers::', text, this.state.showUsers);
+    this.setState({
+      messageInput: text,
+      messageType: 'text',
+      showUsers:
+        !(text === '') &&
+        this.state.memberList.length > 0 &&
+        (this.state.showUsers || text.endsWith('@')),
+      memberName: text.split('@')[text.split('@').length - 1]
+        ? text.split('@')[text.split('@').length - 1]
+        : '',
+      // selectedName: '',
+    });
+  };
+  tagMember = (name) => {
+    this.setState({
+      messageInput: this.state.messageInput + name + ' ',
+      showUsers: false,
+      selectedName: '@' + name,
+    });
   };
 
   /**
@@ -369,6 +401,62 @@ export default class CometChatMessageComposer extends React.PureComponent {
     } catch (error) {
       logger(error);
     }
+  };
+
+  getGroupMembers = () => {
+    const administratorsList = [];
+    const moderatorsList = [];
+    new CometChatManager()
+      .getLoggedInUser()
+      .then((user) => {
+        this.loggedInUser = user;
+
+        this.GroupDetailManager.fetchNextGroupMembers()
+          .then((groupMembers) => {
+            let regex = '';
+            groupMembers.forEach((member, index) => {
+              regex += `@${member.name}`;
+              if (member.scope === CometChat.GROUP_MEMBER_SCOPE.ADMIN) {
+                administratorsList.push(member);
+              }
+
+              if (member.scope === CometChat.GROUP_MEMBER_SCOPE.MODERATOR) {
+                moderatorsList.push(member);
+              }
+              if (index < groupMembers.length - 1) {
+                regex += '|';
+              } else {
+                regex += '|( )';
+              }
+            });
+            console.log('groupMembers>:::', groupMembers);
+            this.setState({
+              memberList: [...this.state.memberList, ...groupMembers],
+              administratorsList: [
+                ...this.state.administratorsList,
+                ...administratorsList,
+              ],
+              regex: regex,
+              moderatorsList: [...this.state.moderatorsList, ...moderatorsList],
+            });
+          })
+          .catch((error) => {
+            logger(
+              '[CometChatGroupDetails] getGroupMembers fetchNextGroupMembers error',
+              error,
+            );
+            const errorCode = error?.message || 'ERROR';
+            this.dropDownAlertRef?.showMessage('error', errorCode);
+          });
+      })
+      .catch((error) => {
+        logger(
+          '[CometChatGroupDetails] getGroupMembers getLoggedInUser error',
+          error,
+        );
+        const errorCode = error?.message || 'ERROR';
+        this.dropDownAlertRef?.showMessage('error', errorCode);
+      });
   };
 
   /**
@@ -607,7 +695,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
 
   render() {
     let disabled = false;
-    if (this.props.item.blockedByMe) {
+    if (this.props.item?.blockedByMe) {
       disabled = true;
     }
 
@@ -793,53 +881,72 @@ export default class CometChatMessageComposer extends React.PureComponent {
         actionGenerated={this.actionHandler}
       />
     );
+    console.log('regex::', this.state.regex);
     return (
-      <View
-        style={
-          Platform.OS === 'android' && this.state.keyboardActivity
-            ? {
-                marginBottom: 21 * heightRatio,
-                elevation: 5,
-                backgroundColor: '#fff',
-              }
-            : { elevation: 5, backgroundColor: '#fff' }
-        }>
-        {blockedPreview}
-        {editPreview}
-        {createPoll}
-        {stickerViewer}
-        {smartReplyPreview}
-        <ComposerActions
-          visible={this.state.composerActionsVisible}
-          close={() => {
-            this.setState({ composerActionsVisible: false });
-          }}
-          toggleStickers={this.toggleStickerPicker}
-          toggleCreatePoll={this.toggleCreatePoll}
-          sendMediaMessage={this.sendMediaMessage}
-        />
-        <View style={style.mainContainer}>
-          <TouchableOpacity
-            style={style.plusCircleContainer}
-            disabled={disabled}
-            onPress={() => {
-              this.setState({ composerActionsVisible: true });
-            }}>
-            <AntDIcon size={26} name="pluscircle" color="rgba(0,0,0,0.35)" />
-          </TouchableOpacity>
-          <View style={style.textInputContainer}>
-            <TextInput
-              style={style.messageInputStyle}
-              editable={!disabled}
-              value={this.state.messageInput}
-              placeholder="Type a Message..."
-              onChangeText={(text) => this.changeHandler(text)}
-              onBlur={this.endTyping}
-              ref={this.messageInputRef}
-            />
-            {sendBtn}
+      <View>
+        {this.state.showUsers && (
+          <UserSuggestions
+            memberList={this.state.memberList}
+            memberName={this.state.memberName}
+            tagMember={this.tagMember}
+          />
+        )}
+        <View
+          style={
+            Platform.OS === 'android' && this.state.keyboardActivity
+              ? {
+                  marginBottom: 21 * heightRatio,
+                  elevation: 5,
+                  backgroundColor: '#fff',
+                }
+              : { elevation: 5, backgroundColor: '#fff' }
+          }>
+          {blockedPreview}
+          {editPreview}
+          {createPoll}
+          {stickerViewer}
+          {smartReplyPreview}
+          <ComposerActions
+            visible={this.state.composerActionsVisible}
+            close={() => {
+              this.setState({ composerActionsVisible: false });
+            }}
+            toggleStickers={this.toggleStickerPicker}
+            toggleCreatePoll={this.toggleCreatePoll}
+            sendMediaMessage={this.sendMediaMessage}
+          />
+          <View style={style.mainContainer}>
+            <TouchableOpacity
+              style={style.plusCircleContainer}
+              disabled={disabled}
+              onPress={() => {
+                this.setState({ composerActionsVisible: true });
+              }}>
+              <AntDIcon size={26} name="pluscircle" color="rgba(0,0,0,0.35)" />
+            </TouchableOpacity>
+            <View style={style.textInputContainer}>
+              <TextInput
+                style={style.messageInputStyle}
+                editable={!disabled}
+                // value={this.state.messageInput}
+                placeholder="Type a Message..."
+                onChangeText={(text) => this.changeHandler(text)}
+                onBlur={this.endTyping}
+                ref={this.messageInputRef}>
+                {/* <ParsedText
+                  parse={[
+                    {
+                      pattern: new RegExp(this.state.regex),
+                      style: { color: 'blue' },
+                    },
+                  ]}> */}
+                {this.state.messageInput}
+                {/* </ParsedText> */}
+              </TextInput>
+              {sendBtn}
+            </View>
+            {liveReactionBtn}
           </View>
-          {liveReactionBtn}
         </View>
       </View>
     );

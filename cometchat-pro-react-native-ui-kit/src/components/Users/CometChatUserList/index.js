@@ -134,7 +134,7 @@ class CometChatUserList extends React.PureComponent {
         prevProps.item &&
         Object.keys(prevProps.item).length &&
         prevProps.item.uid === this.props.item.uid &&
-        prevProps.item.blockedByMe !== this.props.item.blockedByMe
+        prevProps.item?.blockedByMe !== this.props.item?.blockedByMe
       ) {
         const userList = [...this.state.userList];
 
@@ -146,7 +146,7 @@ class CometChatUserList extends React.PureComponent {
           const userObj = { ...userList[userKey] };
           const newUserObj = {
             ...userObj,
-            blockedByMe: this.props.item.blockedByMe,
+            blockedByMe: this.props.item?.blockedByMe,
           };
           userList.splice(userKey, 1, newUserObj);
 

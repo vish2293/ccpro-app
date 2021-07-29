@@ -124,7 +124,7 @@ export default class CometChatUserDetails extends React.Component {
           name={this.props.item.name}
         />
         {this.props.item &&
-        this.props.item.blockedByMe &&
+        this.props.item?.blockedByMe &&
         !this.state.restrictions?.isUserPresenceEnabled ? null : (
           <CometChatUserPresence
             status={this.props.item.status}
@@ -136,7 +136,7 @@ export default class CometChatUserDetails extends React.Component {
         )}
       </View>
     );
-    if (this.props.item && this.props.item.blockedByMe) {
+    if (this.props.item && this.props.item?.blockedByMe) {
       blockUserText = (
         <TouchableOpacity
           onPress={() => {
@@ -270,7 +270,8 @@ export default class CometChatUserDetails extends React.Component {
                           {this.props.item.name}
                         </Text>
                       </View>
-                      {this.props.item && this.props.item.blockedByMe ? null : (
+                      {this.props.item &&
+                      this.props.item?.blockedByMe ? null : (
                         <Text style={style.statusText} numberOfLines={1}>
                           {this.state.status}
                         </Text>

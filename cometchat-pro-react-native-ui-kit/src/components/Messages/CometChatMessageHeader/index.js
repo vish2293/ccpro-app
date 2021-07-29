@@ -303,7 +303,7 @@ class CometChatMessageHeader extends React.Component {
     );
 
     if (
-      this.props.item.blockedByMe === true ||
+      this.props.item?.blockedByMe === true ||
       this.props.audioCall === false ||
       this.props.type === CometChat.ACTION_TYPE.TYPE_GROUP
     ) {
@@ -311,12 +311,12 @@ class CometChatMessageHeader extends React.Component {
     }
 
     if (
-      this.props.item.blockedByMe === true ||
+      this.props.item?.blockedByMe === true ||
       this.props.videoCall === false
     ) {
       videoCallBtn = null;
     }
-    if (this.props.item.blockedByMe) {
+    if (this.props.item?.blockedByMe) {
       status = null;
       presence = null;
     }
