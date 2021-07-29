@@ -65,6 +65,7 @@ class CometChatMessages extends React.PureComponent {
       user: params.type === 'user' ? params.item : null,
       showProfile: false,
       ongoingDirectCall: false,
+      regex: ' ',
     };
 
     this.composerRef = React.createRef();
@@ -85,6 +86,13 @@ class CometChatMessages extends React.PureComponent {
         // console.log('[CometChatMessages] getLoggedInUser error', error);
       });
   }
+
+  setRegex = (regex) => {
+    this.setState({
+      regex,
+    });
+  };
+
   checkRestrictions = async () => {
     let context = this.contextProviderRef.state;
     let isGroupActionMessagesEnabled = await context.FeatureRestriction.isGroupActionMessagesEnabled();
@@ -882,6 +890,7 @@ class CometChatMessages extends React.PureComponent {
             : this.state.item
         }
         type={params.type}
+        setRegex={this.setRegex}
         // widgetsettings={route.params.widgetsettings}
         loggedInUser={this.loggedInUser}
         messageToBeEdited={this.state.messageToBeEdited}
@@ -1042,6 +1051,7 @@ class CometChatMessages extends React.PureComponent {
                   ? this.state.user
                   : this.state.item
               }
+              regex={this.state.regex}
               type={params.type}
               scrollToBottom={this.state.scrollToBottom}
               messageConfig={params.messageconfig}

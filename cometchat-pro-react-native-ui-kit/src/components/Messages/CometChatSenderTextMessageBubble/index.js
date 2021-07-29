@@ -16,6 +16,7 @@ import { CometChatMessageReactions } from '../../Messages/Extensions';
 import * as enums from '../../../utils/enums';
 import * as actions from '../../../utils/actions';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import ParsedText from 'react-native-parsed-text';
 
 function usePrevious(value) {
   const ref = useRef();
@@ -57,6 +58,23 @@ const CometChatSenderTextMessageBubble = (props) => {
         textProps={{ selectable: true }}
         linkProps={{ suppressHighlighting: true }}
         linkStyle={style.linkStyle}
+        component={() => (
+          <Text style={{ color: 'white' }}>
+            {' '}
+            <ParsedText
+              parse={[
+                {
+                  pattern: new RegExp(props.regex),
+                  style: {
+                    textDecorationLine: 'underline',
+                    backgroundColor: 'blue',
+                  },
+                },
+              ]}>
+              {message.text}
+            </ParsedText>
+          </Text>
+        )}
       />
     );
   };

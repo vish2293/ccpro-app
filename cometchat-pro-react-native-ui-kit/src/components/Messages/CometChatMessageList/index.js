@@ -33,6 +33,7 @@ import { logger } from '../../../utils/common';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import ParsedText from 'react-native-parsed-text';
 
 let cDate = null;
 
@@ -684,6 +685,7 @@ class CometChatMessageList extends React.PureComponent {
               loggedInUser={this.loggedInUser}
               theme={this.props.theme}
               key={key}
+              regex={this.props.regex}
               item={this.props.item}
               type={this.props.type}
               message={message}
@@ -1116,6 +1118,7 @@ class CometChatMessageList extends React.PureComponent {
     const messageSentDate = nextMessage
       ? new Date(nextMessage.sentAt * 1000).toLocaleDateString()
       : null;
+    console.log('textttt', this.props.regex);
     if (cDate !== messageSentDate) {
       dateSeparator = (
         <View style={[styles.messageDateContainerStyle]}>

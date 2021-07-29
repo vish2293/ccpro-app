@@ -70,7 +70,6 @@ export default class CometChatMessageComposer extends React.PureComponent {
       moderatorsList: [],
       administratorsList: [],
       memberName: '',
-      selectedName: '',
       regex: ' ',
     };
 
@@ -184,14 +183,12 @@ export default class CometChatMessageComposer extends React.PureComponent {
       memberName: text.split('@')[text.split('@').length - 1]
         ? text.split('@')[text.split('@').length - 1]
         : '',
-      // selectedName: '',
     });
   };
   tagMember = (name) => {
     this.setState({
       messageInput: this.state.messageInput + name + ' ',
       showUsers: false,
-      selectedName: '@' + name,
     });
   };
 
@@ -426,10 +423,11 @@ export default class CometChatMessageComposer extends React.PureComponent {
               if (index < groupMembers.length - 1) {
                 regex += '|';
               } else {
-                regex += '|( )';
+                regex += '|@';
               }
             });
             console.log('groupMembers>:::', groupMembers);
+            this.props.setRegex(regex);
             this.setState({
               memberList: [...this.state.memberList, ...groupMembers],
               administratorsList: [
@@ -933,15 +931,15 @@ export default class CometChatMessageComposer extends React.PureComponent {
                 onChangeText={(text) => this.changeHandler(text)}
                 onBlur={this.endTyping}
                 ref={this.messageInputRef}>
-                {/* <ParsedText
+                <ParsedText
                   parse={[
                     {
                       pattern: new RegExp(this.state.regex),
                       style: { color: 'blue' },
                     },
-                  ]}> */}
-                {this.state.messageInput}
-                {/* </ParsedText> */}
+                  ]}>
+                  {this.state.messageInput}
+                </ParsedText>
               </TextInput>
               {sendBtn}
             </View>
