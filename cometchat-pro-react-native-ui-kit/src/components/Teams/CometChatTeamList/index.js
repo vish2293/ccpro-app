@@ -748,7 +748,7 @@ class CometChatTeamList extends React.Component {
     return (
       <View style={[styles.groupHeaderStyle]}>
         <View style={styles.headingContainer}>
-          <Text style={styles.groupHeaderTitleStyle}>Groups</Text>
+          <Text style={styles.groupHeaderTitleStyle}>Teams</Text>
           {this.state.restrictions?.isGroupCreationEnabled ? (
             <TouchableOpacity
               onPress={() => this.createGroupHandler(true)}

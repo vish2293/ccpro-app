@@ -201,6 +201,30 @@ export const onAddWorkSpace = (data) => {
   };
 };
 
+export const onEditWorkSpace = (data) => {
+  console.log('credentials', data);
+  return async (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+    return await axios
+      .put(serverUrl + 'workspace', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log('response:::::', res.data);
+
+        dispatch(getSingleWorkSpaces(res.data.update_id));
+        return res.data;
+      })
+      .catch((err) => {
+        console.log('error:', err);
+        console.log('error:', err.response);
+        return err.response;
+      });
+  };
+};
+
 export const getWorkSpacesTypes = (data) => {
   return (dispatch, state) => {
     const token = state().reducer.jwtToken;

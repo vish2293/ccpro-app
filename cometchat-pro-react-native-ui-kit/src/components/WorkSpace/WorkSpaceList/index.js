@@ -27,7 +27,7 @@ const WorkSpaceList = (props) => {
   const global = workList?.globals?.ws_upload_url
     ? workList.globals.ws_upload_url
     : '';
-
+  console.log('worklist::::', workList);
   /**
    * Retrieve logged in user details
    * @param
@@ -38,9 +38,10 @@ const WorkSpaceList = (props) => {
     navigation.goBack();
   };
 
-  const goToAdd = () => {
+  const goToAdd = (item = false, image = false) => {
     const { navigation } = props;
-    navigation.navigate('AddWorkSpace');
+    console.log('item', item);
+    navigation.navigate('AddWorkSpace', { data: item, image: image });
   };
 
   return (
@@ -52,7 +53,7 @@ const WorkSpaceList = (props) => {
           </TouchableOpacity>
           <Text style={styles.headerTitleStyle}>Workspace</Text>
           <TouchableOpacity
-            onPress={goToAdd}
+            onPress={() => goToAdd()}
             activeOpacity={0.8}
             style={styles.buttonStyle}>
             <Text style={styles.buttonText}>Add New</Text>
@@ -69,6 +70,9 @@ const WorkSpaceList = (props) => {
               {workList?.data?.map((item, index) => {
                 return (
                   <TouchableOpacity
+                    onPress={() =>
+                      goToAdd(item, global + item.st_featured_image)
+                    }
                     activeOpacity={0.7}
                     style={styles.workBox}
                     key={index}>

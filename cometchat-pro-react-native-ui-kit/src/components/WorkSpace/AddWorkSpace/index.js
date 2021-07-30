@@ -26,6 +26,7 @@ import {
   onAddWorkSpace,
   getWorkSpacesTypes,
   selectWorkSpace,
+  onEditWorkSpace,
 } from '../../../../../store/action';
 
 const workTypes = [
@@ -52,7 +53,9 @@ const AddWorkSpace = (props) => {
   const [state, setState] = useState({
     workspaceName: '',
     description: '',
+    isImageUploaded: false,
   });
+  const [workspaceData, setWorkspaceData] = useState(undefined);
   const [isVerified, setVerified] = useState('0');
 
   useEffect(() => {
@@ -60,6 +63,28 @@ const AddWorkSpace = (props) => {
   }, []);
 
   useEffect(() => {
+    const { navigation, route } = props;
+    const workspace = route.params.data;
+    const image = route.params.image;
+    setWorkspaceData(workspace);
+    console.log('workspaceData', workspace, workspaceData);
+    if (workspaceData) {
+      console.log('Edit Mode');
+      setType(workspaceData.st_type_name == 'Profit' ? 2 : 1);
+      let isVerified = workspaceData.in_is_verified
+        ? workspaceData.in_is_verified
+        : '0';
+      setVerified(isVerified.toString());
+      console.log('image', image);
+      setAvatar({ path: image });
+      console.log(JSON.parse(workspaceData?.js_users).length);
+      setMembersList(JSON.parse(workspaceData.js_users));
+      setState({
+        workspaceName: workspaceData.st_name,
+        description: workspaceData.st_description,
+      });
+    }
+
     customTypes = [];
     console.log('Types here::::', workSpaceTypes);
     if (workSpaceTypes)
@@ -101,11 +126,13 @@ const AddWorkSpace = (props) => {
     }).then((image) => {
       console.log('pics:', image);
       setAvatar(image);
+      setState({ ...state, isImageUploaded: true });
     });
   };
 
   const cancelImage = () => {
     setAvatar('');
+    setState({ ...state, isImageUploaded: false });
   };
 
   const closeModal = () => {
@@ -136,8 +163,17 @@ const AddWorkSpace = (props) => {
       alert('At least select one member');
       setLoader(false);
     } else {
+      console.log('user:::', membersList);
       membersList.forEach((user) => {
-        usersData.push(user.uid);
+        if (typeof user === 'object') {
+          if (user.uid !== uid) {
+            usersData.push(user.uid);
+          }
+        } else {
+          if (user !== uid) {
+            usersData.push(user);
+          }
+        }
       });
 
       const data = {
@@ -148,28 +184,44 @@ const AddWorkSpace = (props) => {
         ws_users: usersData,
         ws_type: JSON.stringify(workspaceType),
         ws_is_verified: isVerified,
-        ws_featured_image: `data:image/jpeg;base64,${avatar.data}`,
+        ws_featured_image: !state.isImageUploaded
+          ? avatar.path
+          : `data:image/jpeg;base64,${avatar.data}`,
         ws_type_options: workSpaceTypes,
       };
 
       console.log('data to watch:', data);
 
       try {
-        const response = await dispatch(onAddWorkSpace(data));
+        let response;
+        let error;
+        let success;
+        if (workspaceData) {
+          data.id = workspaceData.in_workspace_id;
+          response = await dispatch(onEditWorkSpace(data));
+          success = 'Workspace edited successfully!';
+          error = 'workspace not edited!';
+        } else {
+          response = await dispatch(onAddWorkSpace(data));
+          success = 'Workspace added successfully!';
+          error = 'workspace not added!';
+        }
         console.log('succcess:', response);
         setLoader(false);
         if (response.error_code) {
-          alert('workspace not added!');
+          alert(error);
         } else {
-          alert('Workspace added successfully!');
-          setState({
-            workspaceName: '',
-            description: '',
-          });
-          setAvatar('');
-          setType('1');
-          setVerified('0');
-          setMembersList([]);
+          alert(success);
+          if (!workspaceData) {
+            setState({
+              workspaceName: '',
+              description: '',
+            });
+            setAvatar('');
+            setType('1');
+            setVerified('0');
+            setMembersList([]);
+          }
         }
       } catch (err) {
         setLoader(false);
