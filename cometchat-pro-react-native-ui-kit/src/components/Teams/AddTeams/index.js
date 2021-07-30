@@ -37,7 +37,7 @@ const AddTeam = (props) => {
   const token = useSelector((state) => state.reducer.jwtToken);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const uid = useSelector((state) => state.reducer.user.uid);
-  const [workspaceType, setType] = useState('');
+  const [workspaceType, setType] = useState('asds');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
