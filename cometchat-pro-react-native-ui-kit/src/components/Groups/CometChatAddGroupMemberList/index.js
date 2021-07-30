@@ -242,6 +242,8 @@ class CometChatAddGroupMemberList extends React.Component {
       const group = this.context;
       const membersList = [];
 
+      console.log('here', this.state.membersToAdd.length);
+
       this.state.membersToAdd.forEach((newMember) => {
         // if a selected member is already part of the member list, don't add
         const indexFound = group.memberList.findIndex(
@@ -493,10 +495,14 @@ class CometChatAddGroupMemberList extends React.Component {
                     showsVerticalScrollIndicator={false}
                   />
                   <TouchableOpacity
+                    disabled={this.state.membersToAdd.length > 0 ? false : true}
                     style={[
                       style.addBtnStyle,
                       {
-                        backgroundColor: this.theme.backgroundColor.blue,
+                        backgroundColor:
+                          this.state.membersToAdd.length > 0
+                            ? this.theme.backgroundColor.blue
+                            : 'gray',
                       },
                     ]}
                     onPress={this.updateMembers}>
