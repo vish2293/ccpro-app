@@ -118,19 +118,26 @@ const TeamList = (props) => {
                         </View>
                       )}
                       <View style={styles.textBox}>
-                        <Text style={styles.heading}>
-                          {item?.name?.length > 10
-                            ? `${item?.name?.slice(0, 12)}..`
-                            : item.name}
+                        <Text
+                          ellipsizeMode="tail"
+                          numberOfLines={1}
+                          style={styles.heading}>
+                          {item.name}
                         </Text>
-                        <Text style={styles.textNote}>
-                          {item?.name?.length > 10
-                            ? `${item?.name?.slice(0, 12)}..`
-                            : item.name}
+                        <Text
+                          ellipsizeMode="tail"
+                          numberOfLines={1}
+                          style={styles.textNote}>
+                          {item.name}
                         </Text>
                       </View>
                     </View>
-                    <Text style={styles.bottomText}>{item.description}</Text>
+                    <Text
+                      ellipsizeMode="tail"
+                      numberOfLines={2}
+                      style={styles.bottomText}>
+                      {item.description}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}

@@ -62,6 +62,7 @@ export default StyleSheet.create({
   },
   textBox: {
     marginLeft: 5,
+    flex: 1,
   },
   heading: {
     color: '#338ce2',

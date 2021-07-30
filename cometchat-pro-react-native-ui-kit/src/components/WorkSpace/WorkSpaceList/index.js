@@ -88,20 +88,22 @@ const WorkSpaceList = (props) => {
                         </View>
                       )}
                       <View style={styles.textBox}>
-                        <Text style={styles.heading}>
-                          {item.st_name.length > 10
-                            ? `${item.st_name.slice(0, 10)}..`
-                            : item.st_name}
+                        <Text
+                          ellipsizeMode="tail"
+                          numberOfLines={1}
+                          style={styles.heading}>
+                          {item.st_name}
                         </Text>
                         <Text style={styles.textNote}>
                           {item.in_type_id === 2 ? 'Profit' : 'Non-Profit'}
                         </Text>
                       </View>
                     </View>
-                    <Text style={styles.bottomText}>
-                      {item.st_description.length > 26
-                        ? `${item.st_description.slice(0, 26)}...`
-                        : item.st_description}
+                    <Text
+                      ellipsizeMode="tail"
+                      numberOfLines={2}
+                      style={styles.bottomText}>
+                      {item.st_description}
                     </Text>
                   </TouchableOpacity>
                 );
