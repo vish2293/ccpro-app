@@ -165,7 +165,8 @@ const AddWorkSpace = (props) => {
     } else {
       console.log('user:::', membersList);
       membersList.forEach((user) => {
-        if (typeof user === 'object') {
+        if (typeof user === 'object' && user !== null) {
+          console.log('test user::::', typeof membersList);
           if (user.uid !== uid) {
             usersData.push(user.uid);
           }

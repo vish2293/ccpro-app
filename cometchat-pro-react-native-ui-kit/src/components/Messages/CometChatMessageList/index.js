@@ -1118,7 +1118,6 @@ class CometChatMessageList extends React.PureComponent {
     const messageSentDate = nextMessage
       ? new Date(nextMessage.sentAt * 1000).toLocaleDateString()
       : null;
-    console.log('textttt', this.props.regex);
     if (cDate !== messageSentDate) {
       dateSeparator = (
         <View style={[styles.messageDateContainerStyle]}>

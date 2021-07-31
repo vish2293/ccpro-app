@@ -132,6 +132,7 @@ class CometChatOutgoingCall extends React.PureComponent {
    * @param call - call object
    */
   outgoingCallAccepted = (call) => {
+    console.log('Hi I run::::');
     try {
       if (this.state.outgoingCallScreen === true) {
         this.pauseOutgoingAlert();
@@ -178,7 +179,7 @@ class CometChatOutgoingCall extends React.PureComponent {
    * @param
    */
   acceptCall = () => {
-    console.log('user ID:', this.props.incomingCall.sessionId);
+    console.log('user ID::::: Accpeted', this.props.incomingCall.sessionId);
     CometChatManager.acceptCall(this.props.incomingCall.sessionId)
       .then((response) => {
         const call = { ...response };
@@ -277,7 +278,7 @@ class CometChatOutgoingCall extends React.PureComponent {
 
       const callSettings = new CometChat.CallSettingsBuilder()
         .setSessionID(sessionId)
-        .enableDefaultLayout(false)
+        .enableDefaultLayout(true)
         .setIsAudioOnlyCall(audioOnly)
         .setCallEventListener(callListener)
         .build();

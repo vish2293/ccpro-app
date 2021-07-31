@@ -101,9 +101,31 @@ const addNewWorkSpace = (state, action) => {
   console.log('reducer called:::', action.payload);
   const copyOfAllList = { ...state.allWorkspaces };
   const copyofUserWorkList = { ...state.workSpace };
-  copyOfAllList.data.push(action.payload);
-  copyofUserWorkList.data.push(action.payload);
-  console.log('copy of user:', copyofUserWorkList);
+  console.log(
+    'condddddd:::',
+    copyofUserWorkList.data.filter(
+      (a) => a.in_workspace_id === action.payload.in_workspace_id
+    ).length
+  );
+  if (
+    copyofUserWorkList.data.filter(
+      (a) => a.in_workspace_id === action.payload.in_workspace_id
+    ).length !== 0
+  ) {
+    const dataIndex = copyOfAllList.data.findIndex(
+      (a) => a.in_workspace_id === action.payload.in_workspace_id
+    );
+    const userIndex = copyofUserWorkList.data.findIndex(
+      (a) => a.in_workspace_id === action.payload.in_workspace_id
+    );
+
+    copyOfAllList.data[dataIndex] = action.payload;
+    copyofUserWorkList.data[userIndex] = action.payload;
+  } else {
+    copyOfAllList.data.push(action.payload);
+    copyofUserWorkList.data.push(action.payload);
+    console.log('copy of user:', copyOfAllList);
+  }
   return {
     ...state,
     allWorkspaces: copyOfAllList,
