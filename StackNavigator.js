@@ -22,6 +22,8 @@ import AddWorkSpace from './cometchat-pro-react-native-ui-kit/src/components/Wor
 import TeamList from './cometchat-pro-react-native-ui-kit/src/components/Teams/TeamList';
 import AddTeam from './cometchat-pro-react-native-ui-kit/src/components/Teams/AddTeams';
 import OfflineNotice from './OfflineNotice';
+import GroupsList from './cometchat-pro-react-native-ui-kit/src/components/Groups/GroupsList';
+import AddGroups from './cometchat-pro-react-native-ui-kit/src/components/Groups/AddGroups';
 
 function StackNavigator(props) {
   const Stack = createStackNavigator();
@@ -68,6 +70,8 @@ function StackNavigator(props) {
           <Stack.Screen name="AddWorkSpace" component={AddWorkSpace} />
           <Stack.Screen name="TeamList" component={TeamList} />
           <Stack.Screen name="AddTeam" component={AddTeam} />
+          <Stack.Screen name="GroupsList" component={GroupsList} />
+          <Stack.Screen name="AddGroups" component={AddGroups} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

@@ -834,6 +834,7 @@ class CometChatConversationList extends React.Component {
             if (conversationList.length === 0) {
               this.decoratorMessage = 'No chats found';
             }
+            console.log('check list::::', conversationList);
             this.setState({
               conversationList: [
                 ...this.state.conversationList,

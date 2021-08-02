@@ -67,7 +67,7 @@ export default StyleSheet.create({
   footer: {
     flexDirection: 'row',
     backgroundColor: '#000',
-    padding: 10,
+    padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -24,6 +24,9 @@ const workIcon = <Icon color={theme.color.helpText} name="work" size={28} />;
 const teamIcon = (
   <FontAwesome color={theme.color.helpText} name="slideshare" size={28} />
 );
+const groupsIcon = (
+  <Icon color={theme.color.helpText} name="groups" size={28} />
+);
 
 const CometChatUserProfile = (props) => {
   const [user, setUser] = useState({});
@@ -75,6 +78,11 @@ const CometChatUserProfile = (props) => {
     navigation.navigate('TeamList');
   };
 
+  const goToGroupsLIst = () => {
+    const { navigation } = props;
+    navigation.navigate('GroupsList');
+  };
+
   return (
     <SafeAreaView style={styles.userInfoScreenStyle}>
       <View style={styles.headingContainer}>
@@ -115,6 +123,10 @@ const CometChatUserProfile = (props) => {
           <TouchableOpacity onPress={goToTeamsList} style={styles.infoItem}>
             {teamIcon}
             <Text style={styles.infoItemText}>Teams</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={goToGroupsLIst} style={styles.infoItem}>
+            {groupsIcon}
+            <Text style={styles.infoItemText}>Groups</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.infoItemHeadingContainer}>
