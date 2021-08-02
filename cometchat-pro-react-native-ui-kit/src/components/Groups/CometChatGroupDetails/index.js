@@ -1,7 +1,14 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react/no-unused-state */
 import React from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  Modal,
+  Alert,
+} from 'react-native';
 import theme from '../../../resources/theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CometChatSharedMedia from '../../Shared/CometChatSharedMedia';
@@ -368,6 +375,10 @@ export default class CometChatGroupDetails extends React.Component {
         .catch((error) => {
           logger('Group leaving failed with exception:', error);
 
+          Alert.alert('Group leaving failed with exception', error.message, [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ]);
+
           const errorCode = error?.message || 'ERROR';
           this.dropDownAlertRef?.showMessage('error', errorCode);
         });
@@ -661,25 +672,25 @@ export default class CometChatGroupDetails extends React.Component {
       );
     }
     let leaveGroupBtn = null;
-    if (
-      this.props.item.scope !== CometChat.GROUP_MEMBER_SCOPE.ADMIN &&
-      this.state.restrictions?.isJoinLeaveGroupsEnabled
-    ) {
-      leaveGroupBtn = (
-        <TouchableOpacity
-          onPress={() => {
-            this.leaveGroup();
-          }}>
-          <Text
-            style={[
-              style.itemLinkStyle,
-              { color: this.viewTheme.color.primary },
-            ]}>
-            Leave group
-          </Text>
-        </TouchableOpacity>
-      );
-    }
+    // if (
+    //   this.props.item.scope !== CometChat.GROUP_MEMBER_SCOPE.ADMIN &&
+    //   this.state.restrictions?.isJoinLeaveGroupsEnabled
+    // ) {
+    leaveGroupBtn = (
+      <TouchableOpacity
+        onPress={() => {
+          this.leaveGroup();
+        }}>
+        <Text
+          style={[
+            style.itemLinkStyle,
+            { color: this.viewTheme.color.primary },
+          ]}>
+          Leave group
+        </Text>
+      </TouchableOpacity>
+    );
+    // }
 
     let sharedMediaView = (
       <CometChatSharedMedia

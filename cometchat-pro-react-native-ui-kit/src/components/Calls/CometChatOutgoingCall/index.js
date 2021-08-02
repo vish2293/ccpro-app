@@ -259,6 +259,9 @@ class CometChatOutgoingCall extends React.PureComponent {
             this.props.actionGenerated(actions.USER_LEFT_CALL, callMessage);
           }
         },
+        onFullScreen: (call) => {
+          console.log('call:::', call);
+        },
         onCallEnded: (endedCall) => {
           console.log('call ended::', endedCall);
           this.setState({
