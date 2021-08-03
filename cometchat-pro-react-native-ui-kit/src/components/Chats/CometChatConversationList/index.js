@@ -299,6 +299,12 @@ class CometChatConversationList extends React.Component {
           }
         }
       }
+
+      // Get chat when workspace selected
+      if (prevProps.selectedWorkSpace !== this.props.selectedWorkSpace) {
+        console.log('I called chats:::');
+        this.componentDidMount();
+      }
     } catch (error) {
       logger(error);
     }
@@ -825,6 +831,8 @@ class CometChatConversationList extends React.Component {
    * @param
    */
   getConversations = () => {
+    const copyOfChat = [];
+
     new CometChatManager()
       .getLoggedInUser()
       .then((user) => {
@@ -834,13 +842,42 @@ class CometChatConversationList extends React.Component {
             if (conversationList.length === 0) {
               this.decoratorMessage = 'No chats found';
             }
-            console.log('check list::::', conversationList);
-            this.setState({
-              conversationList: [
-                ...this.state.conversationList,
-                ...conversationList,
-              ],
-            });
+            console.log(
+              'check list::::',
+              conversationList,
+              this.props.selectedWorkSpace,
+            );
+
+            if (Object.keys(this.props.selectedWorkSpace).length > 0) {
+              for (var i = 0; i < conversationList.length; i++) {
+                if (conversationList[i].conversationType === 'group') {
+                  let conversationId =
+                    conversationList[i].conversationWith.guid;
+                  if (
+                    conversationId.includes(
+                      this.props.selectedWorkSpace.st_guid,
+                    ) === true
+                  ) {
+                    console.log('conditional', conversationId);
+                    copyOfChat.push(conversationList[i]);
+                  }
+                } else if (conversationList[i].conversationType === 'user') {
+                  console.log('user:::', conversationList[i].conversationType);
+                  copyOfChat.push(conversationList[i]);
+                }
+              }
+
+              this.setState({
+                conversationList: [
+                  ...this.state.conversationList,
+                  ...copyOfChat,
+                ],
+              });
+            } else {
+              this.setState({
+                conversationList: conversationList,
+              });
+            }
           })
           .catch((error) => {
             this.decoratorMessage = 'Error';
@@ -1047,6 +1084,7 @@ const mapStateToProps = ({ reducer }) => {
   console.log('reducer::::', reducer.chatRead);
   return {
     chatRead: reducer.chatRead,
+    selectedWorkSpace: reducer.selectedWorkSpace,
   };
 };
 

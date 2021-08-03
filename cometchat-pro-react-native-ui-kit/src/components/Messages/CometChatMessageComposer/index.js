@@ -303,6 +303,8 @@ export default class CometChatMessageComposer extends React.PureComponent {
         return false;
       }
 
+      console.log('Hi Msg');
+
       this.messageSending = true;
 
       if (this.state.messageToBeEdited) {
@@ -319,6 +321,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
         messageInput,
         receiverType,
       );
+
       if (this.props.parentMessageId) {
         textMessage.setParentMessageId(this.props.parentMessageId);
       }
@@ -334,8 +337,12 @@ export default class CometChatMessageComposer extends React.PureComponent {
 
       this.messageInputRef.current.textContent = '';
       this.playAudio();
+
+      console.log('Ye kya h:', textMessage);
+
       CometChat.sendMessage(textMessage)
         .then((message) => {
+          console.log('response:', message);
           const newMessageObj = { ...message, _id: textMessage._id };
           this.setState({ messageInput: '' });
           this.messageSending = false;
@@ -344,6 +351,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
           this.props.actionGenerated(actions.MESSAGE_SENT, newMessageObj);
         })
         .catch((error) => {
+          console.log('error in thread::', error);
           const newMessageObj = { ...textMessage, error: error };
           this.props.actionGenerated(
             actions.ERROR_IN_SEND_MESSAGE,

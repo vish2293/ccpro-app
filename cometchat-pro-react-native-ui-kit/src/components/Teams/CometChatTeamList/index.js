@@ -84,6 +84,11 @@ class CometChatTeamList extends React.Component {
   }
 
   getTeams = () => {
+    this.decoratorMessage = 'Loading...';
+    this.setState({
+      teamList: [],
+    });
+
     let val = `${this.props.selectedWorkSpace.st_guid}-team-`;
     console.log('value::', val);
     this.GroupListManager = new GroupListManager(val);
@@ -146,6 +151,7 @@ class CometChatTeamList extends React.Component {
         prevProps.selectedWorkSpace.st_guid !==
         this.props.selectedWorkSpace.st_guid
       ) {
+        this.decoratorMessage = 'Loading...';
         this.getTeams();
       }
       if (prevState.textInputFocused !== this.state.textInputFocused) {

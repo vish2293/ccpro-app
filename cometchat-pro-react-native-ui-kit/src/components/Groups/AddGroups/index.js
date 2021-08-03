@@ -27,7 +27,9 @@ import {
   getWorkSpacesTypes,
   selectWorkSpace,
   onEditWorkSpace,
+  onGetAllTeams,
 } from '../../../../../store/action';
+import { GroupListManager } from '../../Teams/CometChatTeamList/controller';
 
 const workTypes = [
   { label: 'Non-Profit', value: 1 },
@@ -44,21 +46,51 @@ let customTypes = [];
 const AddGroups = (props) => {
   const dispatch = useDispatch();
   const workSpaceTypes = useSelector((state) => state.reducer.workspaceTypes);
+  const selectedWorkspace = useSelector(
+    (state) => state.reducer.selectedWorkSpace,
+  );
   const uid = useSelector((state) => state.reducer.user.uid);
-  const [workspaceType, setType] = useState('1');
+  const [workspaceType, setType] = useState('');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
   const [loader, setLoader] = useState(false);
   const [state, setState] = useState({
-    workspaceName: '',
+    groupName: '',
     description: '',
     isImageUploaded: false,
   });
   const [groupsData, setGroupData] = useState(undefined);
 
+  const getTeams = async () => {
+    const copyList = [];
+
+    let val = `${selectedWorkspace.st_guid}-team-`;
+    console.log('value::', val);
+    const GroupListManagerObject = new GroupListManager(val);
+    await GroupListManagerObject.fetchNextGroups().then(async (groupList) => {
+      console.log('Teamssss:::', groupList);
+
+      if (groupList.length === 0) {
+      } else {
+        customTypes = [];
+        for (var a = 0; a < groupList.length; a++) {
+          copyList.push(groupList[a]);
+          console.log('copy List', groupList[a]);
+          const customObj = {
+            label: groupList[a].name,
+            value: groupList[a].guid,
+          };
+          customTypes.push(customObj);
+        }
+        return true;
+      }
+    });
+    // dispatch(onGetAllTeams(copyList));
+  };
+
   useEffect(() => {
-    dispatch(getWorkSpacesTypes());
+    getTeams();
   }, []);
 
   useEffect(() => {
@@ -74,12 +106,12 @@ const AddGroups = (props) => {
       //   console.log(JSON.parse(groupsData?.js_users).length);
       //   setMembersList(JSON.parse(groupsData.js_users));
       setState({
-        workspaceName: groupsData.name,
+        groupName: groupsData.name,
         description: groupsData.description,
       });
     }
 
-    customTypes = [];
+    // customTypes = [];
     console.log('Types here::::', workSpaceTypes);
     if (workSpaceTypes)
       for (var i = 0; i < workSpaceTypes.length; i++) {
@@ -88,7 +120,7 @@ const AddGroups = (props) => {
           label: workSpaceTypes[i].st_type_name,
           value: workSpaceTypes[i].in_type_id,
         };
-        customTypes.push(customObj);
+        // customTypes.push(customObj);
       }
   }, [workSpaceTypes]);
 
@@ -144,8 +176,8 @@ const AddGroups = (props) => {
   const onSave = async () => {
     const usersData = [uid];
     setLoader(true);
-    if (state.workspaceName === '') {
-      alert('Workspace name is required!');
+    if (state.groupName === '') {
+      alert('Group name is required!');
       setLoader(false);
     } else if (state.description === '') {
       alert('Description is required');
@@ -174,7 +206,7 @@ const AddGroups = (props) => {
       const data = {
         addMember: false,
         viewMember: false,
-        ws_name: state.workspaceName,
+        ws_name: state.groupName,
         ws_description: state.description,
         ws_users: usersData,
         ws_type: JSON.stringify(workspaceType),
@@ -186,40 +218,40 @@ const AddGroups = (props) => {
 
       console.log('data to watch:', data);
 
-      try {
-        let response;
-        let error;
-        let success;
-        if (groupsData) {
-          data.id = groupsData.in_workspace_id;
-          response = await dispatch(onEditWorkSpace(data));
-          success = 'Workspace edited successfully!';
-          error = 'workspace not edited!';
-        } else {
-          response = await dispatch(onAddWorkSpace(data));
-          success = 'Workspace added successfully!';
-          error = 'workspace not added!';
-        }
-        console.log('succcess:', response);
-        setLoader(false);
-        if (response.error_code) {
-          alert(error);
-        } else {
-          alert(success);
-          if (!groupsData) {
-            setState({
-              workspaceName: '',
-              description: '',
-            });
-            setAvatar('');
-            setType('1');
-            setMembersList([]);
-          }
-        }
-      } catch (err) {
-        setLoader(false);
-        console.log('err in catch', err);
-      }
+      // try {
+      //   let response;
+      //   let error;
+      //   let success;
+      //   if (groupsData) {
+      //     data.id = groupsData.in_workspace_id;
+      //     response = await dispatch(onEditWorkSpace(data));
+      //     success = 'Workspace edited successfully!';
+      //     error = 'workspace not edited!';
+      //   } else {
+      //     response = await dispatch(onAddWorkSpace(data));
+      //     success = 'Workspace added successfully!';
+      //     error = 'workspace not added!';
+      //   }
+      //   console.log('succcess:', response);
+      //   setLoader(false);
+      //   if (response.error_code) {
+      //     alert(error);
+      //   } else {
+      //     alert(success);
+      //     if (!groupsData) {
+      //       setState({
+      //         groupName: '',
+      //         description: '',
+      //       });
+      //       setAvatar('');
+      //       setType('1');
+      //       setMembersList([]);
+      //     }
+      //   }
+      // } catch (err) {
+      //   setLoader(false);
+      //   console.log('err in catch', err);
+      // }
     }
   };
 
@@ -238,8 +270,8 @@ const AddGroups = (props) => {
             <View style={styles.inputContainer}>
               <Text style={styles.labelStyle}>Group Name</Text>
               <CustomInput
-                name={state.workspaceName}
-                onChangeHandler={(val) => onChangeHandler('workspaceName', val)}
+                name={state.groupName}
+                onChangeHandler={(val) => onChangeHandler('groupName', val)}
               />
             </View>
             <View style={styles.inputContainer}>
@@ -258,6 +290,7 @@ const AddGroups = (props) => {
                   data={customTypes ? customTypes : workTypes}
                   value={workspaceType}
                   onChangeHandler={(itemValue) => setType(itemValue)}
+                  label={'Select Team'}
                 />
               </View>
             </View>

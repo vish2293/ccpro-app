@@ -24,7 +24,10 @@ const CustomPicker = (props) => {
       value={value}
       onValueChange={onChangeHandler}
       items={data}
-      placeholder={{ label: 'Select workspace', value: '' }}
+      placeholder={{
+        label: props.label ? props.label : 'Select workspace',
+        value: '',
+      }}
       style={{ color: '#000' }}
       pickerProps={{
         mode: 'dropdown',

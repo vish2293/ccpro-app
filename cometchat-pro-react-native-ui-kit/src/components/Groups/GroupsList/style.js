@@ -94,4 +94,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
+  emptyView: {
+    marginTop: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'gray',
+  },
 });

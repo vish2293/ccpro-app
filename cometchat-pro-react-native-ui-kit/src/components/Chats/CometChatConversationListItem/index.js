@@ -371,7 +371,7 @@ class CometChatConversationListItem extends React.Component {
               cornerRadius={25}
               borderColor={this.props.theme.color.secondary}
               borderWidth={0}
-              name={this.props.conversation.conversationWith.name}
+              name={this.props.conversation.conversationWith?.name}
             />
             {presence}
           </View>
@@ -388,7 +388,7 @@ class CometChatConversationListItem extends React.Component {
                 alignItems: 'center',
               }}>
               <Text numberOfLines={1} style={styles.itemNameStyle}>
-                {this.props.conversation.conversationWith.name}
+                {this.props.conversation.conversationWith?.name}
               </Text>
               <View style={styles.itemLastMsgStyle}>
                 {lastMessageTimeStamp}

@@ -5,6 +5,10 @@ import * as actions from '../../../utils/actions';
 import KeepAwake from 'react-native-keep-awake';
 import * as enums from '../../../utils/enums';
 import { theme } from '../../../resources/theme';
+import style from './style';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class CometChatOutgoingDirectCall extends React.Component {
   sessionID;
@@ -85,7 +89,7 @@ class CometChatOutgoingDirectCall extends React.Component {
   startCall = () => {
     let sessionID = `${this.props.item.guid}`;
     let audioOnly = false;
-    let defaultLayout = true;
+    let defaultLayout = false;
     let callListener = new CometChat.OngoingCallListener({
       onCallEnded: (call) => {
         console.log('On End call:::', call);
@@ -111,6 +115,44 @@ class CometChatOutgoingDirectCall extends React.Component {
     }
   };
 
+  endCall = () => {
+    let sessionID = `${this.props.item.guid}`;
+    CometChat.endCall(sessionID).then(
+      (call) => {
+        console.log('call ended', call);
+        this.props.actionGenerated(actions.CALL_ENDED, call);
+        this.setState({
+          callSettings: null,
+        });
+        this.props.close();
+      },
+      (error) => {
+        console.log('Mine error', error);
+      },
+    );
+  };
+
+  onSwitchCamera = () => {
+    let callController = CometChat.CallController.getInstance();
+    callController.switchCamera();
+  };
+
+  onMute = () => {
+    let callController = CometChat.CallController.getInstance();
+    callController.muteAudio(!this.state.muteAudio);
+    this.setState({
+      muteAudio: !this.state.muteAudio,
+    });
+  };
+
+  onPauseVideo = () => {
+    let callController = CometChat.CallController.getInstance();
+    callController.pauseVideo(!this.state.pauseVideo);
+    this.setState({
+      pauseVideo: !this.state.pauseVideo,
+    });
+  };
+
   render() {
     return (
       <Modal animated animationType="fade">
@@ -121,6 +163,38 @@ class CometChatOutgoingDirectCall extends React.Component {
               callsettings={this.state.callSettings}
             />
           ) : null}
+
+          <View style={style.footer}>
+            <TouchableOpacity onPress={this.endCall} style={style.endBtn}>
+              <Icon name="call-end" color="#FFFFFF" size={22} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.onSwitchCamera}
+              style={style.defaultBtn}>
+              <Ionicons name="md-camera-reverse" color="#FFFFFF" size={22} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onMute} style={style.defaultBtn}>
+              {this.state.muteAudio ? (
+                <FontAwesome
+                  name="microphone-slash"
+                  color="#FFFFFF"
+                  size={22}
+                />
+              ) : (
+                <FontAwesome name="microphone" color="#FFFFFF" size={22} />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={this.onPauseVideo}
+              style={style.defaultBtn}>
+              {this.state.pauseVideo ? (
+                <Icon name="videocam-off" color="#FFFFFF" size={22} />
+              ) : (
+                <Icon name="videocam" color="#FFFFFF" size={22} />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     );

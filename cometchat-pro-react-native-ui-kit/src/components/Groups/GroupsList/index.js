@@ -20,7 +20,7 @@ import { GroupListManager } from './controller';
 const GroupsList = (props) => {
   const dispatch = useDispatch();
   const [groupsData, setGroups] = useState([]);
-  const [isEmpty, setEmpty] = useState('');
+  const [loader, setLoader] = useState(true);
   useLayoutEffect(() => {
     // dispatch(getAllWorkSpaces());
     getGroups();
@@ -30,9 +30,7 @@ const GroupsList = (props) => {
   const selectedWorkspace = useSelector(
     (state) => state.reducer.selectedWorkSpace,
   );
-  const global = workList?.globals?.ws_upload_url
-    ? workList.globals.ws_upload_url
-    : '';
+
   console.log('worklist::::', selectedWorkspace);
   /**
    * Retrieve logged in user details
@@ -40,15 +38,24 @@ const GroupsList = (props) => {
    */
 
   const getGroups = () => {
-    let val = '-group-';
-
+    let val = `-group-`;
+    let copyGroups = [];
     const GroupListManagerObject = new GroupListManager(val);
     console.log(GroupListManagerObject);
 
     GroupListManagerObject.fetchNextGroups()
       .then((allTeamgroupList) => {
+        setLoader(false);
         console.log('groupsss::', allTeamgroupList);
-        setGroups(allTeamgroupList);
+        for (var i = 0; i < allTeamgroupList.length; i++) {
+          let guids = allTeamgroupList[i].guid;
+          let workId = guids.split('teamgroup');
+          if (workId[0] === `${selectedWorkspace.st_guid}-`) {
+            console.log('now check:::', allTeamgroupList[i]);
+            copyGroups.push(allTeamgroupList[i]);
+          }
+        }
+        setGroups(copyGroups);
 
         // if (allTeamgroupList.length === 0) {
         //   console.log('groupsss::', allTeamgroupList);
@@ -57,7 +64,10 @@ const GroupsList = (props) => {
         // }
       })
       .catch(
-        (error) => console.log('error in groups::', error),
+        (error) => {
+          setLoader(false);
+          console.log('error in groups::', error);
+        },
         // this.setState({
         //   decoratorMessage: 'Something went wrong!',
         // }),
@@ -91,7 +101,7 @@ const GroupsList = (props) => {
           </TouchableOpacity>
         </View>
 
-        {isLoading ? (
+        {loader ? (
           <View style={styles.loadingView}>
             <ActivityIndicator color="#338ce2" size="large" />
           </View>
@@ -143,6 +153,11 @@ const GroupsList = (props) => {
                   </TouchableOpacity>
                 );
               })}
+              {groupsData.length === 0 ? (
+                <View style={styles.emptyView}>
+                  <Text style={styles.emptyText}>No Groups Found!</Text>
+                </View>
+              ) : null}
             </View>
           </ScrollView>
         )}
