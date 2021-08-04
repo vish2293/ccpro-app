@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { logger } from '../../../utils/common';
-import { getAllWorkSpaces } from '../../../../../store/action';
+import { getAllWorkSpaces, onGetGroups } from '../../../../../store/action';
 import { GroupListManager } from './controller';
 
 const GroupsList = (props) => {
@@ -26,7 +26,7 @@ const GroupsList = (props) => {
     getGroups();
   }, []);
   const isLoading = useSelector((state) => state.reducer.loader);
-  const workList = useSelector((state) => state.reducer.allWorkspaces);
+  const groupsList = useSelector((state) => state.reducer.groupList);
   const selectedWorkspace = useSelector(
     (state) => state.reducer.selectedWorkSpace,
   );
@@ -55,7 +55,8 @@ const GroupsList = (props) => {
             copyGroups.push(allTeamgroupList[i]);
           }
         }
-        setGroups(copyGroups);
+        // setGroups(copyGroups);
+        dispatch(onGetGroups(copyGroups));
 
         // if (allTeamgroupList.length === 0) {
         //   console.log('groupsss::', allTeamgroupList);
@@ -79,10 +80,10 @@ const GroupsList = (props) => {
     navigation.goBack();
   };
 
-  const goToAdd = (item = false, image = false) => {
+  const goToAdd = (item = false) => {
     const { navigation } = props;
     console.log('item', item);
-    navigation.navigate('AddGroups', { data: item, image: image });
+    navigation.navigate('AddGroups', { data: item });
   };
 
   return (
@@ -108,7 +109,7 @@ const GroupsList = (props) => {
         ) : (
           <ScrollView>
             <View style={styles.bodyContainer}>
-              {groupsData?.map((item, index) => {
+              {groupsList?.map((item, index) => {
                 return (
                   <TouchableOpacity
                     onPress={() => goToAdd(item)}
@@ -146,14 +147,14 @@ const GroupsList = (props) => {
                       ellipsizeMode="tail"
                       numberOfLines={2}
                       style={styles.bottomText}>
-                      {item.description.length > 10
-                        ? item.description.slice(0, 12)
+                      {item.description.length > 15
+                        ? `${item.description.slice(0, 15)}..`
                         : item.description}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
-              {groupsData.length === 0 ? (
+              {groupsList?.length === 0 ? (
                 <View style={styles.emptyView}>
                   <Text style={styles.emptyText}>No Groups Found!</Text>
                 </View>

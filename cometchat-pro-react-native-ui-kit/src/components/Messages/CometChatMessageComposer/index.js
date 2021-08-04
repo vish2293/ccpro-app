@@ -332,7 +332,9 @@ export default class CometChatMessageComposer extends React.PureComponent {
       textMessage.setConversationId(conversationId);
       textMessage._composedAt = Date.now();
       textMessage._id = '_' + Math.random().toString(36).substr(2, 9);
+
       this.props.actionGenerated(actions.MESSAGE_COMPOSED, [textMessage]);
+
       this.setState({ messageInput: '', replyPreview: false });
 
       this.messageInputRef.current.textContent = '';
@@ -648,6 +650,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
    */
 
   sendReplyMessage = (messageInput) => {
+    console.log('hey runnnn');
     try {
       const { receiverId, receiverType } = this.getReceiverDetails();
       const textMessage = new CometChat.TextMessage(

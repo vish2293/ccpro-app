@@ -161,8 +161,10 @@ class CometChatMessageList extends React.PureComponent {
     new CometChatManager()
       .getLoggedInUser()
       .then((user) => {
+        console.log('user detail::', user);
         this.MessageListManager.fetchPreviousMessages()
           .then((messageList) => {
+            console.log('messaging list:', messageList);
             if (messageList.length === 0) {
               this.decoratorMessage = 'No messages found';
             }
@@ -172,6 +174,7 @@ class CometChatMessageList extends React.PureComponent {
                 message.category === 'action' &&
                 message.sender.uid === 'app_system'
               ) {
+                console.log('condition 1:', message);
                 actionMessages.push(message);
               }
 
@@ -180,9 +183,15 @@ class CometChatMessageList extends React.PureComponent {
                 message.getSender().getUid() !== user.getUid() &&
                 !message.getReadAt()
               ) {
+                console.log(
+                  'condition 2',
+                  message.getSender().getUid(),
+                  user.getUid(),
+                );
                 if (
                   message.getReceiverType() === CometChat.RECEIVER_TYPE.USER
                 ) {
+                  console.log('condition 3');
                   CometChat.markAsRead(
                     message.getId().toString(),
                     message.getSender().getUid(),
@@ -191,6 +200,7 @@ class CometChatMessageList extends React.PureComponent {
                 } else if (
                   message.getReceiverType() === CometChat.RECEIVER_TYPE.GROUP
                 ) {
+                  console.log('condition 4');
                   CometChat.markAsRead(
                     message.getId().toString(),
                     message.getReceiverId(),
@@ -212,9 +222,11 @@ class CometChatMessageList extends React.PureComponent {
               (this.times === 1 && actionMessages.length > 5) ||
               (this.times > 1 && actionMessages.length === 30)
             ) {
+              console.log('condition 5', this.times);
               this.props.actionGenerated(actions.MESSAGE_FETCHED, messageList);
               this.getMessages(true);
             } else {
+              console.log('condition 6', this.times);
               this.props.actionGenerated(actionGenerated, messageList);
             }
           })
@@ -1201,7 +1213,7 @@ class CometChatMessageList extends React.PureComponent {
               ? this.props.parentMessageComponent
               : null
           }
-          data={messages}
+          data={this.props.parentMessageId ? [] : messages}
           keyExtractor={(item, index) => item.messageId + '_' + index}
           renderItem={this.renderItem}
         />

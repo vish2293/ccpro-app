@@ -316,3 +316,24 @@ export const addNewTeam = (data) => {
     payload: data,
   };
 };
+
+export const onGetGroups = (data) => {
+  return {
+    type: actionTypes.GET_GROUPS,
+    payload: data,
+  };
+};
+
+export const onUpdateGroup = (data) => {
+  return {
+    type: actionTypes.UPDATE_GROUPS,
+    payload: data,
+  };
+};
+
+export const onAddGroup = (data) => {
+  return {
+    type: actionTypes.ADD_GROUP,
+    payload: data,
+  };
+};

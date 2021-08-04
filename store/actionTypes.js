@@ -15,3 +15,6 @@ export const GET_ALL_TEAMS = 'GET_ALL_TEAMS';
 export const GET_NEW_TEAM = 'GET_NEW_TEAM';
 
 export const READ_ALL = 'READ_ALL';
+export const GET_GROUPS = 'GET_GROUPS';
+export const UPDATE_GROUPS = 'UPDATE_GROUPS';
+export const ADD_GROUP = 'ADD_GROUP';

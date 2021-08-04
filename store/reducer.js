@@ -15,6 +15,7 @@ const initialState = {
   loader: true,
   teamLoader: true,
   allTeamsList: [],
+  groupList: [],
 };
 
 const authStart = (state, action) => {
@@ -153,6 +154,34 @@ const setNewTeam = (state, action) => {
   };
 };
 
+const setGroups = (state, action) => {
+  return {
+    ...state,
+    groupList: action.payload,
+  };
+};
+
+const updateGroup = (state, action) => {
+  const copyOfData = Array.from(state.groupList);
+  console.log('previous data:', copyOfData);
+  const index = copyOfData.findIndex((a) => a.guid === action.payload.guid);
+  copyOfData[index] = action.payload;
+
+  return {
+    ...state,
+    groupList: copyOfData,
+  };
+};
+
+const addGroup = (state, action) => {
+  const copyOfData = Array.from(state.groupList);
+  copyOfData.push(action.payload);
+  return {
+    ...state,
+    groupList: copyOfData,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -181,6 +210,12 @@ const reducer = (state = initialState, action) => {
       return getAllTeams(state, action);
     case actionTypes.GET_NEW_TEAM:
       return setNewTeam(state, action);
+    case actionTypes.GET_GROUPS:
+      return setGroups(state, action);
+    case actionTypes.UPDATE_GROUPS:
+      return updateGroup(state, action);
+    case actionTypes.ADD_GROUP:
+      return addGroup(state, action);
     case actionTypes.READ_ALL:
       console.log('acctionnonon', action.payload);
       return {

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import theme from '../../../resources/theme';
 import { useSelector, useDispatch } from 'react-redux';
+import { CometChat } from '@cometchat-pro/react-native-chat';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -28,8 +29,12 @@ import {
   selectWorkSpace,
   onEditWorkSpace,
   onGetAllTeams,
+  onUpdateGroup,
+  onAddGroup,
 } from '../../../../../store/action';
 import { GroupListManager } from '../../Teams/CometChatTeamList/controller';
+import axios from 'axios';
+import { serverUrl } from '../../../utils/consts';
 
 const workTypes = [
   { label: 'Non-Profit', value: 1 },
@@ -45,15 +50,17 @@ let customTypes = [];
 
 const AddGroups = (props) => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.reducer.jwtToken);
   const workSpaceTypes = useSelector((state) => state.reducer.workspaceTypes);
   const selectedWorkspace = useSelector(
     (state) => state.reducer.selectedWorkSpace,
   );
   const uid = useSelector((state) => state.reducer.user.uid);
-  const [workspaceType, setType] = useState('');
+  const [teamType, setType] = useState('');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
+  const [imageLoader, setImageLoader] = useState(false);
   const [loader, setLoader] = useState(false);
   const [state, setState] = useState({
     groupName: '',
@@ -97,32 +104,21 @@ const AddGroups = (props) => {
     const { navigation, route } = props;
     const groupData = route.params.data;
     setGroupData(groupData);
-    console.log('workspaceData', groupData, groupsData);
-    if (groupsData) {
-      console.log('Edit Mode');
-      setType(groupsData.st_type_name == 'Profit' ? 2 : 1);
+    console.log('group data:', groupData);
+    if (groupData) {
+      let teamId = groupData.metadata.team_id.replace('-teamgroup-', '-team-');
+      console.log('Edit Mode', teamId);
+      setType(teamId);
 
-      setAvatar({ path: groupsData.icon });
+      setAvatar({ path: groupData.icon });
       //   console.log(JSON.parse(groupsData?.js_users).length);
       //   setMembersList(JSON.parse(groupsData.js_users));
       setState({
-        groupName: groupsData.name,
-        description: groupsData.description,
+        groupName: groupData.name,
+        description: groupData.description,
       });
     }
-
-    // customTypes = [];
-    console.log('Types here::::', workSpaceTypes);
-    if (workSpaceTypes)
-      for (var i = 0; i < workSpaceTypes.length; i++) {
-        console.log('shallow:', workSpaceTypes[i]);
-        const customObj = {
-          label: workSpaceTypes[i].st_type_name,
-          value: workSpaceTypes[i].in_type_id,
-        };
-        // customTypes.push(customObj);
-      }
-  }, [workSpaceTypes]);
+  }, []);
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
@@ -151,8 +147,32 @@ const AddGroups = (props) => {
       includeBase64: true,
     }).then((image) => {
       console.log('pics:', image);
-      setAvatar(image);
+      setImageLoader(true);
+      // setAvatar(image);
       setState({ ...state, isImageUploaded: true });
+
+      const data = {
+        image: `data:image/image/png;base64,${image.data}`,
+      };
+
+      axios({
+        url: serverUrl + 'global/image',
+        method: 'post',
+        data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          console.log('image response:', response.data.globals.file_upload_url);
+          setAvatar({ path: response.data.globals.file_upload_url });
+          setImageLoader(false);
+        })
+        .catch((err) => {
+          console.log('error in Image:', err);
+          console.log('error in Image:', err.response);
+          setImageLoader(false);
+        });
     });
   };
 
@@ -174,7 +194,7 @@ const AddGroups = (props) => {
   };
 
   const onSave = async () => {
-    const usersData = [uid];
+    const usersData = [];
     setLoader(true);
     if (state.groupName === '') {
       alert('Group name is required!');
@@ -182,76 +202,112 @@ const AddGroups = (props) => {
     } else if (state.description === '') {
       alert('Description is required');
       setLoader(false);
+    } else if (teamType === '') {
+      alert('Team is required');
+      setLoader(false);
     } else if (!avatar) {
       alert('Image is required');
       setLoader(false);
-    } else if (membersList.length === 0) {
-      alert('At least select one member');
-      setLoader(false);
-    } else {
+    }
+    // else if (membersList.length === 0) {
+    //   alert('At least select one member');
+    //   setLoader(false);
+    // }
+    else {
       console.log('user:::', membersList);
       membersList.forEach((user) => {
         if (typeof user === 'object' && user !== null) {
           console.log('test user::::', typeof membersList);
           if (user.uid !== uid) {
-            usersData.push(user.uid);
+            usersData.push(
+              new CometChat.GroupMember(
+                user.uid,
+                CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT,
+              ),
+            );
           }
         } else {
           if (user !== uid) {
-            usersData.push(user);
+            usersData.push(
+              new CometChat.GroupMember(
+                user,
+                CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT,
+              ),
+            );
           }
         }
       });
 
-      const data = {
-        addMember: false,
-        viewMember: false,
-        ws_name: state.groupName,
-        ws_description: state.description,
-        ws_users: usersData,
-        ws_type: JSON.stringify(workspaceType),
-        ws_featured_image: !state.isImageUploaded
-          ? avatar.path
-          : `data:image/jpeg;base64,${avatar.data}`,
-        ws_type_options: workSpaceTypes,
-      };
+      let teamId = teamType.replace('-team-', '-teamgroup-');
+      var guid = groupsData
+        ? groupsData.guid
+        : `${teamId}-group-${new Date().getTime()}`;
+      var groupName = state.groupName;
+      var groupDescription = state.description;
+      var groupMetaData = { team_id: teamId, team_name: state.description };
+      var groupType = CometChat.GROUP_TYPE.PUBLIC;
+      var password = '';
+      var icon = avatar.path;
+      var group = new CometChat.Group(
+        guid,
+        groupName,
+        groupType,
+        password,
+        icon,
+        groupDescription,
+        '',
+      );
 
-      console.log('data to watch:', data);
+      group.setMetadata(groupMetaData);
 
-      // try {
-      //   let response;
-      //   let error;
-      //   let success;
-      //   if (groupsData) {
-      //     data.id = groupsData.in_workspace_id;
-      //     response = await dispatch(onEditWorkSpace(data));
-      //     success = 'Workspace edited successfully!';
-      //     error = 'workspace not edited!';
-      //   } else {
-      //     response = await dispatch(onAddWorkSpace(data));
-      //     success = 'Workspace added successfully!';
-      //     error = 'workspace not added!';
-      //   }
-      //   console.log('succcess:', response);
-      //   setLoader(false);
-      //   if (response.error_code) {
-      //     alert(error);
-      //   } else {
-      //     alert(success);
-      //     if (!groupsData) {
-      //       setState({
-      //         groupName: '',
-      //         description: '',
-      //       });
-      //       setAvatar('');
-      //       setType('1');
-      //       setMembersList([]);
-      //     }
-      //   }
-      // } catch (err) {
-      //   setLoader(false);
-      //   console.log('err in catch', err);
-      // }
+      console.log('data to watch:', group);
+
+      console.log('group edit:', groupsData);
+
+      if (groupsData) {
+        CometChat.updateGroup(group).then(
+          (groupData) => {
+            setLoader(false);
+            console.log('group response:::', groupData);
+            dispatch(onUpdateGroup(groupData));
+            alert('Group updated successfully');
+          },
+          (error) => {
+            setLoader(false);
+            console.log('Group updated failed with exception:', error);
+          },
+        );
+      } else {
+        CometChat.createGroup(group).then(
+          (groupData) => {
+            setLoader(false);
+            console.log('group response:::', groupData);
+            dispatch(onAddGroup(groupData));
+            alert('Group created successfully');
+            setType('');
+            setState({
+              ...state,
+              description: '',
+              groupName: '',
+            });
+            setAvatar('');
+            setMembersList([]);
+
+            CometChat.addMembersToGroup(groupData.guid, usersData, []).then(
+              (response) => {
+                console.log('Add members:', response);
+              },
+              (error) => {
+                console.log('Something went wrong:', error);
+              },
+            );
+          },
+          (error) => {
+            setLoader(false);
+            console.log('Group creation failed with exception:', error);
+          },
+        );
+      }
     }
   };
 
@@ -288,7 +344,7 @@ const AddGroups = (props) => {
               <View style={styles.pickerInput}>
                 <CustomPicker
                   data={customTypes ? customTypes : workTypes}
-                  value={workspaceType}
+                  value={teamType}
                   onChangeHandler={(itemValue) => setType(itemValue)}
                   label={'Select Team'}
                 />
@@ -300,8 +356,14 @@ const AddGroups = (props) => {
                 onPress={openPicker}
                 activeOpacity={0.7}
                 style={styles.buttonStyle}>
-                <Entypo name="camera" size={20} color="#fff" />
-                <Text style={styles.buttonText}>Add photo</Text>
+                {imageLoader ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <>
+                    <Entypo name="camera" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>Add photo</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
 
@@ -338,7 +400,7 @@ const AddGroups = (props) => {
 
             <View style={styles.inputContainer}>
               <TouchableOpacity
-                // onPress={onSave}
+                onPress={onSave}
                 style={styles.saveButton}
                 activeOpacity={0.7}>
                 {loader ? (
