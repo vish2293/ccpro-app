@@ -19,6 +19,7 @@ import DocumentPicker from 'react-native-document-picker';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import { heightRatio } from '../../../utils/consts';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default class ComposerActions extends Component {
   sheetRef = React.createRef(null);
@@ -152,12 +153,16 @@ export default class ComposerActions extends Component {
               ? response.uri
               : response.uri.replace('file://', ''),
         };
+
+        console.log('vidddd::', file, response, type);
+
         this.props.sendMediaMessage(
           file,
           type === 'photo'
             ? CometChat.MESSAGE_TYPE.IMAGE
             : CometChat.MESSAGE_TYPE.VIDEO,
         );
+
         this.sheetRef.current.snapTo(1);
         this.props.close();
       },
@@ -186,6 +191,29 @@ export default class ComposerActions extends Component {
     }
   };
 
+  pickAudio = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.audio],
+      });
+      console.log('audio:::', res);
+      const file = {
+        name: res.name,
+        type: res.type,
+        uri: res.uri,
+      };
+      this.props.sendMediaMessage(file, CometChat.MESSAGE_TYPE.AUDIO);
+      this.sheetRef.current.snapTo(1);
+      this.props.close();
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+  };
+
   renderContent = () => {
     let takePhotoBtn = (
       <TouchableOpacity
@@ -197,6 +225,40 @@ export default class ComposerActions extends Component {
         </Text>
       </TouchableOpacity>
     );
+
+    let audioBtn = (
+      <TouchableOpacity
+        style={style.actionButtonContainer}
+        onPress={() => this.pickAudio()}>
+        <MaterialIcons name="audiotrack" size={24} />
+        <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: '500' }}>
+          Attach Audio
+        </Text>
+      </TouchableOpacity>
+    );
+
+    let collaborativeDocBtn = (
+      <TouchableOpacity
+        style={style.actionButtonContainer}
+        onPress={() => this.props.toggleCollaborativeDocument()}>
+        <IonIcon name="document-text-outline" size={24} />
+        <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: '500' }}>
+          Collaborative Document
+        </Text>
+      </TouchableOpacity>
+    );
+
+    let whiteBoardBtn = (
+      <TouchableOpacity
+        style={style.actionButtonContainer}
+        onPress={() => this.props.toggleCollaborativeBoard()}>
+        <MCIIcon name="file-document-edit-outline" size={24} />
+        <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: '500' }}>
+          Collaborate using a white board
+        </Text>
+      </TouchableOpacity>
+    );
+
     let takeVideoBtn = (
       <TouchableOpacity
         style={style.actionButtonContainer}
@@ -276,9 +338,9 @@ export default class ComposerActions extends Component {
         </Text>
       </TouchableOpacity>
     );
-    if (!this.state.restrictions?.isPollsEnabled) {
-      createPollBtn = null;
-    }
+    // if (!this.state.restrictions?.isPollsEnabled) {
+    //   createPollBtn = null;
+    // }
     if (!this.state.restrictions?.isStickersEnabled) {
       stickerBtn = null;
     }
@@ -295,11 +357,14 @@ export default class ComposerActions extends Component {
       <View style={style.reactionDetailsContainer}>
         {takePhotoBtn}
         {takeVideoBtn}
+        {audioBtn}
         {avp}
         {vp}
         {docs}
         {stickerBtn}
         {createPollBtn}
+        {collaborativeDocBtn}
+        {whiteBoardBtn}
       </View>
     );
   };
@@ -319,7 +384,7 @@ export default class ComposerActions extends Component {
             <View style={style.fullFlex}>
               <BottomSheet
                 ref={this.sheetRef}
-                snapPoints={[400 * heightRatio, 0]}
+                snapPoints={[510 * heightRatio, 0]}
                 borderRadius={30}
                 initialSnap={1}
                 enabledInnerScrolling={false}

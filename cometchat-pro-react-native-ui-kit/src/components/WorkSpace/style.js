@@ -67,14 +67,40 @@ module.exports = StyleSheet.create({
     marginVertical: 10,
   },
   popStyle: {
-    backgroundColor: 'transparent',
-    height: 300,
-    borderBottomLeftRadius: 100,
-    borderBottomRightRadius: 100,
+    backgroundColor: '#fff',
+    height: 350,
+    width: '90%',
+    borderRadius: 5,
+    left: -5,
   },
   whiteBorder: {
     backgroundColor: '#fff',
     padding: 5,
     borderRadius: 100 / 2,
+  },
+  swictherHeading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  searchInput: {
+    backgroundColor: '#f6f6f6',
+    height: 45,
+    marginVertical: 10,
+    paddingLeft: 10,
+  },
+  workspaceRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    // justifyContent: 'center',
+  },
+  workspaceCircle: {
+    width: '25%',
+    alignItems: 'center',
+    marginVertical: 7,
+  },
+  subHeading: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 10,
   },
 });

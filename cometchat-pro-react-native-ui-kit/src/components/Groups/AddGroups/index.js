@@ -295,7 +295,7 @@ const AddGroups = (props) => {
 
             CometChat.addMembersToGroup(groupData.guid, usersData, []).then(
               (response) => {
-                console.log('Add members:', response);
+                console.log('Add member:', response);
               },
               (error) => {
                 console.log('Something went wrong:', error);

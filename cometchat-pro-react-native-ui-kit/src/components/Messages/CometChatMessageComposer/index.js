@@ -219,6 +219,48 @@ export default class CometChatMessageComposer extends React.PureComponent {
    * @param messageType: object messageType
    */
 
+  toggleCollaborativeDocument = () => {
+    const { receiverId, receiverType } = this.getReceiverDetails();
+    CometChat.callExtension('document', 'POST', 'v1/create', {
+      receiver: receiverId,
+      receiverType: receiverType,
+    })
+      .then((response) => {
+        console.log('done doc::::', response);
+        this.setState({ composerActionsVisible: false });
+        // Response with document url
+      })
+      .catch((error) => {
+        console.log('doc error', error);
+        this.props.actionGenerated(
+          enums.ACTIONS['ERROR'],
+          [],
+          'SOMETHING_WRONG',
+        );
+      });
+  };
+
+  toggleCollaborativeBoard = () => {
+    const { receiverId, receiverType } = this.getReceiverDetails();
+    CometChat.callExtension('whiteboard', 'POST', 'v1/create', {
+      receiver: receiverId,
+      receiverType: receiverType,
+    })
+      .then((response) => {
+        console.log('done doc::::', response);
+        this.setState({ composerActionsVisible: false });
+        // Response with document url
+      })
+      .catch((error) => {
+        console.log('doc error', error);
+        this.props.actionGenerated(
+          enums.ACTIONS['ERROR'],
+          [],
+          'SOMETHING_WRONG',
+        );
+      });
+  };
+
   sendMediaMessage = (messageInput, messageType) => {
     try {
       if (this.messageSending) {
@@ -924,6 +966,8 @@ export default class CometChatMessageComposer extends React.PureComponent {
             toggleStickers={this.toggleStickerPicker}
             toggleCreatePoll={this.toggleCreatePoll}
             sendMediaMessage={this.sendMediaMessage}
+            toggleCollaborativeDocument={this.toggleCollaborativeDocument}
+            toggleCollaborativeBoard={this.toggleCollaborativeBoard}
           />
           <View style={style.mainContainer}>
             <TouchableOpacity

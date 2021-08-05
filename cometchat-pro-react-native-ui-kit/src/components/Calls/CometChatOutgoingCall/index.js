@@ -182,6 +182,7 @@ class CometChatOutgoingCall extends React.PureComponent {
     console.log('user ID::::: Accpeted', this.props.incomingCall.sessionId);
     CometChatManager.acceptCall(this.props.incomingCall.sessionId)
       .then((response) => {
+        console.log('is Accepted:', response);
         const call = { ...response };
 
         this.props.actionGenerated(actions.ACCEPT_INCOMING_CALL, call);
