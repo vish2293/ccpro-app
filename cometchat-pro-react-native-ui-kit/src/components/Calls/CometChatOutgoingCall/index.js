@@ -179,7 +179,7 @@ class CometChatOutgoingCall extends React.PureComponent {
    * @param
    */
   acceptCall = () => {
-    console.log('user ID::::: Accpeted', this.props.incomingCall.sessionId);
+    console.log('user ID:::: Accpeted', this.props.incomingCall.sessionId);
     CometChatManager.acceptCall(this.props.incomingCall.sessionId)
       .then((response) => {
         console.log('is Accepted:', response);
@@ -208,6 +208,7 @@ class CometChatOutgoingCall extends React.PureComponent {
    * @param call - call object
    */
   startCall = (call) => {
+    console.log('start a call::::', call);
     try {
       const { sessionId } = call;
       const callType = call.type;
@@ -215,6 +216,7 @@ class CometChatOutgoingCall extends React.PureComponent {
 
       const callListener = new CometChat.OngoingCallListener({
         onUserJoined: (user) => {
+          console.log('can user join ?', user);
           if (
             call.callInitiator.uid !== this.props.loggedInUser.uid &&
             call.callInitiator.uid !== user.uid

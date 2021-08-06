@@ -26,10 +26,13 @@ import {
   Platform,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  TextInput,
 } from 'react-native';
 import { logger } from '../../../utils/common';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { READ_ALL } from '../../../../../store/actionTypes';
+import Icon from 'react-native-vector-icons/Ionicons';
 class CometChatConversationList extends React.Component {
   loggedInUser = null;
 
@@ -43,6 +46,7 @@ class CometChatConversationList extends React.Component {
       selectedConversation: undefined,
       showSmallHeader: false,
       isMessagesSoundEnabled: true,
+      textInputValue: '',
     };
     this.chatListRef = React.createRef();
     this.theme = { ...theme, ...this.props.theme };
@@ -898,6 +902,10 @@ class CometChatConversationList extends React.Component {
       });
   };
 
+  searchUsers = (val) => {
+    this.setState({ textInputValue: val });
+  };
+
   /**
    * header component for conversation list
    * @param
@@ -909,6 +917,41 @@ class CometChatConversationList extends React.Component {
         <View style={styles.headingContainer}>
           <Text style={styles.conversationHeaderTitleStyle}>Chats</Text>
         </View>
+
+        <TouchableWithoutFeedback
+          onPress={() => this.textInputRef.current.focus()}>
+          <View
+            style={[
+              styles.contactSearchStyle,
+              {
+                backgroundColor: `${this.theme.backgroundColor.grey}`,
+              },
+            ]}>
+            <Icon name="search" size={18} color={this.theme.color.helpText} />
+            <TextInput
+              ref={this.textInputRef}
+              autoCompleteType="off"
+              value={this.state.textInputValue}
+              placeholder="Search"
+              placeholderTextColor={this.theme.color.textInputPlaceholder}
+              onChangeText={this.searchUsers}
+              // onFocus={() => {
+              //   this.setState({ textInputFocused: true });
+              // }}
+              // onBlur={() => {
+              //   this.setState({ textInputFocused: false });
+              // }}
+              clearButtonMode="always"
+              numberOfLines={1}
+              style={[
+                styles.contactSearchInputStyle,
+                {
+                  color: `${this.theme.color.primary}`,
+                },
+              ]}
+            />
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   };
@@ -1003,6 +1046,14 @@ class CometChatConversationList extends React.Component {
   };
 
   render() {
+    let filteredUsers = this.state.conversationList.filter((user) => {
+      return (
+        user?.conversationWith?.name
+          ?.toLowerCase()
+          .indexOf(this.state.textInputValue.toLowerCase()) !== -1
+      );
+    });
+
     return (
       <CometChatContextProvider ref={(el) => (this.contextProviderRef = el)}>
         <SafeAreaView style={{ backgroundColor: 'white' }}>
@@ -1013,7 +1064,7 @@ class CometChatConversationList extends React.Component {
             {this.listHeaderComponent()}
             <SwipeListView
               contentContainerStyle={styles.flexGrow1}
-              data={this.state.conversationList}
+              data={filteredUsers}
               keyExtractor={(item, index) => item?.conversationId + '_' + index}
               renderHiddenItem={(data, rowMap) => (
                 <View

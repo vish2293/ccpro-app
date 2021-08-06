@@ -166,6 +166,11 @@ export default (props) => {
     !restrictions?.enableEditMessage
   ) {
     editMessage = null;
+    deleteMessage = null;
+  }
+
+  if (props.message.type !== CometChat.MESSAGE_TYPE.TEXT) {
+    copyMessage = null;
   }
 
   return (

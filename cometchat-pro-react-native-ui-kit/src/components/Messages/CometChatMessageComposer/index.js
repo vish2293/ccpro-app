@@ -465,6 +465,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
           .then((groupMembers) => {
             let regex = '';
             groupMembers.forEach((member, index) => {
+              console.log('Hit:::', member.name);
               regex += `@${member.name}`;
               if (member.scope === CometChat.GROUP_MEMBER_SCOPE.ADMIN) {
                 administratorsList.push(member);

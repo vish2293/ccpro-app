@@ -15,6 +15,7 @@ import {
   Modal,
   Dimensions,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -394,7 +395,7 @@ class CometChatAddGroupMemberList extends React.Component {
           animated
           animationType="fade"
           visible={this.props.open}>
-          <BottomSheet
+          {/* <BottomSheet
             ref={this.sheetRef}
             snapPoints={[Dimensions.get('window').height - 90, 0]}
             borderRadius={30}
@@ -403,126 +404,120 @@ class CometChatAddGroupMemberList extends React.Component {
             enabledContentTapInteraction
             overdragResistanceFactor={10}
             renderContent={() => {
-              return (
-                <View style={style.reactionDetailsContainer}>
-                  <View style={style.headerContainer}>
-                    <View style={{}}>
-                      <Text style={style.contactHeaderTitleStyle}>
-                        Add Members
-                      </Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.sheetRef.current.snapTo(1);
-                        this.props.close();
-                      }}
-                      style={{}}>
-                      <Text style={{ color: this.theme.color.blue }}>
-                        Close
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <TouchableWithoutFeedback
-                    onPress={() => this.textInputRef.current.focus()}>
-                    <View
-                      style={[
-                        style.contactSearchStyle,
-                        {
-                          backgroundColor: `${this.theme.backgroundColor.grey}`,
-                        },
-                      ]}>
-                      <Icon
-                        name="search"
-                        size={15}
-                        color={this.theme.color.helpText}
-                      />
-                      <TextInput
-                        ref={this.textInputRef}
-                        autoCompleteType="off"
-                        value={this.state.textInputValue}
-                        placeholder="Search"
-                        placeholderTextColor={
-                          this.theme.color.textInputPlaceholder
-                        }
-                        onChangeText={this.searchUsers}
-                        onFocus={() => {
-                          this.setState({ textInputFocused: true });
-                        }}
-                        onBlur={() => {
-                          this.setState({ textInputFocused: false });
-                        }}
-                        clearButtonMode="always"
-                        numberOfLines={1}
-                        style={[
-                          style.contactSearchInputStyle,
-                          {
-                            color: `${this.theme.color.primary}`,
-                          },
-                        ]}
-                      />
-                    </View>
-                  </TouchableWithoutFeedback>
-                  <FlatList
-                    keyExtractor={(item, index) => item.uid + '_' + index}
-                    data={filteredUserList}
-                    renderItem={({ item }) => {
-                      const chr = item.name[0].toUpperCase();
-                      let firstLetter = null;
-                      if (chr !== currentLetter) {
-                        currentLetter = chr;
-                        firstLetter = currentLetter;
-                      }
+              return ( */}
+          <View style={style.reactionDetailsContainer}>
+            <View style={style.headerContainer}>
+              <View style={{}}>
+                <Text style={style.contactHeaderTitleStyle}>Add Members</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  // this.sheetRef.current.snapTo(1);
+                  this.props.close();
+                }}
+                style={{}}>
+                <Text style={{ color: this.theme.color.blue }}>Close</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableWithoutFeedback
+              onPress={() => this.textInputRef.current.focus()}>
+              <View
+                style={[
+                  style.contactSearchStyle,
+                  {
+                    backgroundColor: `${this.theme.backgroundColor.grey}`,
+                  },
+                ]}>
+                <Icon
+                  name="search"
+                  size={15}
+                  color={this.theme.color.helpText}
+                />
+                <TextInput
+                  ref={this.textInputRef}
+                  autoCompleteType="off"
+                  value={this.state.textInputValue}
+                  placeholder="Search"
+                  placeholderTextColor={this.theme.color.textInputPlaceholder}
+                  onChangeText={this.searchUsers}
+                  onFocus={() => {
+                    this.setState({ textInputFocused: true });
+                  }}
+                  onBlur={() => {
+                    this.setState({ textInputFocused: false });
+                  }}
+                  clearButtonMode="always"
+                  numberOfLines={1}
+                  style={[
+                    style.contactSearchInputStyle,
+                    {
+                      color: `${this.theme.color.primary}`,
+                    },
+                  ]}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+            <FlatList
+              keyExtractor={(item, index) => item.uid + '_' + index}
+              data={filteredUserList}
+              renderItem={({ item }) => {
+                const chr = item.name[0].toUpperCase();
+                let firstLetter = null;
+                if (chr !== currentLetter) {
+                  currentLetter = chr;
+                  firstLetter = currentLetter;
+                }
 
-                      return (
-                        <React.Fragment key={item.uid}>
-                          <CometChatAddGroupMemberListItem
-                            theme={this.theme}
-                            firstLetter={firstLetter}
-                            loggedinuser={group.loggedinuser}
-                            user={item}
-                            membersToAdd={this.state.membersToAdd}
-                            members={group.memberList}
-                            changed={this.membersUpdated}
-                          />
-                        </React.Fragment>
-                      );
-                    }}
-                    ListEmptyComponent={this.listEmptyContainer}
-                    ItemSeparatorComponent={this.itemSeparatorComponent}
-                    onScroll={this.handleScroll}
-                    onEndReached={this.endReached}
-                    onEndReachedThreshold={0.3}
-                    showsVerticalScrollIndicator={false}
-                  />
-                  <TouchableOpacity
-                    disabled={this.state.membersToAdd.length > 0 ? false : true}
-                    style={[
-                      style.addBtnStyle,
-                      {
-                        backgroundColor:
-                          this.state.membersToAdd.length > 0
-                            ? this.theme.backgroundColor.blue
-                            : 'gray',
-                      },
-                    ]}
-                    onPress={this.updateMembers}>
-                    <Text
-                      style={[
-                        style.addBtnTxtStyle,
-                        {
-                          color: `${this.theme.color.white}`,
-                        },
-                      ]}>
-                      Add
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
+                return (
+                  <React.Fragment key={item.uid}>
+                    <CometChatAddGroupMemberListItem
+                      theme={this.theme}
+                      firstLetter={firstLetter}
+                      loggedinuser={group.loggedinuser}
+                      user={item}
+                      membersToAdd={this.state.membersToAdd}
+                      members={group.memberList}
+                      changed={this.membersUpdated}
+                    />
+                  </React.Fragment>
+                );
+              }}
+              ListEmptyComponent={this.listEmptyContainer}
+              ItemSeparatorComponent={this.itemSeparatorComponent}
+              onScroll={this.handleScroll}
+              onEndReached={this.endReached}
+              onEndReachedThreshold={0.3}
+              showsVerticalScrollIndicator={false}
+            />
+            <TouchableOpacity
+              disabled={this.state.membersToAdd.length > 0 ? false : true}
+              style={[
+                style.addBtnStyle,
+                {
+                  backgroundColor:
+                    this.state.membersToAdd.length > 0
+                      ? this.theme.backgroundColor.blue
+                      : 'gray',
+                },
+              ]}
+              onPress={this.updateMembers}>
+              <Text
+                style={[
+                  style.addBtnTxtStyle,
+                  {
+                    color: `${this.theme.color.white}`,
+                  },
+                ]}>
+                Add
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {/* );
             }}
             onCloseEnd={() => {
               this.props.close();
             }}
-          />
+          /> */}
           <DropDownAlert ref={(ref) => (this.dropDownAlertRef = ref)} />
         </Modal>
       </React.Fragment>

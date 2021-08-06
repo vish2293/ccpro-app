@@ -228,7 +228,7 @@ class CometChatCreateGroup extends React.Component {
                     <View style={style.modalTableStyle}>
                       <View style={style.modalHeader}>
                         <Text style={style.tableCaptionStyle}>
-                          Create Group
+                          {this.props.isTeams ? 'Create Team' : 'Create Group'}
                         </Text>
                         <TouchableOpacity
                           style={style.closeBtn}
@@ -257,7 +257,11 @@ class CometChatCreateGroup extends React.Component {
                                 borderColor: this.props.theme.color.grey,
                               },
                             ]}
-                            placeholder="Enter group name"
+                            placeholder={
+                              this.props.isTeams
+                                ? 'Enter team name'
+                                : 'Enter group name'
+                            }
                             type="text"
                             onChangeText={(value) => {
                               this.nameChangeHandler(value);
@@ -273,7 +277,11 @@ class CometChatCreateGroup extends React.Component {
                             selectedValue={this.state.type}>
                             <Picker.Item
                               style={style.inputOptionStyle}
-                              label="Select group type"
+                              label={
+                                this.props.isTeams
+                                  ? 'Select team type'
+                                  : 'Select group type'
+                              }
                               value="Select group type"
                             />
                             {this.state.restrictions?.isPublicGroupEnabled ? (

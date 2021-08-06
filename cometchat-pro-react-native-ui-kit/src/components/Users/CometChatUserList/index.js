@@ -398,13 +398,27 @@ class CometChatUserList extends React.PureComponent {
     }
   };
 
+  sorting = (a, b) => {
+    var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    // names must be equal
+    return 0;
+  };
+
   render() {
     const userList = [...this.state.userList];
     const userListWithHeaders = [];
     let headerIndices = [0];
     if (userList.length) {
       headerIndices = [];
-      userList.forEach((user) => {
+      userList.sort(this.sorting).forEach((user) => {
         const chr = user.name[0].toUpperCase();
         if (chr !== this.currentLetter) {
           this.currentLetter = chr;

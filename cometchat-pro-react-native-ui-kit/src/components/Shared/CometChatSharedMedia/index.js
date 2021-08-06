@@ -233,6 +233,7 @@ export default class CometChatSharedMedia extends React.Component {
     const bgColor = currentTheme.backgroundColor.lightGrey;
 
     const template = (message) => {
+      console.log('TYPED::', messageType);
       if (messageType === CometChat.MESSAGE_TYPE.IMAGE && message.data.url) {
         return (
           <TouchableOpacity
@@ -254,6 +255,7 @@ export default class CometChatSharedMedia extends React.Component {
         );
       }
       if (messageType === CometChat.MESSAGE_TYPE.VIDEO && message.data.url) {
+        console.log('check pls:::', message.data);
         return (
           <View style={[styles.videoStyle]}>
             <VideoPlayer

@@ -5,6 +5,7 @@ import { calc } from '../../../utils/consts';
 export default StyleSheet.create({
   containerStyle: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
   reactionDetailsContainer: {
+    marginTop: 5,
     backgroundColor: 'white',
     paddingVertical: 20,
     paddingBottom: Platform.OS === 'ios' ? 30 : 20,

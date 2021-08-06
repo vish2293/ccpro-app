@@ -14,7 +14,10 @@ export default function UserSuggestions(props) {
     <View style={styles.container}>
       <ScrollView keyboardShouldPersistTaps={'always'}>
         {props.memberList.map((mem) => {
-          if (props.memberName === '' || mem.name.includes(props.memberName))
+          if (
+            props.memberName === '' ||
+            mem.name?.toLowerCase().includes(props.memberName?.toLowerCase())
+          )
             return (
               <TouchableOpacity
                 key={mem.uid}
