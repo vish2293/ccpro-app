@@ -1000,7 +1000,13 @@ export default class CometChatMessageComposer extends React.PureComponent {
               </TextInput>
               {sendBtn}
             </View>
-            {liveReactionBtn}
+            {/* {liveReactionBtn} */}
+            <TouchableOpacity
+              style={style.reactionBtnStyle}
+              disabled={disabled}
+              onPress={this.toggleStickerPicker}>
+              <Icon name="sticker-circle-outline" size={25} color="gray" />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
