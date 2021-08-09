@@ -124,20 +124,42 @@ class CometChatMessageReactions extends Component {
     }
   };
 
-  addMessageReaction = () => {
-    const addReactionEmoji = (
-      <TouchableWithoutFeedback
-        onPress={() => this.setState({ pickerVisible: true })}
-        key="AddReactionEmoji">
-        <View style={styles.reactionContainer}>
-          <Image
-            source={require('./resources/add-reaction.png')}
-            style={styles.addReactionImage}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-    );
-    return addReactionEmoji;
+  addMessageReaction = (reaction) => {
+    console.log('reaction hai::::', reaction);
+    if (reaction) {
+      const smiley = JSON.stringify(reaction);
+      if (smiley.includes(this.props.userId)) {
+        return true;
+      } else {
+        const addReactionEmoji = (
+          <TouchableWithoutFeedback
+            onPress={() => this.setState({ pickerVisible: true })}
+            key="AddReactionEmoji">
+            <View style={styles.reactionContainer}>
+              <Image
+                source={require('./resources/add-reaction.png')}
+                style={styles.addReactionImage}
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        );
+        return addReactionEmoji;
+      }
+    } else {
+      const addReactionEmoji = (
+        <TouchableWithoutFeedback
+          onPress={() => this.setState({ pickerVisible: true })}
+          key="AddReactionEmoji">
+          <View style={styles.reactionContainer}>
+            <Image
+              source={require('./resources/add-reaction.png')}
+              style={styles.addReactionImage}
+            />
+          </View>
+        </TouchableWithoutFeedback>
+      );
+      return addReactionEmoji;
+    }
   };
 
   render() {
@@ -147,7 +169,7 @@ class CometChatMessageReactions extends Component {
     const { pickerVisible, message, reactionsDetailContainer } = this.state;
     const reaction = checkMessageForExtensionsData(message, 'reactions');
     const messageReactions = this.getMessageReactions(reaction);
-    const addReactionEmoji = this.addMessageReaction();
+    const addReactionEmoji = this.addMessageReaction(reaction);
     if (addReactionEmoji !== null) {
       if (this.props.message.messageFrom === enums.MESSAGE_FROM_RECEIVER) {
         messageReactions.push(addReactionEmoji);

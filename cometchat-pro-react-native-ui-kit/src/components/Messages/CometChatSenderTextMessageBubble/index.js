@@ -17,6 +17,7 @@ import * as enums from '../../../utils/enums';
 import * as actions from '../../../utils/actions';
 import { CometChatContext } from '../../../utils/CometChatContext';
 import ParsedText from 'react-native-parsed-text';
+import { useSelector } from 'react-redux';
 
 function usePrevious(value) {
   const ref = useRef();
@@ -27,6 +28,8 @@ function usePrevious(value) {
 }
 
 const CometChatSenderTextMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
+
   const [message, setMessage] = useState({
     ...props.message,
     messageFrom: enums.MESSAGE_FROM_SENDER,
@@ -224,6 +227,7 @@ const CometChatSenderTextMessageBubble = (props) => {
         theme={props.theme}
         {...props}
         message={message}
+        userId={uid}
       />
     </View>
   );

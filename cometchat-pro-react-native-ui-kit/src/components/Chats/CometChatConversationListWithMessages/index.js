@@ -302,7 +302,9 @@ class CometChatConversationListWithMessages extends React.Component {
           this.setState({ outgoingCall: call });
         })
         .catch((error) => {
-          logger('Call initialization failed with exception:', error);
+          logger('Call initialization failed with exception:::::**', error);
+          let activeCall = CometChat.getActiveCall();
+          console.log('call status:::', activeCall);
         });
     } catch (error) {
       logger(error);

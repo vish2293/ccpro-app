@@ -55,9 +55,10 @@ export default function WorkSpace(props) {
           <Ionicons name="chatbox-outline" size={18} color="#fff" />
         </View>
         {workList?.data &&
-          workList.data.slice(0, 4).map((item) => {
+          workList.data.slice(0, 4).map((item, index) => {
             return (
               <TouchableOpacity
+                key={index}
                 onPress={() => onTab(item)}
                 style={style.boxStyle}>
                 {item.st_featured_image ? (
@@ -105,10 +106,11 @@ export default function WorkSpace(props) {
 
               <View style={style.workspaceRow}>
                 {workList?.data &&
-                  filteredSpaces.map((item) => {
+                  filteredSpaces.map((item, index) => {
                     if (item.in_pinned === 1) {
                       return (
                         <TouchableOpacity
+                          key={index}
                           onPress={() => onTab(item)}
                           style={style.workspaceCircle}>
                           {item.st_featured_image ? (
@@ -150,10 +152,11 @@ export default function WorkSpace(props) {
               <Text style={style.subHeading}>Other Workspaces</Text>
               <View style={style.workspaceRow}>
                 {workList?.data &&
-                  filteredSpaces.map((item) => {
+                  filteredSpaces.map((item, index) => {
                     if (item.in_pinned === 0) {
                       return (
                         <TouchableOpacity
+                          key={index}
                           onPress={() => onTab(item)}
                           style={style.workspaceCircle}>
                           {item.st_featured_image ? (
@@ -190,6 +193,11 @@ export default function WorkSpace(props) {
                       );
                     }
                   })}
+                {filteredSpaces.length === 0 && search !== '' ? (
+                  <View>
+                    <Text style={{ color: 'gray' }}>No result found</Text>
+                  </View>
+                ) : null}
               </View>
             </View>
           </ScrollView>

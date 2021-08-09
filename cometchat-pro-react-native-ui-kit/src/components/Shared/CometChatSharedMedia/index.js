@@ -44,11 +44,13 @@ export default class CometChatSharedMedia extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.messageType !== this.state.messageType) {
+      console.log('super condition');
       this.SharedMediaManager = null;
       this.SharedMediaManager = new SharedMediaManager(
         this.props.item,
         this.props.type,
         this.state.messageType,
+        this.context,
       );
       this.getMessages();
       this.SharedMediaManager.attachListeners(this.messageUpdated);
@@ -124,6 +126,8 @@ export default class CometChatSharedMedia extends React.Component {
     new CometChatManager()
       .getLoggedInUser()
       .then((user) => {
+        console.log('user logged In:::', user);
+
         this.loggedInUser = user;
 
         this.SharedMediaManager.fetchPreviousMessages()
@@ -143,12 +147,12 @@ export default class CometChatSharedMedia extends React.Component {
           });
       })
       .catch((error) => {
-        const errorCode = error?.message || 'ERROR';
-        this.props?.showMessage('error', errorCode);
         logger(
           '[CometChatSharedMedia] getMessages getLoggedInUser error',
           error,
         );
+        const errorCode = error?.message || 'ERROR';
+        this.props?.showMessage('error', errorCode);
       });
   };
 
@@ -259,7 +263,7 @@ export default class CometChatSharedMedia extends React.Component {
         return (
           <View style={[styles.videoStyle]}>
             <VideoPlayer
-              source={{ uri: message.data.url }}
+              source={{ uri: message?.data?.url ? message.data.url : null }}
               navigator={this.props.navigator}
               disableBack
               disableSeekbar
@@ -267,7 +271,7 @@ export default class CometChatSharedMedia extends React.Component {
               disableVolume
               style={[styles.videoPlayerStyle]}
               paused
-              resizeMode="contain"
+              // resizeMode="contain"
             />
           </View>
         );
@@ -357,9 +361,9 @@ export default class CometChatSharedMedia extends React.Component {
             renderItem={({ item }) => {
               return template(item);
             }}
-            style={{
-              height: deviceHeight - 280 * heightRatio,
-            }}
+            // style={{
+            //   height: deviceHeight - 280 * heightRatio,
+            // }}
             columnWrapperStyle={styles.mediaItemColumnStyle}
             contentContainerStyle={
               messages?.length ? null : styles.mediaItemStyle
