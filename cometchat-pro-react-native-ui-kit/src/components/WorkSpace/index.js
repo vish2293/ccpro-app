@@ -95,14 +95,14 @@ export default function WorkSpace(props) {
           }>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ padding: 15 }}>
-              <Text style={style.swictherHeading}>Workspace Switcher</Text>
+              <Text style={style.swictherHeading}>Switch Workspaces</Text>
               <TextInput
                 value={search}
                 style={style.searchInput}
-                placeholder="Search for App"
+                placeholder="Search for Workspaces"
                 onChangeText={onChangeHandler}
               />
-              <Text style={style.subHeading}>Pinned Apps</Text>
+              <Text style={style.subHeading}>Pinned Workspaces</Text>
 
               <View style={style.workspaceRow}>
                 {workList?.data &&

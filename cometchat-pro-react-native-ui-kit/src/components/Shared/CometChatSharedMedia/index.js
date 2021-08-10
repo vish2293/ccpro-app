@@ -15,7 +15,7 @@ import CometChatImageViewer from '../../Messages/CometChatImageViewer';
 import DropDownAlert from '../../Shared/DropDownAlert';
 import { SharedMediaManager } from './controller';
 import styles from './styles';
-
+import Video from 'react-native-video';
 export default class CometChatSharedMedia extends React.Component {
   static contextType = CometChatContext;
   constructor(props) {
@@ -44,7 +44,7 @@ export default class CometChatSharedMedia extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.messageType !== this.state.messageType) {
-      console.log('super condition');
+      console.log('super condition 1');
       this.SharedMediaManager = null;
       this.SharedMediaManager = new SharedMediaManager(
         this.props.item,
@@ -262,7 +262,7 @@ export default class CometChatSharedMedia extends React.Component {
         console.log('check pls:::', message.data);
         return (
           <View style={[styles.videoStyle]}>
-            <VideoPlayer
+            {/* <VideoPlayer
               source={{ uri: message?.data?.url ? message.data.url : null }}
               navigator={this.props.navigator}
               disableBack
@@ -272,6 +272,14 @@ export default class CometChatSharedMedia extends React.Component {
               style={[styles.videoPlayerStyle]}
               paused
               // resizeMode="contain"
+            /> */}
+
+            <Video
+              source={{ uri: message?.data?.url ? message.data.url : null }}
+              controls={true}
+              style={[styles.videoPlayerStyle]}
+              // paused
+              resizeMode="cover"
             />
           </View>
         );

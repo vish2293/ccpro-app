@@ -750,6 +750,11 @@ class CometChatTeamList extends React.Component {
     }
   };
 
+  goToAdd = () => {
+    const { navigation } = this.props;
+    navigation.navigate('AddTeam');
+  };
+
   ListHeaderComponent = () => {
     return (
       <View style={[styles.groupHeaderStyle]}>
@@ -757,7 +762,7 @@ class CometChatTeamList extends React.Component {
           <Text style={styles.groupHeaderTitleStyle}>Teams</Text>
           {this.state.restrictions?.isGroupCreationEnabled ? (
             <TouchableOpacity
-              onPress={() => this.createGroupHandler(true)}
+              onPress={this.goToAdd}
               style={{ borderRadius: 20 }}>
               {this.createGroup}
             </TouchableOpacity>

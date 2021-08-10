@@ -104,12 +104,12 @@ const addNewWorkSpace = (state, action) => {
   const copyofUserWorkList = { ...state.workSpace };
   console.log(
     'condddddd:::',
-    copyofUserWorkList.data.filter(
+    copyOfAllList.data.filter(
       (a) => a.in_workspace_id === action.payload.in_workspace_id
     ).length
   );
   if (
-    copyofUserWorkList.data.filter(
+    copyOfAllList.data.filter(
       (a) => a.in_workspace_id === action.payload.in_workspace_id
     ).length !== 0
   ) {
@@ -182,6 +182,18 @@ const addGroup = (state, action) => {
   };
 };
 
+const updateTeam = (state, action) => {
+  console.log('data in reducer:***:::', action.payload);
+  const copyOfList = Array.from(state.allTeamsList);
+  const index = copyOfList.findIndex((a) => a.guid === action.payload.guid);
+  copyOfList[index] = action.payload;
+
+  return {
+    ...state,
+    allTeamsList: copyOfList,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -216,6 +228,8 @@ const reducer = (state = initialState, action) => {
       return updateGroup(state, action);
     case actionTypes.ADD_GROUP:
       return addGroup(state, action);
+    case actionTypes.UPDATE_TEAM:
+      return updateTeam(state, action);
     case actionTypes.READ_ALL:
       console.log('acctionnonon', action.payload);
       return {

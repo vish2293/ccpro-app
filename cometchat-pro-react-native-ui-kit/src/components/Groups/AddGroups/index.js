@@ -68,6 +68,7 @@ const AddGroups = (props) => {
     isImageUploaded: false,
   });
   const [groupsData, setGroupData] = useState(undefined);
+  const [isEdit, setEdit] = useState(false);
 
   const getTeams = async () => {
     const copyList = [];
@@ -109,6 +110,7 @@ const AddGroups = (props) => {
       let teamId = groupData.metadata.team_id.replace('-teamgroup-', '-team-');
       console.log('Edit Mode', teamId);
       setType(teamId);
+      setEdit(true);
 
       setAvatar({ path: groupData.icon });
       //   console.log(JSON.parse(groupsData?.js_users).length);
@@ -117,6 +119,25 @@ const AddGroups = (props) => {
         groupName: groupData.name,
         description: groupData.description,
       });
+
+      var GUID = groupData.guid;
+      var limit = 30;
+      var groupMemberRequest = new CometChat.GroupMembersRequestBuilder(GUID)
+        .setLimit(limit)
+        .build();
+
+      groupMemberRequest.fetchNext().then(
+        (groupMembers) => {
+          console.log('Group Member list fetched successfully:', groupMembers);
+          setMembersList(groupMembers);
+        },
+        (error) => {
+          console.log(
+            'Group Member list fetching failed with exception:',
+            error,
+          );
+        },
+      );
     }
   }, []);
 
@@ -271,6 +292,16 @@ const AddGroups = (props) => {
             console.log('group response:::', groupData);
             dispatch(onUpdateGroup(groupData));
             alert('Group updated successfully');
+
+            CometChat.addMembersToGroup(groupData.guid, usersData, []).then(
+              (response) => {
+                console.log('Add member:', response);
+              },
+              (error) => {
+                console.log('error in update members:', error);
+                alert('Only admins and moderators can perform this action.');
+              },
+            );
           },
           (error) => {
             setLoader(false);
@@ -385,7 +416,9 @@ const AddGroups = (props) => {
 
             <TouchableOpacity onPress={openModal} style={styles.memberView}>
               <Icon name="add" color="#338ce2" size={35} />
-              <Text style={styles.memberText}>Add Members</Text>
+              <Text style={styles.memberText}>
+                {isEdit ? 'Manage Members' : 'Add Members'}
+              </Text>
             </TouchableOpacity>
 
             {membersList.length > 0 ? (
@@ -420,6 +453,7 @@ const AddGroups = (props) => {
           selectedMembers={selectedMembers}
           open={addMembers}
           close={closeModal}
+          membersList={membersList}
         />
       ) : null}
     </SafeAreaView>

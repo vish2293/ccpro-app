@@ -337,3 +337,10 @@ export const onAddGroup = (data) => {
     payload: data,
   };
 };
+
+export const updateTeam = (data) => {
+  return {
+    type: actionTypes.UPDATE_TEAM,
+    payload: data,
+  };
+};

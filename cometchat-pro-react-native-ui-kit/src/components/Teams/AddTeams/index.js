@@ -26,6 +26,7 @@ import {
   getWorkSpacesTypes,
   selectWorkSpace,
   addNewTeam,
+  updateTeam,
 } from '../../../../../store/action';
 import axios from 'axios';
 import { serverUrl } from '../../../utils/consts';
@@ -44,10 +45,50 @@ const AddTeam = (props) => {
   const [loader, setLoader] = useState(false);
   const [imageLoader, setImageLoader] = useState(false);
   const [workSpacesArray, setWorkArray] = useState([]);
+  const [isEdit, setEdit] = useState(false);
+  const [editData, setEditData] = useState('');
   const [state, setState] = useState({
     teamName: '',
     description: '',
   });
+
+  useEffect(() => {
+    const { route } = props;
+    const teamData = route.params.data;
+
+    console.log('props:::', teamData);
+    if (teamData) {
+      const workId = teamData.metadata.workspace_id;
+      setEditData(teamData);
+      setEdit(true);
+      setState({
+        ...state,
+        teamName: teamData.name,
+        description: teamData.description,
+      });
+      setAvatar(teamData.icon);
+      setType(JSON.parse(workId));
+
+      var GUID = teamData.guid;
+      var limit = 30;
+      var groupMemberRequest = new CometChat.GroupMembersRequestBuilder(GUID)
+        .setLimit(limit)
+        .build();
+
+      groupMemberRequest.fetchNext().then(
+        (groupMembers) => {
+          console.log('Group Member list fetched successfully:', groupMembers);
+          setMembersList(groupMembers);
+        },
+        (error) => {
+          console.log(
+            'Group Member list fetching failed with exception:',
+            error,
+          );
+        },
+      );
+    }
+  }, []);
 
   useEffect(() => {
     console.log('work list***', workList.data);
@@ -136,7 +177,7 @@ const AddTeam = (props) => {
   };
 
   const onSave = async () => {
-    const usersData = [uid];
+    const usersData = [];
     setLoader(true);
     if (state.teamName === '') {
       alert('Team name is required!');
@@ -155,18 +196,28 @@ const AddTeam = (props) => {
       setLoader(false);
     } else {
       membersList.forEach((user) => {
-        usersData.push(user.uid);
+        if (user.uid !== uid) {
+          usersData.push(
+            new CometChat.GroupMember(
+              user.uid,
+              CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT,
+            ),
+          );
+        }
       });
 
       console.log('typeeee:', workspaceType);
 
-      var GUID = `ws-${workspaceType}-team-${new Date().getTime()}`;
+      var GUID = isEdit
+        ? editData.guid
+        : `ws-${workspaceType}-team-${new Date().getTime()}`;
       var groupName = state.teamName;
       var groupDescription = state.description;
       var groupMetaData = {
         workspace_id: workspaceType,
-        workspace_name: customTypes.find((a) => a.value === workspaceType)
-          .label,
+        workspace_name: isEdit
+          ? editData.metadata.workspace_name
+          : customTypes.find((a) => a.value === workspaceType).label,
       };
       var groupType = CometChat.GROUP_TYPE.PUBLIC;
       var password = '';
@@ -183,27 +234,63 @@ const AddTeam = (props) => {
 
       group.setMetadata(groupMetaData);
       console.log('group:::', group);
+      console.log('memebers', usersData);
 
-      CometChat.createGroup(group).then(
-        (group) => {
-          console.log('Team data:', group);
-          dispatch(addNewTeam(group));
-          setLoader(false);
-          setState({
-            teamName: '',
-            description: '',
-          });
-          setAvatar('');
-          setMembersList([]);
-          setType('');
-          alert('Team created successfully');
-        },
-        (error) => {
-          setLoader(false);
-          alert('Something went wrong!');
-          console.log('Team creation failed with exception:', error);
-        },
-      );
+      if (isEdit) {
+        CometChat.updateGroup(group).then(
+          (team) => {
+            setLoader(false);
+            console.log('team update response:::', team);
+            dispatch(updateTeam(team));
+            alert('Team updated successfully');
+
+            CometChat.addMembersToGroup(team.guid, usersData, []).then(
+              (response) => {
+                console.log('Add member:', response);
+              },
+              (error) => {
+                console.log('error in update members:', error);
+                alert('Only admins and moderators can perform this action.');
+              },
+            );
+          },
+          (error) => {
+            setLoader(false);
+            alert('Only admins and moderators can perform this action.');
+            console.log('Group updated failed with exception:', error);
+          },
+        );
+      } else {
+        CometChat.createGroup(group).then(
+          (team) => {
+            console.log('Team data:', team);
+            dispatch(addNewTeam(team));
+            setLoader(false);
+            setState({
+              teamName: '',
+              description: '',
+            });
+            setAvatar('');
+            setMembersList([]);
+            setType('');
+            alert('Team created successfully');
+
+            CometChat.addMembersToGroup(team.guid, usersData, []).then(
+              (response) => {
+                console.log('Add member:', response);
+              },
+              (error) => {
+                console.log('Something went wrong:', error);
+              },
+            );
+          },
+          (error) => {
+            setLoader(false);
+            alert('Something went wrong!');
+            console.log('Team creation failed with exception:', error);
+          },
+        );
+      }
     }
   };
 
@@ -277,7 +364,9 @@ const AddTeam = (props) => {
 
             <TouchableOpacity onPress={openModal} style={styles.memberView}>
               <Icon name="add" color="#338ce2" size={35} />
-              <Text style={styles.memberText}>Add Members</Text>
+              <Text style={styles.memberText}>
+                {isEdit ? 'Manage Members' : 'Add Members'}
+              </Text>
             </TouchableOpacity>
 
             {membersList.length > 0 ? (
@@ -312,6 +401,7 @@ const AddTeam = (props) => {
           selectedMembers={selectedMembers}
           open={addMembers}
           close={closeModal}
+          membersList={membersList}
         />
       ) : null}
     </SafeAreaView>

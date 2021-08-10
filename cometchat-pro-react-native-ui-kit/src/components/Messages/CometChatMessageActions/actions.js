@@ -17,12 +17,14 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Toast from 'react-native-easy-toast';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Share from 'react-native-share';
+import { useSelector } from 'react-redux';
 
 const actionIconSize = 26;
 
 export default (props) => {
   const [restrictions, setRestrictions] = useState(null);
   let toastRef = useRef(null);
+  const uid = useSelector((state) => state.reducer.user.uid);
   const context = useContext(CometChatContext);
   useEffect(() => {
     checkRestrictions();
@@ -159,6 +161,17 @@ export default (props) => {
     </TouchableOpacity>
   );
 
+  let deleteButton = (
+    <TouchableOpacity
+      style={styles.action}
+      onPress={() =>
+        props.actionGenerated(actions.DELETE_MESSAGE, props.message)
+      }>
+      <IonIcon name="ios-trash-outline" size={actionIconSize} color="red" />
+      <Text style={styles.actionsText}>Delete message</Text>
+    </TouchableOpacity>
+  );
+
   // if editing messages need to be disabled
   if (
     props.message.messageFrom === enums.MESSAGE_FROM_RECEIVER ||
@@ -166,11 +179,14 @@ export default (props) => {
     !restrictions?.enableEditMessage
   ) {
     editMessage = null;
-    deleteMessage = null;
   }
 
   if (props.message.type !== CometChat.MESSAGE_TYPE.TEXT) {
     copyMessage = null;
+  }
+
+  if (props.message.messageFrom === enums.MESSAGE_FROM_RECEIVER) {
+    deleteMessage = null;
   }
 
   return (
@@ -183,6 +199,10 @@ export default (props) => {
           {deleteMessage}
           {copyMessage}
           {props.message.type === 'text' ? null : shareMessage}
+          {props.message.type === 'extension_sticker' &&
+          props.message.sender.uid === uid
+            ? deleteButton
+            : null}
         </View>
       </TouchableWithoutFeedback>
       <Toast

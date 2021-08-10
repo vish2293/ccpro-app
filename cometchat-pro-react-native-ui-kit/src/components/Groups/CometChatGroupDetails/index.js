@@ -602,6 +602,21 @@ export default class CometChatGroupDetails extends React.Component {
     }
   };
 
+  askToLeave = () => {
+    Alert.alert(
+      'Confirmation',
+      `Are you sure you want to leave ${this.props.item.name}?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => this.leaveGroup() },
+      ],
+    );
+  };
+
   render() {
     let viewMembersBtn = (
       <TouchableOpacity
@@ -679,7 +694,7 @@ export default class CometChatGroupDetails extends React.Component {
     leaveGroupBtn = (
       <TouchableOpacity
         onPress={() => {
-          this.leaveGroup();
+          this.askToLeave();
         }}>
         <Text
           style={[

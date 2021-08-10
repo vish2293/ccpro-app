@@ -70,9 +70,9 @@ const TeamList = (props) => {
     navigation.goBack();
   };
 
-  const goToAdd = () => {
+  const goToAdd = (item) => {
     const { navigation } = props;
-    navigation.navigate('AddTeam');
+    navigation.navigate('AddTeam', { data: item });
   };
 
   return (
@@ -84,7 +84,7 @@ const TeamList = (props) => {
           </TouchableOpacity>
           <Text style={styles.headerTitleStyle}>Teams</Text>
           <TouchableOpacity
-            onPress={goToAdd}
+            onPress={() => goToAdd(false)}
             activeOpacity={0.8}
             style={styles.buttonStyle}>
             <Text style={styles.buttonText}>Add New</Text>
@@ -101,6 +101,7 @@ const TeamList = (props) => {
               {getAllTeams?.map((item, index) => {
                 return (
                   <TouchableOpacity
+                    onPress={() => goToAdd(item)}
                     activeOpacity={0.7}
                     style={styles.workBox}
                     key={index}>

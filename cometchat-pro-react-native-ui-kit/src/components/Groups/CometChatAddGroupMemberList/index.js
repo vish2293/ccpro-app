@@ -57,6 +57,12 @@ class CometChatAddGroupMemberList extends React.Component {
       this.getUsers();
       this.AddMembersManager.attachListeners(this.userUpdated);
     });
+
+    if (this.props.membersList) {
+      this.setState({
+        membersToAdd: this.props.membersList,
+      });
+    }
   }
 
   componentDidUpdate() {

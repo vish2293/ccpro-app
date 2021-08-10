@@ -18,3 +18,5 @@ export const READ_ALL = 'READ_ALL';
 export const GET_GROUPS = 'GET_GROUPS';
 export const UPDATE_GROUPS = 'UPDATE_GROUPS';
 export const ADD_GROUP = 'ADD_GROUP';
+
+export const UPDATE_TEAM = 'UPDATE_TEAM';
