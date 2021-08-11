@@ -147,6 +147,12 @@ export default function WorkSpace(props) {
                       );
                     }
                   })}
+
+                {filteredSpaces.length === 0 && search !== '' ? (
+                  <View style={{ marginBottom: 10 }}>
+                    <Text style={{ color: 'gray' }}>No result found</Text>
+                  </View>
+                ) : null}
               </View>
 
               <Text style={style.subHeading}>Other Workspaces</Text>

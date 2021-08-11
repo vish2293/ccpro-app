@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import theme from '../../../resources/theme';
 import { useSelector, useDispatch } from 'react-redux';
@@ -200,8 +201,8 @@ const AddWorkSpace = (props) => {
         if (workspaceData) {
           data.id = workspaceData.in_workspace_id;
           response = await dispatch(onEditWorkSpace(data));
-          success = 'Workspace edited successfully!';
-          error = 'workspace not edited!';
+          success = 'Workspace updated successfully!';
+          error = 'workspace not updated!';
         } else {
           response = await dispatch(onAddWorkSpace(data));
           success = 'Workspace added successfully!';
@@ -212,7 +213,9 @@ const AddWorkSpace = (props) => {
         if (response.error_code) {
           alert(error);
         } else {
-          alert(success);
+          Alert.alert('Success', success, [
+            { text: 'OK', onPress: () => goBack() },
+          ]);
           if (!workspaceData) {
             setState({
               workspaceName: '',

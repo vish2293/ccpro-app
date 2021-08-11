@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import theme from '../../../resources/theme';
 import { useSelector, useDispatch } from 'react-redux';
@@ -291,7 +292,10 @@ const AddGroups = (props) => {
             setLoader(false);
             console.log('group response:::', groupData);
             dispatch(onUpdateGroup(groupData));
-            alert('Group updated successfully');
+
+            Alert.alert('Success', 'Group updated successfully', [
+              { text: 'OK', onPress: () => goBack() },
+            ]);
 
             CometChat.addMembersToGroup(groupData.guid, usersData, []).then(
               (response) => {
@@ -306,6 +310,7 @@ const AddGroups = (props) => {
           (error) => {
             setLoader(false);
             console.log('Group updated failed with exception:', error);
+            alert(error.message);
           },
         );
       } else {
@@ -314,7 +319,11 @@ const AddGroups = (props) => {
             setLoader(false);
             console.log('group response:::', groupData);
             dispatch(onAddGroup(groupData));
-            alert('Group created successfully');
+
+            Alert.alert('Success', 'Group created successfully', [
+              { text: 'OK', onPress: () => goBack() },
+            ]);
+
             setType('');
             setState({
               ...state,

@@ -29,6 +29,7 @@ import { logger } from '../../../utils/common';
 import DropDownAlert from '../../Shared/DropDownAlert';
 import styles from '../../Shared/CometChatAvatar/styles';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import GroupMembersList from '../GroupMembersList';
 
 const ADD_MEMBER = 'addMember';
 const VIEW_MEMBER = 'viewMember';
@@ -51,6 +52,7 @@ export default class CometChatGroupDetails extends React.Component {
       addModerator: false,
       enableLeaveGroup: false,
       restrictions: null,
+      showGroupMembers: false,
     };
 
     this.viewTheme = { ...theme, ...this.props.theme };
@@ -374,10 +376,20 @@ export default class CometChatGroupDetails extends React.Component {
         })
         .catch((error) => {
           logger('Group leaving failed with exception:', error);
-
-          Alert.alert('Group leaving failed with exception', error.message, [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
-          ]);
+          if (error.code === 'ERR_OWNER_EXIT_FORBIDDEN') {
+            Alert.alert(
+              'Error',
+              'You are the group owner, please transfer ownership to a member before leaving the group',
+              [
+                { text: 'Cancel', onPress: () => console.log('OK Pressed') },
+                { text: 'Transfer', onPress: () => this.showMembersList() },
+              ],
+            );
+          } else {
+            Alert.alert('Group leaving failed with exception', error.message, [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+          }
 
           const errorCode = error?.message || 'ERROR';
           this.dropDownAlertRef?.showMessage('error', errorCode);
@@ -603,18 +615,27 @@ export default class CometChatGroupDetails extends React.Component {
   };
 
   askToLeave = () => {
-    Alert.alert(
-      'Confirmation',
-      `Are you sure you want to leave ${this.props.item.name}?`,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        { text: 'OK', onPress: () => this.leaveGroup() },
-      ],
-    );
+    Alert.alert('Confirmation', 'Are you sure you want to leave the group?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'Leave', onPress: () => this.leaveGroup() },
+    ]);
+  };
+
+  showMembersList = () => {
+    console.log('i run');
+    this.setState({
+      showGroupMembers: true,
+    });
+  };
+
+  closeMembersList = () => {
+    this.setState({
+      showGroupMembers: false,
+    });
   };
 
   render() {
@@ -817,6 +838,21 @@ export default class CometChatGroupDetails extends React.Component {
       </View>
     );
 
+    let showGroupMembers = null;
+    if (this.state.showGroupMembers) {
+      showGroupMembers = (
+        <GroupMembersList
+          theme={this.props.theme}
+          item={this.props.item}
+          open={this.state.showGroupMembers}
+          close={() => this.closeMembersList()}
+          actionGenerated={this.membersActionHandler}
+          workspace
+          userInfo={this.loggedInUser}
+        />
+      );
+    }
+
     return (
       <Modal
         transparent
@@ -885,6 +921,7 @@ export default class CometChatGroupDetails extends React.Component {
                     {viewMembers}
                     {addMembers}
                     {bannedMembers}
+                    {showGroupMembers}
                   </GroupDetailContext.Provider>
                 </View>
               );

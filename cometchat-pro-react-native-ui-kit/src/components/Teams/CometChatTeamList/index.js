@@ -752,7 +752,7 @@ class CometChatTeamList extends React.Component {
 
   goToAdd = () => {
     const { navigation } = this.props;
-    navigation.navigate('AddTeam');
+    navigation.navigate('AddTeam', { data: false });
   };
 
   ListHeaderComponent = () => {

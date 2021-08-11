@@ -28,6 +28,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   TextInput,
+  Alert,
 } from 'react-native';
 import { logger } from '../../../utils/common';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -1045,6 +1046,17 @@ class CometChatConversationList extends React.Component {
       });
   };
 
+  askToDelete = (item) => {
+    Alert.alert('Confirmation', 'Are you sure you want to delete?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'Delete', onPress: () => this.deleteConversations(item) },
+    ]);
+  };
+
   render() {
     let filteredUsers = this.state.conversationList.filter((user) => {
       return (
@@ -1088,7 +1100,7 @@ class CometChatConversationList extends React.Component {
                       right: 0,
                       maxHeight: 64,
                     }}
-                    onPress={() => this.deleteConversations(data.item)}>
+                    onPress={() => this.askToDelete(data.item)}>
                     <Image
                       source={require('./resources/delete.png')}
                       resizeMode="contain"

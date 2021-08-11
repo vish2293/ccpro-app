@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import theme from '../../../resources/theme';
@@ -242,7 +243,10 @@ const AddTeam = (props) => {
             setLoader(false);
             console.log('team update response:::', team);
             dispatch(updateTeam(team));
-            alert('Team updated successfully');
+
+            Alert.alert('Success', 'Team updated successfully', [
+              { text: 'OK', onPress: () => goBack() },
+            ]);
 
             CometChat.addMembersToGroup(team.guid, usersData, []).then(
               (response) => {
@@ -273,7 +277,10 @@ const AddTeam = (props) => {
             setAvatar('');
             setMembersList([]);
             setType('');
-            alert('Team created successfully');
+
+            Alert.alert('Success', 'Team created successfully', [
+              { text: 'OK', onPress: () => goBack() },
+            ]);
 
             CometChat.addMembersToGroup(team.guid, usersData, []).then(
               (response) => {
