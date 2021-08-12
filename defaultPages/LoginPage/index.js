@@ -40,7 +40,7 @@ class LoginPage extends React.PureComponent {
 
   componentDidUpdate() {
     if (this.props.isLoggedIn) {
-      this.props.navigation.navigate('HomePage');
+      this.props.navigation.navigate('CometChatUI');
     }
   }
 
@@ -64,118 +64,118 @@ class LoginPage extends React.PureComponent {
     }
 
     return (
-      <SafeAreaView style={{flex:1}}>
-      <KeyboardAvoidingView style={{ flex: 1 }}>
-        {loader}
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+          {loader}
 
-        <ScrollView>
-          <View style={style.wrapperStyle}>
-            {errorMessage}
-            <Text style={style.titleStyle}>CometChat App</Text>
-            <Text style={style.subtitleStyle}>
-              Login with one of our sample users
-            </Text>
-            <View style={style.userContainerStyle}>
-              <TouchableOpacity
-                style={style.userWrapperStyle}
-                onPress={() => this.login('superhero1')}
-              >
-                <View style={style.thumbnailWrapperStyle}>
-                  <CometChatAvatar
-                    image={{
-                      uri:
-                        'https://data-us.cometchat.io/assets/images/avatars/ironman.png',
-                    }}
-                  />
-                </View>
-                <Text style={style.btnText}>superhero1</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={style.userWrapperStyle}
-                onPress={() => this.login('superhero2')}
-              >
-                <View style={style.thumbnailWrapperStyle}>
-                  <CometChatAvatar
-                    image={{
-                      uri:
-                        'https://data-us.cometchat.io/assets/images/avatars/captainamerica.png',
-                    }}
-                  />
-                </View>
-                <Text style={style.btnText}>superhero2</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={style.userWrapperStyle}
-                onPress={() => this.login('superhero3')}
-              >
-                <View style={style.thumbnailWrapperStyle}>
-                  <CometChatAvatar
-                    image={{
-                      uri:
-                        'https://data-us.cometchat.io/assets/images/avatars/spiderman.png',
-                    }}
-                  />
-                </View>
-                <Text style={style.btnText}>superhero3</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={style.userWrapperStyle}
-                onPress={() => this.login('superhero4')}
-              >
-                <View style={style.thumbnailWrapperStyle}>
-                  <CometChatAvatar
-                    image={{
-                      uri:
-                        'https://data-us.cometchat.io/assets/images/avatars/wolverine.png',
-                    }}
-                  />
-                </View>
-                <Text style={style.btnText}>superhero4</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={style.userWrapperStyle}
-                onPress={() => this.login('superhero5')}
-              >
-                <View style={style.thumbnailWrapperStyle}>
-                  <CometChatAvatar
-                    image={{
-                      uri:
-                        'https://data-us.cometchat.io/assets/images/avatars/cyclops.png',
-                    }}
-                  />
-                </View>
-                <Text style={style.btnText}>superhero5</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={style.uidWrapperStyle}>
-              <View>
-                <Text style={style.subtitleStyle}> Login with UID</Text>
+          <ScrollView>
+            <View style={style.wrapperStyle}>
+              {errorMessage}
+              <Text style={style.titleStyle}>CometChat App</Text>
+              <Text style={style.subtitleStyle}>
+                Login with one of our sample users
+              </Text>
+              <View style={style.userContainerStyle}>
+                <TouchableOpacity
+                  style={style.userWrapperStyle}
+                  onPress={() => this.login('superhero1')}
+                >
+                  <View style={style.thumbnailWrapperStyle}>
+                    <CometChatAvatar
+                      image={{
+                        uri:
+                          'https://data-us.cometchat.io/assets/images/avatars/ironman.png',
+                      }}
+                    />
+                  </View>
+                  <Text style={style.btnText}>superhero1</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={style.userWrapperStyle}
+                  onPress={() => this.login('superhero2')}
+                >
+                  <View style={style.thumbnailWrapperStyle}>
+                    <CometChatAvatar
+                      image={{
+                        uri:
+                          'https://data-us.cometchat.io/assets/images/avatars/captainamerica.png',
+                      }}
+                    />
+                  </View>
+                  <Text style={style.btnText}>superhero2</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={style.userWrapperStyle}
+                  onPress={() => this.login('superhero3')}
+                >
+                  <View style={style.thumbnailWrapperStyle}>
+                    <CometChatAvatar
+                      image={{
+                        uri:
+                          'https://data-us.cometchat.io/assets/images/avatars/spiderman.png',
+                      }}
+                    />
+                  </View>
+                  <Text style={style.btnText}>superhero3</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={style.userWrapperStyle}
+                  onPress={() => this.login('superhero4')}
+                >
+                  <View style={style.thumbnailWrapperStyle}>
+                    <CometChatAvatar
+                      image={{
+                        uri:
+                          'https://data-us.cometchat.io/assets/images/avatars/wolverine.png',
+                      }}
+                    />
+                  </View>
+                  <Text style={style.btnText}>superhero4</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={style.userWrapperStyle}
+                  onPress={() => this.login('superhero5')}
+                >
+                  <View style={style.thumbnailWrapperStyle}>
+                    <CometChatAvatar
+                      image={{
+                        uri:
+                          'https://data-us.cometchat.io/assets/images/avatars/cyclops.png',
+                      }}
+                    />
+                  </View>
+                  <Text style={style.btnText}>superhero5</Text>
+                </TouchableOpacity>
               </View>
-              <View style={style.inputWrapperStyle}>
-                <TextInput
-                  style={style.textInput}
-                  // ref={this.myRef}
-                  onSubmitEditing={() => this.login('', true)}
-                  onChangeText={(value) => {
-                    this.setState({ uid: value });
-                  }}
-                  placeholder="Enter your UID here"
-                />
+              <View style={style.uidWrapperStyle}>
+                <View>
+                  <Text style={style.subtitleStyle}> Login with UID</Text>
+                </View>
+                <View style={style.inputWrapperStyle}>
+                  <TextInput
+                    style={style.textInput}
+                    // ref={this.myRef}
+                    onSubmitEditing={() => this.login('', true)}
+                    onChangeText={(value) => {
+                      this.setState({ uid: value });
+                    }}
+                    placeholder="Enter your UID here"
+                  />
+                </View>
+                <TouchableOpacity
+                  style={style.loginBtn}
+                  onPress={() => this.login('', true)}
+                >
+                  <Text style={style.btnText}>Login</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={style.loginBtn}
-                onPress={() => this.login('', true)}
-              >
-                <Text style={style.btnText}>Login</Text>
-              </TouchableOpacity>
             </View>
-          </View>
-          <DropDownAlert
-            onClose={() => this.setState({ showError: false })}
-            ref={(ref) => (this.dropDownAlertRef = ref)}
-          />
-        </ScrollView>
-      </KeyboardAvoidingView>
+            <DropDownAlert
+              onClose={() => this.setState({ showError: false })}
+              ref={(ref) => (this.dropDownAlertRef = ref)}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }

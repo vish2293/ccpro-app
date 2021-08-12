@@ -274,6 +274,11 @@ class GroupMembersList extends React.Component {
    * @param
    */
 
+  leaveGroup = () => {
+    this.props.onLeaveGroup();
+    this.props.close();
+  };
+
   updateMembers = () => {
     if (this.props.workspace) {
       this.setState({
@@ -297,7 +302,7 @@ class GroupMembersList extends React.Component {
           Alert.alert(
             'Success',
             'Successfully transferred ownership of the group.',
-            [{ text: 'OK', onPress: () => this.props.close() }],
+            [{ text: 'OK', onPress: () => this.leaveGroup() }],
           );
         },
         (error) => {

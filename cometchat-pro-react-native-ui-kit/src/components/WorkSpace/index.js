@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import {
   View,
   Text,
@@ -142,7 +142,6 @@ export default function WorkSpace(props) {
                               </View>
                             </View>
                           )}
-                          {/* <MaterialIcons name={a} size={25 * heightRatio} color={'grey'} /> */}
                         </TouchableOpacity>
                       );
                     }
@@ -161,41 +160,41 @@ export default function WorkSpace(props) {
                   filteredSpaces.map((item, index) => {
                     if (item.in_pinned === 0) {
                       return (
-                        <TouchableOpacity
-                          key={index}
-                          onPress={() => onTab(item)}
-                          style={style.workspaceCircle}>
-                          {item.st_featured_image ? (
-                            <View style={style.whiteBorder}>
-                              <Image
-                                style={
-                                  item.st_guid === getSelectedSpace?.st_guid
-                                    ? style.imgBorderStyle
-                                    : style.imgStyle
-                                }
-                                source={{
-                                  uri: global + item.st_featured_image,
-                                }}
-                              />
-                            </View>
-                          ) : (
-                            <View style={style.whiteBorder}>
-                              <View
-                                style={
-                                  item.st_guid === getSelectedSpace?.st_guid
-                                    ? style.textBoxBordered
-                                    : style.textBox
-                                }>
-                                <Text style={style.textStyle}>
-                                  {`${item.st_name.slice(0, 1)} ${
-                                    item.in_workspace_id
-                                  }`}
-                                </Text>
+                        <Fragment key={index}>
+                          <TouchableOpacity
+                            onPress={() => onTab(item)}
+                            style={style.workspaceCircle}>
+                            {item.st_featured_image ? (
+                              <View style={style.whiteBorder}>
+                                <Image
+                                  style={
+                                    item.st_guid === getSelectedSpace?.st_guid
+                                      ? style.imgBorderStyle
+                                      : style.imgStyle
+                                  }
+                                  source={{
+                                    uri: global + item.st_featured_image,
+                                  }}
+                                />
                               </View>
-                            </View>
-                          )}
-                          {/* <MaterialIcons name={a} size={25 * heightRatio} color={'grey'} /> */}
-                        </TouchableOpacity>
+                            ) : (
+                              <View style={style.whiteBorder}>
+                                <View
+                                  style={
+                                    item.st_guid === getSelectedSpace?.st_guid
+                                      ? style.textBoxBordered
+                                      : style.textBox
+                                  }>
+                                  <Text style={style.textStyle}>
+                                    {`${item.st_name.slice(0, 1)} ${
+                                      item.in_workspace_id
+                                    }`}
+                                  </Text>
+                                </View>
+                              </View>
+                            )}
+                          </TouchableOpacity>
+                        </Fragment>
                       );
                     }
                   })}

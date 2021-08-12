@@ -39,7 +39,7 @@ function StackNavigator(props) {
       <NavigationContainer>
         <Stack.Navigator
           headerMode="none"
-          initialRouteName={props.isLoggedIn ? 'HomePage' : null}
+          initialRouteName={props.isLoggedIn ? 'CometChatUI' : null}
         >
           <Stack.Screen name="LoginPage" component={LoginPage} />
           <Stack.Screen name="HomePage" component={HomePage} />

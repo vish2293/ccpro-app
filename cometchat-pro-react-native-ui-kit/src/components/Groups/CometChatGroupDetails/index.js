@@ -328,6 +328,17 @@ export default class CometChatGroupDetails extends React.Component {
    * @param
    */
 
+  askToDelete = () => {
+    Alert.alert('Confirmation', 'Are you sure you want to delete?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'Delete', onPress: () => this.deleteGroup() },
+    ]);
+  };
+
   deleteGroup = () => {
     const item = { ...this.props.item };
     const { guid } = item;
@@ -347,6 +358,11 @@ export default class CometChatGroupDetails extends React.Component {
         const errorCode = error?.message || 'ERROR';
         this.dropDownAlertRef?.showMessage('error', errorCode);
         logger('Group delete failed with exception:', error);
+        if (error.code === 'ERR_GROUP_NO_ADMIN_SCOPE') {
+          Alert.alert('Error', 'Only group admins can perform this action', [
+            { text: 'Ok', onPress: () => {} },
+          ]);
+        }
       });
   };
 
@@ -378,7 +394,7 @@ export default class CometChatGroupDetails extends React.Component {
           logger('Group leaving failed with exception:', error);
           if (error.code === 'ERR_OWNER_EXIT_FORBIDDEN') {
             Alert.alert(
-              'Error',
+              '',
               'You are the group owner, please transfer ownership to a member before leaving the group',
               [
                 { text: 'Cancel', onPress: () => console.log('OK Pressed') },
@@ -681,7 +697,7 @@ export default class CometChatGroupDetails extends React.Component {
       deleteGroupBtn = (
         <TouchableOpacity
           onPress={() => {
-            this.deleteGroup();
+            this.askToDelete();
           }}>
           <Text
             style={[style.itemLinkStyle, { color: this.viewTheme.color.red }]}>
@@ -849,6 +865,7 @@ export default class CometChatGroupDetails extends React.Component {
           actionGenerated={this.membersActionHandler}
           workspace
           userInfo={this.loggedInUser}
+          onLeaveGroup={this.leaveGroup}
         />
       );
     }
