@@ -194,6 +194,42 @@ const updateTeam = (state, action) => {
   };
 };
 
+const setPinnedWorkspace = (state, action) => {
+  console.log('data in reducer:***:::', action.payload);
+  const copyOfList = { ...state.workSpace };
+  console.log('all work data::', copyOfList);
+  const index = copyOfList.data.findIndex(
+    (a) => a.st_guid === action.payload.ws_pinned[0]
+  );
+  console.log('found::', copyOfList.data[index]);
+  copyOfList.data[index].in_pinned = 1;
+  // const index = copyOfList.findIndex((a) => a.guid === action.payload.guid);
+  // copyOfList[index] = action.payload;
+
+  return {
+    ...state,
+    workSpace: copyOfList,
+  };
+};
+
+const setUnPinnedWorkspace = (state, action) => {
+  console.log('data in reducer:***:::', action.payload);
+  const copyOfList = { ...state.workSpace };
+  console.log('all work data::', copyOfList);
+  const index = copyOfList.data.findIndex(
+    (a) => a.st_guid === action.payload.ws_unpinned[0]
+  );
+  console.log('found::', copyOfList.data[index]);
+  copyOfList.data[index].in_pinned = 0;
+  // const index = copyOfList.findIndex((a) => a.guid === action.payload.guid);
+  // copyOfList[index] = action.payload;
+
+  return {
+    ...state,
+    workSpace: copyOfList,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -230,6 +266,10 @@ const reducer = (state = initialState, action) => {
       return addGroup(state, action);
     case actionTypes.UPDATE_TEAM:
       return updateTeam(state, action);
+    case actionTypes.PINNED_WORKSAPCE:
+      return setPinnedWorkspace(state, action);
+    case actionTypes.UN_PINNED_WORKSAPCE:
+      return setUnPinnedWorkspace(state, action);
     case actionTypes.READ_ALL:
       console.log('acctionnonon', action.payload);
       return {

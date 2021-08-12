@@ -344,3 +344,59 @@ export const updateTeam = (data) => {
     payload: data,
   };
 };
+
+export const onPinnedWorkspace = (data) => {
+  console.log('credentials', data);
+  return async (dispatch, state) => {
+    // const token = state().reducer.jwtToken;
+    dispatch({
+      type: actionTypes.PINNED_WORKSAPCE,
+      payload: data,
+    });
+    // return await axios
+    //   .put(serverUrl + 'user/workspaces', data, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log('pinned response:::::', res.data);
+
+    //     // dispatch(getSingleWorkSpaces(res.data.update_id));
+    //     return res.data;
+    //   })
+    //   .catch((err) => {
+    //     // console.log('error:', err);
+    //     console.log('error:', err.response);
+    //     return err.response;
+    //   });
+  };
+};
+
+export const onUnPinnedWorkspace = (data) => {
+  console.log('credentials', data);
+  return async (dispatch, state) => {
+    // const token = state().reducer.jwtToken;
+    dispatch({
+      type: actionTypes.UN_PINNED_WORKSAPCE,
+      payload: data,
+    });
+    // return await axios
+    //   .put(serverUrl + 'user/workspaces', data, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log('pinned response:::::', res.data);
+
+    //     // dispatch(getSingleWorkSpaces(res.data.update_id));
+    //     return res.data;
+    //   })
+    //   .catch((err) => {
+    //     // console.log('error:', err);
+    //     console.log('error:', err.response);
+    //     return err.response;
+    //   });
+  };
+};

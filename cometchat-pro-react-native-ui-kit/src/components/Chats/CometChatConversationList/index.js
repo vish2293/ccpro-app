@@ -1144,7 +1144,6 @@ class CometChatConversationList extends React.Component {
 }
 
 const mapStateToProps = ({ reducer }) => {
-  console.log('reducer::::', reducer.chatRead);
   return {
     chatRead: reducer.chatRead,
     selectedWorkSpace: reducer.selectedWorkSpace,

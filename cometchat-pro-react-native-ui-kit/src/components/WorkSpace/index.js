@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,24 +13,33 @@ import { heightRatio } from '../../utils/consts';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectWorkSpace } from '../../../../store/action';
+import {
+  selectWorkSpace,
+  onPinnedWorkspace,
+  onUnPinnedWorkspace,
+} from '../../../../store/action';
 import Popover from 'react-native-popover-view';
 import OfflineNotice from '../../../../OfflineNotice';
 
 const data = ['sms', 'calendar-today', 'more-horiz'];
 
 export default function WorkSpace(props) {
+  const touchable = useRef();
+  const workList = useSelector((state) => state.reducer.workSpace);
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
+  const [itemIndex, setIndex] = useState(-1);
+  const [pinnedIndex, setPinnedIndex] = useState(-1);
   const getSelectedSpace = useSelector(
     (state) => state.reducer.selectedWorkSpace,
   );
+  const uid = useSelector((state) => state.reducer.user.uid);
 
   useEffect(() => {
     console.log('slected:', getSelectedSpace);
   }, [getSelectedSpace]);
 
-  const { workList } = props;
+  // const { workList } = props;
   const global = workList?.globals?.ws_upload_url
     ? workList.globals.ws_upload_url
     : '';
@@ -47,6 +56,41 @@ export default function WorkSpace(props) {
   let filteredSpaces = workList?.data?.filter((work) => {
     return work.st_name?.toLowerCase().indexOf(search.toLowerCase()) !== -1;
   });
+
+  const showMenu = (index) => {
+    setIndex(index);
+  };
+
+  const closeMenu = () => {
+    setIndex(-1);
+    setPinnedIndex(-1);
+  };
+
+  const showPinnedMenu = (index) => {
+    setPinnedIndex(index);
+  };
+
+  const onTapPinned = async (workspace) => {
+    console.log('workspace:', workspace);
+    console.log('uid', uid);
+    const data = {
+      user_id: uid,
+      ws_pinned: [workspace.st_guid],
+    };
+    await dispatch(onPinnedWorkspace(data));
+    setIndex(-1);
+  };
+
+  const onTapUnPinned = async (workspace) => {
+    console.log('workspace:', workspace);
+    console.log('uid', uid);
+    const data = {
+      user_id: uid,
+      ws_unpinned: [workspace.st_guid],
+    };
+    await dispatch(onUnPinnedWorkspace(data));
+    setPinnedIndex(-1);
+  };
 
   return (
     <SafeAreaView style={style.safeArea}>
@@ -94,7 +138,10 @@ export default function WorkSpace(props) {
             </TouchableOpacity>
           }>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ padding: 15 }}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={closeMenu}
+              style={{ padding: 15 }}>
               <Text style={style.swictherHeading}>Switch Workspaces</Text>
               <TextInput
                 value={search}
@@ -109,12 +156,15 @@ export default function WorkSpace(props) {
                   filteredSpaces.map((item, index) => {
                     if (item.in_pinned === 1) {
                       return (
-                        <TouchableOpacity
+                        <View
                           key={index}
                           onPress={() => onTab(item)}
                           style={style.workspaceCircle}>
                           {item.st_featured_image ? (
-                            <View style={style.whiteBorder}>
+                            <TouchableOpacity
+                              onLongPress={() => showPinnedMenu(index)}
+                              onPress={() => onTab(item)}
+                              style={style.whiteBorder}>
                               <Image
                                 style={
                                   item.st_guid === getSelectedSpace?.st_guid
@@ -125,9 +175,12 @@ export default function WorkSpace(props) {
                                   uri: global + item.st_featured_image,
                                 }}
                               />
-                            </View>
+                            </TouchableOpacity>
                           ) : (
-                            <View style={style.whiteBorder}>
+                            <TouchableOpacity
+                              onLongPress={() => showPinnedMenu(index)}
+                              onPress={() => onTab(item)}
+                              style={style.whiteBorder}>
                               <View
                                 style={
                                   item.st_guid === getSelectedSpace?.st_guid
@@ -140,14 +193,31 @@ export default function WorkSpace(props) {
                                   }`}
                                 </Text>
                               </View>
-                            </View>
+                            </TouchableOpacity>
                           )}
-                        </TouchableOpacity>
+
+                          {index === pinnedIndex ? (
+                            <TouchableOpacity
+                              onPress={() => onTapUnPinned(item)}
+                              style={{
+                                position: 'absolute',
+                                elevation: 5,
+                                top: 35,
+                                backgroundColor: '#fff',
+                                paddingVertical: 4,
+                                paddingHorizontal: 10,
+                                zIndex: 2,
+                                borderRadius: 3,
+                              }}>
+                              <Text>unPin</Text>
+                            </TouchableOpacity>
+                          ) : null}
+                        </View>
                       );
                     }
                   })}
 
-                {filteredSpaces.length === 0 && search !== '' ? (
+                {filteredSpaces?.length === 0 && search !== '' ? (
                   <View style={{ marginBottom: 10 }}>
                     <Text style={{ color: 'gray' }}>No result found</Text>
                   </View>
@@ -160,51 +230,60 @@ export default function WorkSpace(props) {
                   filteredSpaces.map((item, index) => {
                     if (item.in_pinned === 0) {
                       return (
-                        <Fragment key={index}>
-                          <TouchableOpacity
-                            onPress={() => onTab(item)}
-                            style={style.workspaceCircle}>
-                            {item.st_featured_image ? (
-                              <View style={style.whiteBorder}>
-                                <Image
-                                  style={
-                                    item.st_guid === getSelectedSpace?.st_guid
-                                      ? style.imgBorderStyle
-                                      : style.imgStyle
-                                  }
-                                  source={{
-                                    uri: global + item.st_featured_image,
-                                  }}
-                                />
+                        <View key={index} style={style.workspaceCircle}>
+                          {item.st_featured_image ? (
+                            <TouchableOpacity
+                              onLongPress={() => showMenu(index)}
+                              onPress={() => onTab(item)}
+                              style={style.whiteBorder}>
+                              <Image
+                                style={
+                                  item.st_guid === getSelectedSpace?.st_guid
+                                    ? style.imgBorderStyle
+                                    : style.imgStyle
+                                }
+                                source={{
+                                  uri: global + item.st_featured_image,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onLongPress={() => showMenu(index)}
+                              onPress={() => onTab(item)}
+                              style={style.whiteBorder}>
+                              <View
+                                style={
+                                  item.st_guid === getSelectedSpace?.st_guid
+                                    ? style.textBoxBordered
+                                    : style.textBox
+                                }>
+                                <Text style={style.textStyle}>
+                                  {`${item.st_name.slice(0, 1)} ${
+                                    item.in_workspace_id
+                                  }`}
+                                </Text>
                               </View>
-                            ) : (
-                              <View style={style.whiteBorder}>
-                                <View
-                                  style={
-                                    item.st_guid === getSelectedSpace?.st_guid
-                                      ? style.textBoxBordered
-                                      : style.textBox
-                                  }>
-                                  <Text style={style.textStyle}>
-                                    {`${item.st_name.slice(0, 1)} ${
-                                      item.in_workspace_id
-                                    }`}
-                                  </Text>
-                                </View>
-                              </View>
-                            )}
-                          </TouchableOpacity>
-                        </Fragment>
+                            </TouchableOpacity>
+                          )}
+                          {index === itemIndex ? (
+                            <TouchableOpacity
+                              onPress={() => onTapPinned(item)}
+                              style={style.pinView}>
+                              <Text>Pin</Text>
+                            </TouchableOpacity>
+                          ) : null}
+                        </View>
                       );
                     }
                   })}
-                {filteredSpaces.length === 0 && search !== '' ? (
+                {filteredSpaces?.length === 0 && search !== '' ? (
                   <View>
                     <Text style={{ color: 'gray' }}>No result found</Text>
                   </View>
                 ) : null}
               </View>
-            </View>
+            </TouchableOpacity>
           </ScrollView>
         </Popover>
       </View>

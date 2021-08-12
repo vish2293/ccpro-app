@@ -103,4 +103,14 @@ module.exports = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
   },
+  pinView: {
+    position: 'absolute',
+    elevation: 5,
+    top: 35,
+    backgroundColor: '#fff',
+    paddingVertical: 4,
+    paddingHorizontal: 20,
+    zIndex: 2,
+    borderRadius: 3,
+  },
 });

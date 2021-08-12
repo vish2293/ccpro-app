@@ -20,3 +20,6 @@ export const UPDATE_GROUPS = 'UPDATE_GROUPS';
 export const ADD_GROUP = 'ADD_GROUP';
 
 export const UPDATE_TEAM = 'UPDATE_TEAM';
+
+export const PINNED_WORKSAPCE = 'PINNED_WORKSAPCE';
+export const UN_PINNED_WORKSAPCE = 'UN_PINNED_WORKSAPCE';
