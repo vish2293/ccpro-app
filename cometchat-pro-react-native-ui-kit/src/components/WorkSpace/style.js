@@ -94,7 +94,7 @@ module.exports = StyleSheet.create({
     // justifyContent: 'center',
   },
   workspaceCircle: {
-    width: '25%',
+    width: '33%',
     alignItems: 'center',
     marginVertical: 7,
   },

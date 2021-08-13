@@ -53,6 +53,7 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   infoItemsWrapper: {
+    flex: 1,
     borderColor: 'green',
     width: '100%',
   },

@@ -16,6 +16,7 @@ const initialState = {
   teamLoader: true,
   allTeamsList: [],
   groupList: [],
+  usersList: [],
 };
 
 const authStart = (state, action) => {
@@ -230,6 +231,13 @@ const setUnPinnedWorkspace = (state, action) => {
   };
 };
 
+const getUsersList = (state, action) => {
+  return {
+    ...state,
+    usersList: action.payload,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -270,6 +278,8 @@ const reducer = (state = initialState, action) => {
       return setPinnedWorkspace(state, action);
     case actionTypes.UN_PINNED_WORKSAPCE:
       return setUnPinnedWorkspace(state, action);
+    case actionTypes.GET_USERS_LIST:
+      return getUsersList(state, action);
     case actionTypes.READ_ALL:
       console.log('acctionnonon', action.payload);
       return {

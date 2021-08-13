@@ -400,3 +400,33 @@ export const onUnPinnedWorkspace = (data) => {
     //   });
   };
 };
+
+export const getUsersList = (data) => {
+  return {
+    type: actionTypes.GET_USERS_LIST,
+    payload: data,
+  };
+};
+
+export const generatePatternImage = (data) => {
+  console.log('credentials', data);
+  return async (dispatch, state) => {
+    const token = state().reducer.jwtToken;
+    return await axios({
+      url: serverUrl + 'global/generate-image',
+      method: 'post',
+      params: data,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log('response:::::', res);
+        return res;
+      })
+      .catch((err) => {
+        console.log('error:', err.response);
+        return err.response;
+      });
+  };
+};

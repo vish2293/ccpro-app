@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import style from './style';
 import { heightRatio } from '../../utils/consts';
@@ -71,14 +72,21 @@ export default function WorkSpace(props) {
   };
 
   const onTapPinned = async (workspace) => {
-    console.log('workspace:', workspace);
-    console.log('uid', uid);
-    const data = {
-      user_id: uid,
-      ws_pinned: [workspace.st_guid],
-    };
-    await dispatch(onPinnedWorkspace(data));
-    setIndex(-1);
+    if (filteredSpaces.filter((a) => a.in_pinned === 1).length < 2) {
+      console.log('workspace:', workspace);
+      console.log('uid', uid);
+      const data = {
+        user_id: uid,
+        ws_pinned: [workspace.st_guid],
+      };
+      await dispatch(onPinnedWorkspace(data));
+      setIndex(-1);
+    } else {
+      setIndex(-1);
+      Alert.alert('', 'User can only pinned 2 workspaces!', [
+        { text: 'ok', onPress: () => {} },
+      ]);
+    }
   };
 
   const onTapUnPinned = async (workspace) => {
@@ -196,6 +204,14 @@ export default function WorkSpace(props) {
                             </TouchableOpacity>
                           )}
 
+                          <View>
+                            <Text style={{ fontSize: 12 }}>
+                              {item.st_name.length > 12
+                                ? `${item.st_name.slice(0, 12)}..`
+                                : item.st_name}
+                            </Text>
+                          </View>
+
                           {index === pinnedIndex ? (
                             <TouchableOpacity
                               onPress={() => onTapUnPinned(item)}
@@ -266,6 +282,14 @@ export default function WorkSpace(props) {
                               </View>
                             </TouchableOpacity>
                           )}
+                          <View>
+                            <Text style={{ fontSize: 12 }}>
+                              {item.st_name.length > 12
+                                ? `${item.st_name.slice(0, 12)}..`
+                                : item.st_name}
+                            </Text>
+                          </View>
+
                           {index === itemIndex ? (
                             <TouchableOpacity
                               onPress={() => onTapPinned(item)}

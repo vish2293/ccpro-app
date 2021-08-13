@@ -2,11 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { CometChatManager } from '../../../utils/controller';
 import { CometChatAvatar } from '../../Shared';
 import styles from './styles';
-import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import theme from '../../../resources/theme';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { logger } from '../../../utils/common';
 
 const notificationIcon = (
@@ -25,7 +32,10 @@ const teamIcon = (
   <FontAwesome color={theme.color.helpText} name="slideshare" size={28} />
 );
 const groupsIcon = (
-  <Icon color={theme.color.helpText} name="groups" size={28} />
+  <FontAwesome color={theme.color.helpText} name="users" size={28} />
+);
+const userIcon = (
+  <FontAwesome5 color={theme.color.helpText} name="user-alt" size={28} />
 );
 
 const CometChatUserProfile = (props) => {
@@ -83,6 +93,11 @@ const CometChatUserProfile = (props) => {
     navigation.navigate('GroupsList');
   };
 
+  const goToUsersList = () => {
+    const { navigation } = props;
+    navigation.navigate('UsersList');
+  };
+
   return (
     <SafeAreaView style={styles.userInfoScreenStyle}>
       <View style={styles.headingContainer}>
@@ -103,45 +118,51 @@ const CometChatUserProfile = (props) => {
         <View style={styles.infoItemHeadingContainer}>
           <Text style={styles.infoItemHeadingText}>Preferences</Text>
         </View>
-        <View style={styles.infoItemsContainer}>
-          <View style={styles.infoItem}>
-            {notificationIcon}
-            <Text style={styles.infoItemText}>Notifications</Text>
+        <ScrollView>
+          <View style={styles.infoItemsContainer}>
+            <View style={styles.infoItem}>
+              {notificationIcon}
+              <Text style={styles.infoItemText}>Notifications</Text>
+            </View>
+            <View style={styles.infoItem}>
+              {privacyIcon}
+              <Text style={styles.infoItemText}>Privacy and Security</Text>
+            </View>
+            <View style={styles.infoItem}>
+              {chatIcon}
+              <Text style={styles.infoItemText}>Chats</Text>
+            </View>
+            <TouchableOpacity onPress={goToWorkScreen} style={styles.infoItem}>
+              {workIcon}
+              <Text style={styles.infoItemText}>Workspaces</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goToTeamsList} style={styles.infoItem}>
+              {teamIcon}
+              <Text style={styles.infoItemText}>Teams</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goToGroupsLIst} style={styles.infoItem}>
+              {groupsIcon}
+              <Text style={styles.infoItemText}>Groups</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goToUsersList} style={styles.infoItem}>
+              {userIcon}
+              <Text style={styles.infoItemText}>Users</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.infoItem}>
-            {privacyIcon}
-            <Text style={styles.infoItemText}>Privacy and Security</Text>
+          <View style={styles.infoItemHeadingContainer}>
+            <Text style={styles.infoItemHeadingText}>Other</Text>
           </View>
-          <View style={styles.infoItem}>
-            {chatIcon}
-            <Text style={styles.infoItemText}>Chats</Text>
+          <View style={styles.infoItemsContainer}>
+            <View style={styles.infoItem}>
+              {helpIcon}
+              <Text style={styles.infoItemText}>Help</Text>
+            </View>
+            <View style={styles.infoItem}>
+              {problemIcon}
+              <Text style={styles.infoItemText}>Report a Problem</Text>
+            </View>
           </View>
-          <TouchableOpacity onPress={goToWorkScreen} style={styles.infoItem}>
-            {workIcon}
-            <Text style={styles.infoItemText}>Workspaces</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={goToTeamsList} style={styles.infoItem}>
-            {teamIcon}
-            <Text style={styles.infoItemText}>Teams</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={goToGroupsLIst} style={styles.infoItem}>
-            {groupsIcon}
-            <Text style={styles.infoItemText}>Groups</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.infoItemHeadingContainer}>
-          <Text style={styles.infoItemHeadingText}>Other</Text>
-        </View>
-        <View style={styles.infoItemsContainer}>
-          <View style={styles.infoItem}>
-            {helpIcon}
-            <Text style={styles.infoItemText}>Help</Text>
-          </View>
-          <View style={styles.infoItem}>
-            {problemIcon}
-            <Text style={styles.infoItemText}>Report a Problem</Text>
-          </View>
-        </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );

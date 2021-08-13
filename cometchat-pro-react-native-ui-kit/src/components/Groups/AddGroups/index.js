@@ -32,6 +32,7 @@ import {
   onGetAllTeams,
   onUpdateGroup,
   onAddGroup,
+  generatePatternImage,
 } from '../../../../../store/action';
 import { GroupListManager } from '../../Teams/CometChatTeamList/controller';
 import axios from 'axios';
@@ -216,6 +217,7 @@ const AddGroups = (props) => {
   };
 
   const onSave = async () => {
+    let patternImage = '';
     const usersData = [];
     setLoader(true);
     if (state.groupName === '') {
@@ -227,15 +229,22 @@ const AddGroups = (props) => {
     } else if (teamType === '') {
       alert('Team is required');
       setLoader(false);
-    } else if (!avatar) {
-      alert('Image is required');
-      setLoader(false);
     }
     // else if (membersList.length === 0) {
     //   alert('At least select one member');
     //   setLoader(false);
     // }
     else {
+      if (!avatar) {
+        const data = {
+          text: 'hello',
+        };
+
+        const imageResponse = await dispatch(generatePatternImage(data));
+        console.log('response here:', imageResponse);
+        patternImage = imageResponse.data.globals.file_upload_url;
+      }
+
       console.log('user:::', membersList);
       membersList.forEach((user) => {
         if (typeof user === 'object' && user !== null) {
@@ -269,7 +278,8 @@ const AddGroups = (props) => {
       var groupMetaData = { team_id: teamId, team_name: state.description };
       var groupType = CometChat.GROUP_TYPE.PUBLIC;
       var password = '';
-      var icon = avatar.path;
+      var icon = avatar ? avatar.path : patternImage;
+
       var group = new CometChat.Group(
         guid,
         groupName,

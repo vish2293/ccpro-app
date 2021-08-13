@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import styles from './style';
 import {
   View,
@@ -11,23 +11,50 @@ import {
 } from 'react-native';
 import theme from '../../../resources/theme';
 import { useSelector, useDispatch } from 'react-redux';
+import { CometChat } from '@cometchat-pro/react-native-chat';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { logger } from '../../../utils/common';
-import { getAllWorkSpaces } from '../../../../../store/action';
+import {
+  getAllWorkSpaces,
+  onGetAllTeams,
+  getUsersList,
+} from '../../../../../store/action';
 
-const WorkSpaceList = (props) => {
+const UsersList = (props) => {
+  const usersData = useSelector((state) => state.reducer.usersList);
+  const [isLoader, setLoader] = useState(false);
+
+  const userInfo = useSelector((state) => state.reducer.user);
+
   const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
-    dispatch(getAllWorkSpaces());
+  const getUsers = async () => {
+    setLoader(true);
+    var limit = 30;
+    var usersRequest = new CometChat.UsersRequestBuilder()
+      .setLimit(limit)
+      .build();
+
+    usersRequest.fetchNext().then(
+      (userList) => {
+        /* userList will be the list of User class. */
+        console.log('User list received:', userList);
+        dispatch(getUsersList(userList));
+        setLoader(false);
+        /* retrived list can be used to display contact list. */
+      },
+      (error) => {
+        setLoader(false);
+        console.log('User list fetching failed with error:', error);
+      },
+    );
+  };
+
+  useEffect(() => {
+    getUsers();
   }, []);
-  const isLoading = useSelector((state) => state.reducer.loader);
-  const workList = useSelector((state) => state.reducer.allWorkspaces);
-  const global = workList?.globals?.ws_upload_url
-    ? workList.globals.ws_upload_url
-    : '';
-  console.log('worklist::::', workList);
+
   /**
    * Retrieve logged in user details
    * @param
@@ -38,10 +65,9 @@ const WorkSpaceList = (props) => {
     navigation.goBack();
   };
 
-  const goToAdd = (item = false, image = false) => {
+  const goToAdd = (item) => {
     const { navigation } = props;
-    console.log('item', item);
-    navigation.navigate('AddWorkSpace', { data: item, image: image });
+    navigation.navigate('AddUsers', { data: item });
   };
 
   return (
@@ -51,43 +77,39 @@ const WorkSpaceList = (props) => {
           <TouchableOpacity onPress={goBack} style={styles.iconStyle}>
             <Icon name="arrow-back" size={25} />
           </TouchableOpacity>
-          <Text style={styles.headerTitleStyle}>Workspace</Text>
+          <Text style={styles.headerTitleStyle}>Users</Text>
           <TouchableOpacity
-            onPress={() => goToAdd()}
+            onPress={() => goToAdd(false)}
             activeOpacity={0.8}
             style={styles.buttonStyle}>
             <Text style={styles.buttonText}>Add New</Text>
           </TouchableOpacity>
         </View>
 
-        {isLoading ? (
+        {isLoader ? (
           <View style={styles.loadingView}>
             <ActivityIndicator color="#338ce2" size="large" />
           </View>
         ) : (
           <ScrollView>
             <View style={styles.bodyContainer}>
-              {workList?.data?.map((item, index) => {
+              {usersData?.map((item, index) => {
                 return (
                   <TouchableOpacity
-                    onPress={() =>
-                      goToAdd(item, global + item.st_featured_image)
-                    }
+                    onPress={() => goToAdd(item)}
                     activeOpacity={0.7}
                     style={styles.workBox}
                     key={index}>
                     <View style={styles.subBox}>
-                      {item.st_featured_image ? (
+                      {item.avatar ? (
                         <Image
                           style={styles.imgStyle}
-                          source={{ uri: global + item.st_featured_image }}
+                          source={{ uri: item.avatar }}
                         />
                       ) : (
                         <View style={styles.textImage}>
                           <Text style={styles.textStyle}>
-                            {`${item.st_name?.slice(0, 1)} ${
-                              item.in_workspace_id
-                            }`}
+                            {item?.name?.slice(0, 2)}
                           </Text>
                         </View>
                       )}
@@ -96,10 +118,13 @@ const WorkSpaceList = (props) => {
                           ellipsizeMode="tail"
                           numberOfLines={1}
                           style={styles.heading}>
-                          {item.st_name}
+                          {item.name}
                         </Text>
-                        <Text style={styles.textNote}>
-                          {item.in_type_id === 2 ? 'Profit' : 'Non-Profit'}
+                        <Text
+                          ellipsizeMode="tail"
+                          numberOfLines={1}
+                          style={styles.textNote}>
+                          {item.name}
                         </Text>
                       </View>
                     </View>
@@ -107,11 +132,16 @@ const WorkSpaceList = (props) => {
                       ellipsizeMode="tail"
                       numberOfLines={2}
                       style={styles.bottomText}>
-                      {item.st_description}
+                      {item.role}
                     </Text>
                   </TouchableOpacity>
                 );
               })}
+              {usersData?.length === 0 ? (
+                <View>
+                  <Text style={styles.noUserText}>No users found!</Text>
+                </View>
+              ) : null}
             </View>
           </ScrollView>
         )}
@@ -119,4 +149,4 @@ const WorkSpaceList = (props) => {
     </SafeAreaView>
   );
 };
-export default WorkSpaceList;
+export default UsersList;
