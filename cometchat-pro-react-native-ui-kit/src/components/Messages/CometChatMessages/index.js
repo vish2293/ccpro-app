@@ -525,6 +525,9 @@ class CometChatMessages extends React.PureComponent {
   viewMessageThread = (parentMessage) => {
     const { route } = this.props;
     const params = route?.params || this.props;
+
+    console.log('m i called:', params);
+
     const message = { ...parentMessage };
     const threadItem = { ...this.state.item };
     this.setState({
@@ -643,6 +646,7 @@ class CometChatMessages extends React.PureComponent {
     const messageId = message.id;
     CometChat.deleteMessage(messageId)
       .then((deletedMessage) => {
+        console.log('delete response:', deletedMessage);
         this.removeMessages([deletedMessage]);
 
         const messageList = [...this.state.messageList];
@@ -659,7 +663,9 @@ class CometChatMessages extends React.PureComponent {
           params.actionGenerated('messageDeleted', [deletedMessage]);
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.log('error in delete:', err);
+      });
   };
 
   editMessage = (message) => {

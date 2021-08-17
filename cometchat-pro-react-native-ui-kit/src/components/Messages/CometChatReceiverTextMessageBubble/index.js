@@ -229,6 +229,7 @@ const CometChatReceiverTextMessageBubble = (props) => {
               <CometChatThreadedMessageReplyCount
                 {...props}
                 message={message}
+                customAction={props.customAction}
               />
               <CometChatMessageReactions
                 theme={props.theme}

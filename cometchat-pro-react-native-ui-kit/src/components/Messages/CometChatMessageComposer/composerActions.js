@@ -374,7 +374,12 @@ export default class ComposerActions extends Component {
   render() {
     const { visible, close } = this.props;
     return (
-      <Modal transparent animated animationType="fade" visible={visible}>
+      <Modal
+        transparent
+        animated
+        animationType="fade"
+        visible={visible}
+        onRequestClose={close}>
         <View style={style.bottomSheetContainer}>
           <TouchableWithoutFeedback
             onPress={() => {

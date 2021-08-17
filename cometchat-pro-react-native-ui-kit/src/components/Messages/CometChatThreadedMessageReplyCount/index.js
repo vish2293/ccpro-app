@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import theme from '../../../resources/theme';
 import styles from './styles';
@@ -11,11 +11,23 @@ const CometChatThreadedMessageReplyCount = (props) => {
   const replyText =
     replyCount === 1 ? `${replyCount} reply` : `${replyCount} replies`;
 
+  const onClickReply = () => {
+    console.log('Hi me calling...');
+    console.log('message::', props.message);
+    if (props.customAction) {
+      props.customAction(actions.VIEW_MESSAGE_THREAD, props.message);
+    } else {
+      props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message);
+    }
+    // console.log(
+    //   'check function',
+    //   props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message),
+    // );
+    // props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message)
+  };
+
   let replies = (
-    <TouchableOpacity
-      onPress={() => {
-        props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message);
-      }}>
+    <TouchableOpacity onPress={onClickReply}>
       <Text
         style={[
           styles.replyTextStyle,

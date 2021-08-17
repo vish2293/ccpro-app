@@ -130,6 +130,18 @@ class CometChatTeamList extends React.Component {
     } catch (error) {
       logger(error);
     }
+
+    new CometChatManager()
+      .getLoggedInUser()
+      .then((user) => {
+        this.loggedInUser = user;
+      })
+      .catch((error) => {
+        logger(
+          '[CometChatConversationListWithMessages] getLoggedInUser error',
+          error,
+        );
+      });
   }
   checkRestrictions = async () => {
     let context = this.contextProviderRef.state;
@@ -810,6 +822,25 @@ class CometChatTeamList extends React.Component {
     });
   };
 
+  onClickGroup = (item) => {
+    console.log('check karen', item);
+    console.log('user:', this.loggedInUser);
+    console.log('theme:::', this.theme);
+    this.props.navigation.navigate(
+      enums.NAVIGATION_CONSTANTS.COMET_CHAT_MESSAGES,
+      {
+        theme: this.theme,
+        item: { ...item },
+        tab: 'conversations',
+        type: 'group',
+        composedThreadMessage: {},
+        callMessage: {},
+        loggedInUser: this.loggedInUser,
+        actionGenerated: () => {},
+      },
+    );
+  };
+
   render() {
     let passwordScreen = null;
     if (this.state.showPasswordScreen) {
@@ -955,7 +986,8 @@ class CometChatTeamList extends React.Component {
                     <Collapse
                       onToggle={(isCollapsed) =>
                         this.toggleList(index, isCollapsed)
-                      }>
+                      }
+                      handleLongPress={() => this.onClickGroup(item)}>
                       <CollapseHeader>
                         <CometChatTeamListItem
                           index={index}
@@ -964,7 +996,7 @@ class CometChatTeamList extends React.Component {
                           theme={this.theme}
                           group={item}
                           selectedGroup={this.state.selectedGroup}
-                          clickHandler={this.handleClick}
+                          clickHandler={() => {}}
                         />
                       </CollapseHeader>
                       <CollapseBody>
@@ -986,7 +1018,7 @@ class CometChatTeamList extends React.Component {
                                   theme={this.theme}
                                   group={item}
                                   selectedGroup={this.state.selectedGroup}
-                                  clickHandler={this.handleClick}
+                                  clickHandler={() => this.onClickGroup(item)}
                                 />
                               );
                             }}

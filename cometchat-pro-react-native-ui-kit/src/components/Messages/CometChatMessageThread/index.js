@@ -59,6 +59,7 @@ class CometChatMessageThread extends React.PureComponent {
   }
 
   componentDidMount() {
+    console.log('parent message:', this.props.parentMessage);
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       this._keyboardDidShow,
@@ -519,6 +520,7 @@ class CometChatMessageThread extends React.PureComponent {
               type={this.props.type}
               message={message}
               actionGenerated={this.actionHandler}
+              customAction={this.props.actionGenerated}
             />
           );
           break;
