@@ -13,8 +13,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as actions from '../../../../utils/actions';
 import * as enums from '../../../../utils/enums';
 import { logger } from '../../../../utils/common';
+import { useSelector } from 'react-redux';
 
 const CometChatReceiverPollMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const viewTheme = { ...theme, ...props.theme };
   const message = {
     ...props.message,
@@ -181,6 +183,7 @@ const CometChatReceiverPollMessageBubble = (props) => {
               theme={props.theme}
               {...props}
               message={message}
+              userId={uid}
             />
           </View>
         </View>

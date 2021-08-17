@@ -920,7 +920,8 @@ class CometChatConversationList extends React.Component {
         </View>
 
         <TouchableWithoutFeedback
-          onPress={() => this.textInputRef.current.focus()}>
+        // onPress={() => this.textInputRef.current.focus()}
+        >
           <View
             style={[
               styles.contactSearchStyle,

@@ -1,7 +1,14 @@
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import _ from 'lodash';
 import React from 'react';
-import { FlatList, Linking, Text, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  Linking,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import VideoPlayer from 'react-native-video-controls';
@@ -363,15 +370,19 @@ export default class CometChatSharedMedia extends React.Component {
               <Text style={styles.buttonTextStyle}>Docs</Text>
             </TouchableOpacity>
           </View>
+        </View>
+
+        <View style={{ flex: 1 }}>
           <FlatList
             data={messages}
             extraData={messageType}
+            nestedScrollEnabled
             renderItem={({ item }) => {
               return template(item);
             }}
-            // style={{
-            //   height: deviceHeight - 280 * heightRatio,
-            // }}
+            style={{
+              height: deviceHeight - 280 * heightRatio,
+            }}
             columnWrapperStyle={styles.mediaItemColumnStyle}
             contentContainerStyle={
               messages?.length ? null : styles.mediaItemStyle

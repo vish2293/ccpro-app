@@ -285,7 +285,7 @@ class CometChatOutgoingCall extends React.PureComponent {
       const callSettings = new CometChat.CallSettingsBuilder()
         .setSessionID(sessionId)
         .enableDefaultLayout(false)
-        .setIsAudioOnlyCall(audioOnly)
+        .setIsAudioOnlyCall(false)
         .setCallEventListener(callListener)
         .build();
 

@@ -10,6 +10,7 @@ import theme from '../../../resources/theme';
 import * as enums from '../../../utils/enums';
 import * as actions from '../../../utils/actions';
 import { CometChat } from '@cometchat-pro/react-native-chat';
+import { useSelector } from 'react-redux';
 
 function usePrevious(value) {
   const ref = useRef();
@@ -20,6 +21,7 @@ function usePrevious(value) {
 }
 
 const CometChatReceiverImageMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const [message, setMessage] = useState({
     ...props.message,
     messageFrom: enums.MESSAGE_FROM_RECEIVER,
@@ -121,6 +123,7 @@ const CometChatReceiverImageMessageBubble = (props) => {
               {...props}
               message={message}
               showMessage={props?.showMessage}
+              userId={uid}
             />
           </View>
         </View>

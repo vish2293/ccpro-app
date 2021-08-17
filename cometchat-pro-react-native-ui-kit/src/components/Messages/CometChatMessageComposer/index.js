@@ -187,8 +187,9 @@ export default class CometChatMessageComposer extends React.PureComponent {
     });
   };
   tagMember = (name) => {
+    console.log('to check::', name, this.state.messageInput);
     this.setState({
-      messageInput: this.state.messageInput + name + ' ',
+      messageInput: `@${name + ' '}`,
       showUsers: false,
     });
   };

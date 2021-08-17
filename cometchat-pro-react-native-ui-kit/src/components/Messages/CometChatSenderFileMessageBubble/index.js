@@ -9,8 +9,10 @@ import RNFetchBlob from 'rn-fetch-blob';
 import * as enums from '../../../utils/enums';
 import * as actions from '../../../utils/actions';
 import { logger } from '../../../utils/common';
+import { useSelector } from 'react-redux';
 
 const CometChatSenderFileMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const message = { ...props.message, messageFrom: enums.MESSAGE_FROM_SENDER };
 
   /**
@@ -73,6 +75,7 @@ const CometChatSenderFileMessageBubble = (props) => {
         {...props}
         message={message}
         showMessage={props?.showMessage}
+        userId={uid}
       />
     </View>
   );

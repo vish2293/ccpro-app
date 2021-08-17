@@ -11,8 +11,10 @@ import CometChatAvatar from '../../../Shared/CometChatAvatar';
 import CometChatMessageReactions from '../CometChatMessageReactions';
 import * as enums from '../../../../utils/enums';
 import { CometChat } from '@cometchat-pro/react-native-chat';
+import { useSelector } from 'react-redux';
 
 const CometChatReceiverStickerMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const message = {
     ...props.message,
     messageFrom: enums.MESSAGE_FROM_RECEIVER,
@@ -77,6 +79,7 @@ const CometChatReceiverStickerMessageBubble = (props) => {
                 theme={props.theme}
                 {...props}
                 message={message}
+                userId={uid}
               />
             </View>
           </View>

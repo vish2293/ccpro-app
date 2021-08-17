@@ -9,8 +9,10 @@ import CometChatMessageReactions from '../CometChatMessageReactions';
 import style from './styles';
 import * as enums from '../../../../utils/enums';
 import * as actions from '../../../../utils/actions';
+import { useSelector } from 'react-redux';
 
 const CometChatSenderPollMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const viewTheme = { ...theme, ...props.theme };
   let message = { ...props.message, messageFrom: enums.MESSAGE_FROM_SENDER };
   useEffect(() => {
@@ -126,6 +128,7 @@ const CometChatSenderPollMessageBubble = (props) => {
         {...props}
         message={message}
         showMessage={props?.showMessage}
+        userId={uid}
       />
     </View>
   );

@@ -4,6 +4,7 @@ const screenWidth = Dimensions.get('window').width;
 
 export default StyleSheet.create({
   sectionStyle: {
+    flex: 1,
     width: '100%',
     alignSelf: 'center',
   },

@@ -9,8 +9,10 @@ import style from './styles';
 
 import * as enums from '../../../../utils/enums';
 import * as actions from '../../../../utils/actions';
+import { useSelector } from 'react-redux';
 
 const CometChatSenderStickerMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const message = {
     ...props.message,
     messageFrom: enums.MESSAGE_FROM_RECEIVER,
@@ -49,6 +51,7 @@ const CometChatSenderStickerMessageBubble = (props) => {
           theme={props.theme}
           {...props}
           message={message}
+          userId={uid}
           showMessage={props?.showMessage}></CometChatMessageReactions>
       </View>
     </View>

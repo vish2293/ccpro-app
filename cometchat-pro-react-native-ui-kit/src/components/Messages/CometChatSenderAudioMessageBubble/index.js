@@ -8,8 +8,10 @@ import theme from '../../../resources/theme';
 import * as actions from '../../../utils/actions';
 import * as enums from '../../../utils/enums';
 import AudioControls from './audioControls';
+import { useSelector } from 'react-redux';
 
 const CometChatSenderAudioMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const message = { ...props.message, messageFrom: enums.MESSAGE_FROM_SENDER };
   const viewTheme = { ...theme, ...props.theme };
   return (
@@ -37,6 +39,7 @@ const CometChatSenderAudioMessageBubble = (props) => {
         {...props}
         message={message}
         showMessage={props?.showMessage}
+        userId={uid}
       />
     </View>
   );

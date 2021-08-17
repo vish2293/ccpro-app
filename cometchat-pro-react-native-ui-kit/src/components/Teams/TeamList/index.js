@@ -21,12 +21,16 @@ const TeamList = (props) => {
   const isLoading = useSelector((state) => state.reducer.teamLoader);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const getAllTeams = useSelector((state) => state.reducer.allTeamsList);
+  const selectedWorkSpace = useSelector(
+    (state) => state.reducer.selectedWorkSpace,
+  );
 
   const userInfo = useSelector((state) => state.reducer.user);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('selected work space::', selectedWorkSpace);
     console.log('user info:', userInfo.uid);
     console.log('check out teams:::::', getAllTeams);
   }, [getAllTeams]);
@@ -34,7 +38,7 @@ const TeamList = (props) => {
   const getTeams = async () => {
     const copyList = [];
 
-    let val = `-team-`;
+    let val = `${selectedWorkSpace.st_guid}-team-`;
     console.log('value::', val);
     const GroupListManagerObject = new GroupListManager(val);
     await GroupListManagerObject.fetchNextGroups().then(async (groupList) => {

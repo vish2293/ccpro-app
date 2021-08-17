@@ -10,8 +10,10 @@ import CometChatAvatar from '../../Shared/CometChatAvatar';
 import style from './styles';
 import AudioControls from './audioControls';
 import { CometChat } from '@cometchat-pro/react-native-chat';
+import { useSelector } from 'react-redux';
 
 const CometChatReceiverAudioMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const message = {
     ...props.message,
     messageFrom: enums.MESSAGE_FROM_RECEIVER,
@@ -66,6 +68,7 @@ const CometChatReceiverAudioMessageBubble = (props) => {
         {...props}
         message={message}
         showMessage={props?.showMessage}
+        userId={uid}
       />
     </View>
   );

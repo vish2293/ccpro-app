@@ -8,8 +8,10 @@ import { CometChatMessageReactions } from '../../Messages/Extensions';
 import style from './styles';
 import * as enums from '../../../utils/enums';
 import * as actions from '../../../utils/actions';
+import { useSelector } from 'react-redux';
 
 const CometChatSenderVideoMessageBubble = (props) => {
+  const uid = useSelector((state) => state.reducer.user.uid);
   const player = createRef();
   const [message] = useState({
     ...props.message,
@@ -52,6 +54,7 @@ const CometChatSenderVideoMessageBubble = (props) => {
         {...props}
         message={message}
         showMessage={props?.showMessage}
+        userId={uid}
       />
     </View>
   );
