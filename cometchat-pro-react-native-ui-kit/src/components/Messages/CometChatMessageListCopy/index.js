@@ -37,7 +37,7 @@ import ParsedText from 'react-native-parsed-text';
 
 let cDate = null;
 
-class CometChatMessageList extends React.PureComponent {
+class CometChatMessageListCustom extends React.PureComponent {
   loggedInUser = null;
 
   lastScrollTop = 0;
@@ -51,6 +51,7 @@ class CometChatMessageList extends React.PureComponent {
     super(props);
     this.state = {
       onItemClick: null,
+      messagesData: [],
     };
 
     this.loggedInUser = props.loggedInUser;
@@ -227,7 +228,7 @@ class CometChatMessageList extends React.PureComponent {
               this.props.actionGenerated(actions.MESSAGE_FETCHED, messageList);
               this.getMessages(true);
             } else {
-              console.log('condition 6', this.times, actionGenerated);
+              console.log('condition 6 haha', this.times, actionGenerated);
 
               this.props.actionGenerated(actionGenerated, messageList);
             }
@@ -678,7 +679,7 @@ class CometChatMessageList extends React.PureComponent {
    * @param key
    */
   getSenderMessageComponent = (message, key) => {
-    let component;
+    let component = <View></View>;
 
     if (Object.prototype.hasOwnProperty.call(message, 'deletedAt')) {
       component = (
@@ -698,7 +699,7 @@ class CometChatMessageList extends React.PureComponent {
             <CometChatSenderTextMessageBubble
               loggedInUser={this.loggedInUser}
               theme={this.props.theme}
-              key={key}
+              key={'0'}
               regex={this.props.regex}
               item={this.props.item}
               type={this.props.type}
@@ -709,6 +710,7 @@ class CometChatMessageList extends React.PureComponent {
             />
           ) : null;
           break;
+
         case CometChat.MESSAGE_TYPE.IMAGE:
           component = message.data.url ? (
             <CometChatSenderImageMessageBubble
@@ -763,7 +765,7 @@ class CometChatMessageList extends React.PureComponent {
               item={this.props.item}
               type={this.props.type}
               message={message}
-              widgetconfig={this.props.widgetconfig}
+              // widgetconfig={this.props.widgetconfig}
               actionGenerated={this.props.actionGenerated}
               showMessage={this.props?.showMessage}
             />
@@ -807,7 +809,7 @@ class CometChatMessageList extends React.PureComponent {
               item={this.props.item}
               type={this.props.type}
               message={message}
-              // widgetconfig={this.props.widgetconfig}
+              widgetconfig={this.props.widgetconfig}
               actionGenerated={this.props.actionGenerated}
               showMessage={this.props?.showMessage}
             />
@@ -822,7 +824,7 @@ class CometChatMessageList extends React.PureComponent {
               item={this.props.item}
               type={this.props.type}
               message={message}
-              // widgetconfig={this.props.widgetconfig}
+              widgetconfig={this.props.widgetconfig}
               actionGenerated={this.props.actionGenerated}
               showMessage={this.props?.showMessage}
             />
@@ -837,7 +839,7 @@ class CometChatMessageList extends React.PureComponent {
               item={this.props.item}
               type={this.props.type}
               message={message}
-              // widgetconfig={this.props.widgetconfig}
+              widgetconfig={this.props.widgetconfig}
               actionGenerated={this.props.actionGenerated}
               showMessage={this.props?.showMessage}
             />
@@ -852,7 +854,7 @@ class CometChatMessageList extends React.PureComponent {
               item={this.props.item}
               type={this.props.type}
               message={message}
-              // widgetconfig={this.props.widgetconfig}
+              widgetconfig={this.props.widgetconfig}
               actionGenerated={this.props.actionGenerated}
               showMessage={this.props?.showMessage}
             />
@@ -867,7 +869,7 @@ class CometChatMessageList extends React.PureComponent {
               item={this.props.item}
               type={this.props.type}
               message={message}
-              // widgetconfig={this.props.widgetconfig}
+              widgetconfig={this.props.widgetconfig}
               actionGenerated={this.props.actionGenerated}
               showMessage={this.props?.showMessage}
             />
@@ -1118,7 +1120,9 @@ class CometChatMessageList extends React.PureComponent {
   };
 
   renderItem = ({ item, index }) => {
+    // console.log('render item::', item);
     let messages = [...this.props.messages];
+    // console.log('messages here', item);
     if (messages.length) {
       messages = messages.reverse();
       if (!cDate) {
@@ -1224,4 +1228,4 @@ class CometChatMessageList extends React.PureComponent {
     );
   }
 }
-export default CometChatMessageList;
+export default CometChatMessageListCustom;

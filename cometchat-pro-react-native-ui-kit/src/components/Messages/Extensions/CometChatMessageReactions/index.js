@@ -125,7 +125,6 @@ class CometChatMessageReactions extends Component {
   };
 
   addMessageReaction = (reaction) => {
-    console.log('reaction hai::::', reaction);
     if (reaction) {
       const smiley = JSON.stringify(reaction);
       if (smiley.includes(this.props.userId)) {

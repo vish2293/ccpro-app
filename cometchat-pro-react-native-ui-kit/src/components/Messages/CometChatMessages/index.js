@@ -526,10 +526,12 @@ class CometChatMessages extends React.PureComponent {
     const { route } = this.props;
     const params = route?.params || this.props;
 
-    console.log('m i called:', params);
-
     const message = { ...parentMessage };
     const threadItem = { ...this.state.item };
+
+    console.log('m i called:', message);
+    console.log('thread:::', threadItem);
+
     this.setState({
       threadMessageView: true,
       threadMessageParent: message,
@@ -937,7 +939,8 @@ class CometChatMessages extends React.PureComponent {
         transparent
         animated
         animationType="fade"
-        visible={this.state.threadMessageView}>
+        visible={this.state.threadMessageView}
+        onRequestClose={() => this.setState({ threadMessageView: false })}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' }}>
           <BottomSheet
             ref={this.sheetRef}
@@ -955,6 +958,7 @@ class CometChatMessages extends React.PureComponent {
                     height: Dimensions.get('window').height - 80,
                   }}>
                   <CometChatMessageThread
+                    regex={this.state.regex}
                     theme={this.theme}
                     tab={this.state.tab}
                     item={this.state.threadMessageItem}

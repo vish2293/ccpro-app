@@ -224,7 +224,12 @@ const CometChatCreatePoll = (props) => {
   );
 
   return (
-    <Modal transparent animated animationType="fade" visible={props.open}>
+    <Modal
+      transparent
+      animated
+      animationType="fade"
+      visible={props.open}
+      onRequestClose={() => props.close()}>
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.ModalWrapperStyle}>

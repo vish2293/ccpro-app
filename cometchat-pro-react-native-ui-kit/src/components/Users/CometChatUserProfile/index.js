@@ -30,7 +30,8 @@ class CometChatUserProfile extends React.Component {
         transparent
         animated
         animationType="fade"
-        visible={this.props.open}>
+        visible={this.props.open}
+        onRequestClose={() => this.props.close()}>
         <View style={style.outerContainer}>
           <BottomSheet
             ref={this.sheetRef}

@@ -81,7 +81,12 @@ export default class ReactionDetails extends React.Component {
     const { visible, close } = this.props;
 
     return (
-      <Modal transparent animated animationType="fade" visible={visible}>
+      <Modal
+        transparent
+        animated
+        animationType="fade"
+        visible={visible}
+        onRequestClose={() => close()}>
         <View style={style.reactionDetailBottomSheet}>
           <BottomSheet
             ref={this.sheetRef}

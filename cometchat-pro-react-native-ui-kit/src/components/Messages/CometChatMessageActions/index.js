@@ -22,7 +22,15 @@ export default class CometChatMessageActions extends React.Component {
   render() {
     const { open, close } = this.props;
     return (
-      <Modal transparent animated animationType="fade" visible={open}>
+      <Modal
+        transparent
+        animated
+        animationType="fade"
+        visible={open}
+        onRequestClose={() => {
+          this.sheetRef.current.snapTo(1);
+          this.props.close();
+        }}>
         <View style={style.bottomSheetContainer}>
           <TouchableWithoutFeedback
             onPress={() => {

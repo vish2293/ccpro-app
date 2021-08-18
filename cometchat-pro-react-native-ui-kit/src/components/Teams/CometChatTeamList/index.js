@@ -849,7 +849,8 @@ class CometChatTeamList extends React.Component {
           transparent
           animated
           animationType="fade"
-          visible={this.state.showPasswordScreen}>
+          visible={this.state.showPasswordScreen}
+          onRequestClose={() => this.setState({ showPasswordScreen: false })}>
           <View style={styles.passwordScreenContainer}>
             <BottomSheet
               snapPoints={[deviceHeight - 350 * heightRatio, 0]}

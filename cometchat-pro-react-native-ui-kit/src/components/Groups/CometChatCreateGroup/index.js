@@ -215,7 +215,8 @@ class CometChatCreateGroup extends React.Component {
         transparent
         animated
         animationType="fade"
-        visible={this.props.open}>
+        visible={this.props.open}
+        onRequestClose={() => this.props.close()}>
         <View style={style.container}>
           <View style={style.innerContainer}>
             <View style={style.modalWrapperStyle}>

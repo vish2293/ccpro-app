@@ -392,7 +392,8 @@ class GroupMembersList extends React.Component {
           transparent={this.props.workspace ? false : true}
           animated
           animationType="fade"
-          visible={this.props.open}>
+          visible={this.props.open}
+          onRequestClose={() => this.props.close()}>
           {/* <BottomSheet
             ref={this.sheetRef}
             snapPoints={[Dimensions.get('window').height - 90, 0]}

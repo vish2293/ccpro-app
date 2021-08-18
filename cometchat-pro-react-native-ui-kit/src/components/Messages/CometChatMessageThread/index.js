@@ -34,6 +34,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { heightRatio, widthRatio } from '../../../utils/consts';
 import { logger } from '../../../utils/common';
 import { CometChatContext } from '../../../utils/CometChatContext';
+import CometChatMessageListCustom from '../CometChatMessageListCopy';
 
 class CometChatMessageThread extends React.PureComponent {
   static contextType = CometChatContext;
@@ -207,6 +208,7 @@ class CometChatMessageThread extends React.PureComponent {
           this.updateMessages(messages);
           break;
         case actions.MESSAGE_FETCHED:
+          console.log('got you::', messages);
           this.prependMessages(messages);
           break;
         case actions.MESSAGE_DELETED:
@@ -387,6 +389,7 @@ class CometChatMessageThread extends React.PureComponent {
   // messages are fetched from backend
   prependMessages = (messages) => {
     const messageList = [...messages, ...this.state.messageList];
+    console.log('help me', messageList);
     this.setState({ messageList, scrollToBottom: false });
   };
 
@@ -699,6 +702,7 @@ class CometChatMessageThread extends React.PureComponent {
             <View style={styles.fullFlex}>
               <View style={styles.fullFlex}>
                 <CometChatMessageList
+                  regex={this.props.regex}
                   theme={this.props.theme}
                   messages={this.state.messageList}
                   item={this.props.item}

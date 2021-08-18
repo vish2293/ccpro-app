@@ -10,6 +10,7 @@ import {
   Text,
   Keyboard,
   Platform,
+  BackHandler,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -98,6 +99,18 @@ export default class CometChatMessageComposer extends React.PureComponent {
       this.getGroupMembers();
     }
     this.checkRestrictions();
+
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      console.log('calledddd');
+      if (this.state.stickerViewer) {
+        this.setState({
+          stickerViewer: false,
+        });
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 
   checkRestrictions = async () => {

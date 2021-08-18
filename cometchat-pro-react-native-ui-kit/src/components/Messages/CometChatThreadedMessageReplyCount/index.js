@@ -3,6 +3,7 @@ import { Text, TouchableOpacity } from 'react-native';
 import theme from '../../../resources/theme';
 import styles from './styles';
 import * as actions from '../../../utils/actions';
+import { CometChat } from '@cometchat-pro/react-native-chat';
 
 const CometChatThreadedMessageReplyCount = (props) => {
   const replyTheme = { ...theme, ...props.theme };
@@ -12,18 +13,7 @@ const CometChatThreadedMessageReplyCount = (props) => {
     replyCount === 1 ? `${replyCount} reply` : `${replyCount} replies`;
 
   const onClickReply = () => {
-    console.log('Hi me calling...');
-    console.log('message::', props.message);
-    if (props.customAction) {
-      props.customAction(actions.VIEW_MESSAGE_THREAD, props.message);
-    } else {
-      props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message);
-    }
-    // console.log(
-    //   'check function',
-    //   props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message),
-    // );
-    // props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message)
+    props.actionGenerated(actions.VIEW_MESSAGE_THREAD, props.message);
   };
 
   let replies = (
