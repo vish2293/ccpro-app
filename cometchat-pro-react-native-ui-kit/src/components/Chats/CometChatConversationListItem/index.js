@@ -40,6 +40,16 @@ class CometChatConversationListItem extends React.Component {
     });
 
     this.checkRestrictions();
+
+    console.log('cond 1:', this.props?.loggedInUser?.uid);
+    console.log('cond 2:', this.props?.conversation?.lastMessage?.sender?.uid);
+    console.log('cond 3:', this.state.restrictions?.isUnreadCountEnabled);
+    console.log('cond 4:', this.props?.chatRead);
+    console.log('cond 5:', this.props?.conversation?.conversationId);
+    console.log(
+      'cond 6*****',
+      !this.props?.chatRead?.[this.props?.conversation?.conversationId],
+    );
   }
 
   checkRestrictions = async () => {
@@ -406,13 +416,17 @@ class CometChatConversationListItem extends React.Component {
                   this.state.lastMessage}
               </Text>
 
-              {this.props.loggedInUser.uid !==
-                this.props.conversation.lastMessage?.sender.uid &&
-              this.state.restrictions?.isUnreadCountEnabled &&
-              !this.props.chatRead?.[this.props.conversation.conversationId] ? (
+              {this.props?.loggedInUser?.uid !==
+                this.props?.conversation?.lastMessage?.sender?.uid &&
+              !this.props?.chatRead?.[
+                this.props?.conversation?.conversationId
+              ] ? (
+                // this.state.restrictions?.isUnreadCountEnabled &&
+                // !this.props?.chatRead?.[
+                //   this.props?.conversation?.conversationId]
                 <CometChatBadgeCount
                   theme={this.props.theme}
-                  count={this.props.conversation.unreadMessageCount}
+                  count={this.props?.conversation?.unreadMessageCount}
                 />
               ) : null}
             </View>

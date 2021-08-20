@@ -191,6 +191,9 @@ class CometChatMessageThread extends React.PureComponent {
 
             const messageObj = { ...this.state.parentMessage };
             const newMessageObj = { ...messageObj, replyCount: newReplyCount };
+            console.log('msg 1:', messageObj);
+            console.log('msg 2:', newMessageObj);
+            console.log('msg 3:', messages);
             this.setState({ parentMessage: newMessageObj });
 
             this.appendMessage(messages);
@@ -431,6 +434,7 @@ class CometChatMessageThread extends React.PureComponent {
         case CometChat.MESSAGE_TYPE.TEXT:
           component = (
             <CometChatSenderTextMessageBubble
+              regex={this.props.regex}
               loggedInUser={this.loggedInUser}
               theme={this.props.theme}
               key={key}
@@ -477,6 +481,7 @@ class CometChatMessageThread extends React.PureComponent {
               type={this.props.type}
               message={message}
               actionGenerated={this.actionHandler}
+              showMessage={this.props?.showMessage}
             />
           );
           break;
@@ -516,6 +521,7 @@ class CometChatMessageThread extends React.PureComponent {
         case CometChat.MESSAGE_TYPE.TEXT:
           component = (
             <CometChatReceiverTextMessageBubble
+              regex={this.props.regex}
               loggedInUser={this.loggedInUser}
               theme={this.props.theme}
               key={key}

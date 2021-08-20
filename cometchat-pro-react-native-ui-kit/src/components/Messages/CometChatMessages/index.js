@@ -967,6 +967,9 @@ class CometChatMessages extends React.PureComponent {
                     loggedInUser={this.loggedInUser}
                     actionGenerated={this.actionHandler}
                     getConversationId={this.getConversationId}
+                    showMessage={(type, message) => {
+                      this.DropDownAlertRef?.showMessage(type, message);
+                    }}
                   />
                 </View>
               );

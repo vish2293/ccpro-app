@@ -235,7 +235,7 @@ export default function WorkSpace(props) {
 
                 {filteredSpaces?.length === 0 && search !== '' ? (
                   <View style={{ marginBottom: 10 }}>
-                    <Text style={{ color: 'gray' }}>No result found</Text>
+                    <Text style={{ color: 'gray' }}>No workspaces</Text>
                   </View>
                 ) : null}
               </View>
@@ -303,7 +303,7 @@ export default function WorkSpace(props) {
                   })}
                 {filteredSpaces?.length === 0 && search !== '' ? (
                   <View>
-                    <Text style={{ color: 'gray' }}>No result found</Text>
+                    <Text style={{ color: 'gray' }}>No workspaces</Text>
                   </View>
                 ) : null}
               </View>

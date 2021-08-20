@@ -34,8 +34,13 @@ import { logger } from '../../../utils/common';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { READ_ALL } from '../../../../../store/actionTypes';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/FontAwesome5';
 class CometChatConversationList extends React.Component {
   loggedInUser = null;
+
+  addIcon = (<Icon2 name="edit" size={24} color={theme.color.blue} />);
+
+  createChat = this.addIcon;
 
   decoratorMessage = 'Loading...';
   static contextType = CometChatContext;
@@ -452,19 +457,27 @@ class CometChatConversationList extends React.Component {
    * @param message : message object
    */
   makeConversation = (message) => {
-    console.log('hello make');
+    console.log('hello make', message);
     const promise = new Promise((resolve, reject) => {
       console.log('Helloaaaa');
       CometChat.CometChatHelper.getConversationFromMessage(message)
         .then((conversation) => {
-          console.log('AAAAA');
+          console.log('AAAAA', conversation);
           const conversationList = [...this.state.conversationList];
-          const conversationKey = conversationList.findIndex(
+          console.log('conversation list:', conversationList);
+          let conversationKey = conversationList.findIndex(
             (c) => c.conversationId === conversation.conversationId,
+          );
+          console.log(
+            'conver condition',
+            (conversationKey = conversationList.findIndex(
+              (c) => c.conversationId === conversation.conversationId,
+            )),
           );
           let conversationObj = { ...conversation };
           if (conversationKey > -1) {
             conversationObj = { ...conversationList[conversationKey] };
+            console.log('M i call ??', conversationObj);
           }
 
           console.log('Iam Heere', conversationKey);
@@ -907,6 +920,11 @@ class CometChatConversationList extends React.Component {
     this.setState({ textInputValue: val });
   };
 
+  goToAdd = () => {
+    const { navigation } = this.props;
+    navigation.navigate('GroupsList');
+  };
+
   /**
    * header component for conversation list
    * @param
@@ -917,6 +935,9 @@ class CometChatConversationList extends React.Component {
       <View style={[styles.conversationHeaderStyle]}>
         <View style={styles.headingContainer}>
           <Text style={styles.conversationHeaderTitleStyle}>Chats</Text>
+          <TouchableOpacity onPress={this.goToAdd} style={{ borderRadius: 20 }}>
+            {this.createChat}
+          </TouchableOpacity>
         </View>
 
         <TouchableWithoutFeedback

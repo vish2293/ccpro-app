@@ -405,6 +405,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
           this.setState({ messageInput: '' });
           this.messageSending = false;
           this.messageInputRef.current.textContent = '';
+          console.log('send message::', newMessageObj);
           // this.playAudio();
           this.props.actionGenerated(actions.MESSAGE_SENT, newMessageObj);
         })
