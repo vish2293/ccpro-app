@@ -85,12 +85,14 @@ class CometChatConversationListWithMessages extends React.Component {
    * @param item: conversation item clicked
    * @param type: clicked conversation type - "user" or "group"
    */
-  itemClicked = (item, type) => {
+  itemClicked = (item, type, conversation) => {
     this.setState(
       {
         item: { ...item },
         type,
         viewDetailScreen: false,
+        messageToMarkRead: conversation,
+        // lastMessage: conversation,
       },
       () => {
         this.props.navigation.navigate(

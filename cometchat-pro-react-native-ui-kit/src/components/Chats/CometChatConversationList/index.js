@@ -98,6 +98,8 @@ class CometChatConversationList extends React.Component {
       const previousItem = JSON.stringify(prevProps.item);
       const currentItem = JSON.stringify(this.props.item);
 
+      console.log('prev item::', prevProps);
+
       // if different conversation is selected
       if (previousItem !== currentItem) {
         if (Object.keys(this.props.item).length === 0) {
@@ -192,7 +194,8 @@ class CometChatConversationList extends React.Component {
         }
       }
 
-      console.log('messageToMarkRead:::');
+      console.log('messageToMarkRead:::', this.props.messageToMarkRead);
+      console.log('last message:::::::', this.props.lastMessage);
 
       if (prevProps.messageToMarkRead !== this.props.messageToMarkRead) {
         console.log('hello Iam in');
@@ -220,6 +223,7 @@ class CometChatConversationList extends React.Component {
                 lastMessage: lastMessageObj,
                 unreadMessageCount,
               };
+              console.log('final *******', newConversationObj);
               conversationList.splice(conversationKey, 1);
               conversationList.unshift(newConversationObj);
               this.setState({ conversationList: conversationList });
@@ -465,15 +469,11 @@ class CometChatConversationList extends React.Component {
           console.log('AAAAA', conversation);
           const conversationList = [...this.state.conversationList];
           console.log('conversation list:', conversationList);
-          let conversationKey = conversationList.findIndex(
+          const conversationId = conversation.conversationId;
+          const conversationKey = conversationList.findIndex(
             (c) => c.conversationId === conversation.conversationId,
           );
-          console.log(
-            'conver condition',
-            (conversationKey = conversationList.findIndex(
-              (c) => c.conversationId === conversation.conversationId,
-            )),
-          );
+
           let conversationObj = { ...conversation };
           if (conversationKey > -1) {
             conversationObj = { ...conversationList[conversationKey] };
@@ -486,6 +486,7 @@ class CometChatConversationList extends React.Component {
             conversationKey,
             conversationObj,
             conversationList,
+            conversationId,
           });
         })
         .catch((error) => {
@@ -503,6 +504,8 @@ class CometChatConversationList extends React.Component {
    * @param operator : extra option to handle decrease in unread message count
    */
   makeUnreadMessageCount = (conversation = {}, operator) => {
+    console.log('cond unread::::', conversation);
+
     try {
       if (Object.keys(conversation).length === 0) {
         return 1;
@@ -536,9 +539,15 @@ class CometChatConversationList extends React.Component {
    * @param notification: boolean to play audio alert @default : true
    */
   updateConversation = (message, notification = true, markAllRead = false) => {
+    console.log('******************Update********************');
     this.makeConversation(message)
       .then((response) => {
-        const { conversationKey, conversationObj, conversationList } = response;
+        const {
+          conversationKey,
+          conversationObj,
+          conversationList,
+          conversationId,
+        } = response;
 
         if (conversationKey > -1) {
           const unreadMessageCount = markAllRead
@@ -551,7 +560,7 @@ class CometChatConversationList extends React.Component {
             lastMessage: lastMessageObj,
             unreadMessageCount,
           };
-          this.props.readAll({ [conversationKey]: false });
+          this.props.readAll({ [conversationId]: false });
           conversationList.splice(conversationKey, 1);
           conversationList.unshift(newConversationObj);
           this.setState({ conversationList: conversationList });
@@ -838,6 +847,7 @@ class CometChatConversationList extends React.Component {
       this.props.onItemClick(
         conversation.conversationWith,
         conversation.conversationType,
+        conversation.lastMessage,
       );
     } catch (error) {
       logger(error);
@@ -876,10 +886,10 @@ class CometChatConversationList extends React.Component {
                       this.props.selectedWorkSpace.st_guid,
                     ) === true
                   ) {
-                    console.log('conditional', conversationId);
                     copyOfChat.push(conversationList[i]);
                   }
                 } else if (conversationList[i].conversationType === 'user') {
+                  console.log('get conversation:::', conversationList[i]);
                   console.log('user:::', conversationList[i].conversationType);
                   copyOfChat.push(conversationList[i]);
                 }

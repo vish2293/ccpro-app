@@ -40,7 +40,7 @@ const AddTeam = (props) => {
   const token = useSelector((state) => state.reducer.jwtToken);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const uid = useSelector((state) => state.reducer.user.uid);
-  const [workspaceType, setType] = useState('asds');
+  const [workspaceType, setType] = useState('');
   const [avatar, setAvatar] = useState('');
   const [addMembers, setAddMembers] = useState(false);
   const [membersList, setMembersList] = useState([]);
@@ -53,6 +53,7 @@ const AddTeam = (props) => {
     teamName: '',
     description: '',
   });
+  const [displayError, setError] = useState('');
 
   useEffect(() => {
     const { route } = props;
@@ -109,6 +110,7 @@ const AddTeam = (props) => {
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
+    setError('');
     setState({
       ...state,
       [name]: val,
@@ -183,13 +185,16 @@ const AddTeam = (props) => {
     const usersData = [];
     setLoader(true);
     if (state.teamName === '') {
-      alert('Team name is required!');
+      // alert('Team name is required!');
+      setError('name required');
       setLoader(false);
     } else if (state.description === '') {
-      alert('Description is required');
+      // alert('Description is required');
+      setError('description required');
       setLoader(false);
-    } else if (workspaceType === null) {
-      alert('Workspace is required');
+    } else if (workspaceType === '' || workspaceType === null) {
+      // alert('Workspace is required');
+      setError('workspace required');
       setLoader(false);
     } else if (membersList.length === 0) {
       alert('At least select one member');
@@ -323,31 +328,59 @@ const AddTeam = (props) => {
         <ScrollView>
           <View style={styles.bodyContainer}>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Team Name</Text>
+              <Text style={styles.labelStyle}>
+                Team Name <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <CustomInput
                 name={state.teamName}
                 onChangeHandler={(val) => onChangeHandler('teamName', val)}
+                customStyle={
+                  displayError === 'name required' ? styles.inputError : null
+                }
               />
             </View>
+            {displayError === 'name required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
+
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Team Description</Text>
+              <Text style={styles.labelStyle}>
+                Team Description <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <CustomInput
                 name={state.description}
                 onChangeHandler={(val) => onChangeHandler('description', val)}
                 multiline={true}
-                customStyle={styles.customInputStyle}
+                customStyle={[
+                  styles.customInputStyle,
+                  displayError === 'description required'
+                    ? { borderColor: 'red' }
+                    : null,
+                ]}
               />
             </View>
+            {displayError === 'description required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
+
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Workspace</Text>
+              <Text style={styles.labelStyle}>
+                Workspace <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <View style={styles.pickerInput}>
                 <CustomPicker
                   data={workSpacesArray}
                   value={workspaceType}
-                  onChangeHandler={(itemValue) => setType(itemValue)}
+                  onChangeHandler={(itemValue) => {
+                    setType(itemValue), setError('');
+                  }}
+                  // customStyle={styles.inputError}
                 />
               </View>
             </View>
+            {displayError === 'workspace required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
 
             <View style={styles.inputContainer}>
               <TouchableOpacity

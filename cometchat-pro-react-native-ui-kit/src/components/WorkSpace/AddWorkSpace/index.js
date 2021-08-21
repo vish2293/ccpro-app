@@ -58,6 +58,7 @@ const AddWorkSpace = (props) => {
   });
   const [workspaceData, setWorkspaceData] = useState(undefined);
   const [isVerified, setVerified] = useState('0');
+  const [displayError, setError] = useState('');
 
   useEffect(() => {
     dispatch(getWorkSpacesTypes());
@@ -101,6 +102,7 @@ const AddWorkSpace = (props) => {
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
+    setError('');
     setState({
       ...state,
       [name]: val,
@@ -152,18 +154,22 @@ const AddWorkSpace = (props) => {
     const usersData = [uid];
     setLoader(true);
     if (state.workspaceName === '') {
-      alert('Workspace name is required!');
+      setError('name required');
+      // alert('Workspace name is required!');
       setLoader(false);
     } else if (state.description === '') {
-      alert('Description is required');
+      setError('description required');
+      // alert('Description is required');
       setLoader(false);
     } else if (!avatar) {
       alert('Image is required');
       setLoader(false);
-    } else if (membersList.length === 0) {
-      alert('At least select one member');
-      setLoader(false);
-    } else {
+    }
+    // else if (membersList.length === 0) {
+    //   alert('At least select one member');
+    //   setLoader(false);
+    // }
+    else {
       console.log('user:::', membersList);
       membersList.forEach((user) => {
         if (typeof user === 'object' && user !== null) {
@@ -247,20 +253,38 @@ const AddWorkSpace = (props) => {
         <ScrollView>
           <View style={styles.bodyContainer}>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Workspace Name</Text>
+              <Text style={styles.labelStyle}>
+                Workspace Name <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <CustomInput
                 name={state.workspaceName}
                 onChangeHandler={(val) => onChangeHandler('workspaceName', val)}
+                customStyle={
+                  displayError === 'name required' ? styles.inputError : null
+                }
               />
             </View>
+            {displayError === 'name required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Workspace Description</Text>
+              <Text style={styles.labelStyle}>
+                Workspace Description <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <CustomInput
                 name={state.description}
                 onChangeHandler={(val) => onChangeHandler('description', val)}
                 multiline={true}
-                customStyle={styles.customInputStyle}
+                customStyle={[
+                  styles.customInputStyle,
+                  displayError === 'description required'
+                    ? { borderColor: 'red' }
+                    : null,
+                ]}
               />
+              {displayError === 'description required' ? (
+                <Text style={styles.errorStyle}>This is required field!</Text>
+              ) : null}
             </View>
             <View style={styles.inputContainer}>
               <Text style={styles.labelStyle}>Workspace Type</Text>

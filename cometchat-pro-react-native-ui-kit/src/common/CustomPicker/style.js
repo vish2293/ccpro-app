@@ -6,4 +6,7 @@ export default StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.2)',
     borderRadius: 5,
   },
+  pickerColor: {
+    color: '#000',
+  },
 });

@@ -13,7 +13,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import styles from './style';
 
 const CustomPicker = (props) => {
-  const { value, onChangeHandler, data } = props;
+  const { value, onChangeHandler, data, customStyle } = props;
 
   useEffect(() => {
     console.log('dddddddd::::', data);
@@ -28,7 +28,7 @@ const CustomPicker = (props) => {
         label: props.label ? props.label : 'Select workspace',
         value: '',
       }}
-      style={{ color: '#000' }}
+      style={[styles.pickerColor, customStyle]}
       pickerProps={{
         mode: 'dropdown',
         style: { color: '#000' },

@@ -71,6 +71,7 @@ const AddGroups = (props) => {
   });
   const [groupsData, setGroupData] = useState(undefined);
   const [isEdit, setEdit] = useState(false);
+  const [displayError, setError] = useState('');
 
   const getTeams = async () => {
     const copyList = [];
@@ -145,6 +146,7 @@ const AddGroups = (props) => {
 
   const onChangeHandler = (name, val) => {
     console.log('handler:', name, val);
+    setError('');
     setState({
       ...state,
       [name]: val,
@@ -221,20 +223,21 @@ const AddGroups = (props) => {
     const usersData = [];
     setLoader(true);
     if (state.groupName === '') {
-      alert('Group name is required!');
+      // alert('Group name is required!');
+      setError('name required');
       setLoader(false);
     } else if (state.description === '') {
-      alert('Description is required');
+      // alert('Description is required');
+      setError('description required');
       setLoader(false);
     } else if (teamType === '') {
-      alert('Team is required');
+      // alert('Team is required');
+      setError('team required');
       setLoader(false);
-    }
-    // else if (membersList.length === 0) {
-    //   alert('At least select one member');
-    //   setLoader(false);
-    // }
-    else {
+    } else if (membersList.length === 0) {
+      alert('At least select one member');
+      setLoader(false);
+    } else {
       if (!avatar) {
         const data = {
           text: 'hello',
@@ -374,32 +377,60 @@ const AddGroups = (props) => {
         <ScrollView>
           <View style={styles.bodyContainer}>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Group Name</Text>
+              <Text style={styles.labelStyle}>
+                Group Name <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <CustomInput
                 name={state.groupName}
                 onChangeHandler={(val) => onChangeHandler('groupName', val)}
+                customStyle={
+                  displayError === 'name required' ? styles.inputError : null
+                }
               />
             </View>
+            {displayError === 'name required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
+
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Group Description</Text>
+              <Text style={styles.labelStyle}>
+                Group Description <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <CustomInput
                 name={state.description}
                 onChangeHandler={(val) => onChangeHandler('description', val)}
                 multiline={true}
-                customStyle={styles.customInputStyle}
+                customStyle={[
+                  styles.customInputStyle,
+                  displayError === 'description required'
+                    ? { borderColor: 'red' }
+                    : null,
+                ]}
               />
             </View>
+            {displayError === 'description required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
+
             <View style={styles.inputContainer}>
-              <Text style={styles.labelStyle}>Teams</Text>
+              <Text style={styles.labelStyle}>
+                Teams <Text style={styles.asterikStyle}>*</Text>
+              </Text>
               <View style={styles.pickerInput}>
                 <CustomPicker
                   data={customTypes ? customTypes : workTypes}
                   value={teamType}
-                  onChangeHandler={(itemValue) => setType(itemValue)}
+                  onChangeHandler={(itemValue) => {
+                    setType(itemValue), setError('');
+                  }}
                   label={'Select Team'}
+                  // customStyle={styles.inputError}
                 />
               </View>
             </View>
+            {displayError === 'team required' ? (
+              <Text style={styles.errorStyle}>This is required field!</Text>
+            ) : null}
 
             <View style={styles.inputContainer}>
               <TouchableOpacity

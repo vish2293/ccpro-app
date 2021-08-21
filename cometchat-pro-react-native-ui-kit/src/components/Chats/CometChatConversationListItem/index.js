@@ -41,15 +41,15 @@ class CometChatConversationListItem extends React.Component {
 
     this.checkRestrictions();
 
-    console.log('cond 1:', this.props?.loggedInUser?.uid);
-    console.log('cond 2:', this.props?.conversation?.lastMessage?.sender?.uid);
-    console.log('cond 3:', this.state.restrictions?.isUnreadCountEnabled);
-    console.log('cond 4:', this.props?.chatRead);
-    console.log('cond 5:', this.props?.conversation?.conversationId);
-    console.log(
-      'cond 6*****',
-      !this.props?.chatRead?.[this.props?.conversation?.conversationId],
-    );
+    // console.log('cond 1:', this.props?.loggedInUser?.uid);
+    // console.log('cond 2:', this.props?.conversation?.lastMessage?.sender?.uid);
+    // console.log('cond 3:', this.state.restrictions?.isUnreadCountEnabled);
+    // console.log('cond 4:', this.props?.chatRead);
+    // console.log('cond 5:', this.props?.conversation?.conversationId);
+    // console.log(
+    //   'cond 6*****',
+    //   !this.props?.chatRead?.[this.props?.conversation?.conversationId],
+    // );
   }
 
   checkRestrictions = async () => {

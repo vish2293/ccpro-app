@@ -109,4 +109,16 @@ export default StyleSheet.create({
     textAlignVertical: 'top',
     height: 110,
   },
+  asterikStyle: {
+    color: '#eb4027',
+    fontWeight: 'bold',
+  },
+  errorStyle: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  inputError: {
+    borderColor: 'red',
+  },
 });
