@@ -28,7 +28,10 @@ import {
   getWorkSpacesTypes,
   selectWorkSpace,
   onEditWorkSpace,
+  generatePatternImage,
 } from '../../../../../store/action';
+import axios from 'axios';
+import { serverUrl } from '../../../utils/consts';
 
 const workTypes = [
   { label: 'Non-Profit', value: 1 },
@@ -44,6 +47,7 @@ let customTypes = [];
 
 const AddWorkSpace = (props) => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.reducer.jwtToken);
   const workSpaceTypes = useSelector((state) => state.reducer.workspaceTypes);
   const uid = useSelector((state) => state.reducer.user.uid);
   const [workspaceType, setType] = useState('1');
@@ -59,6 +63,7 @@ const AddWorkSpace = (props) => {
   const [workspaceData, setWorkspaceData] = useState(undefined);
   const [isVerified, setVerified] = useState('0');
   const [displayError, setError] = useState('');
+  const [imageLoader, setImageLoader] = useState(false);
 
   useEffect(() => {
     dispatch(getWorkSpacesTypes());
@@ -78,7 +83,7 @@ const AddWorkSpace = (props) => {
         : '0';
       setVerified(isVerified.toString());
       console.log('image', image);
-      setAvatar({ path: image });
+      setAvatar(image);
       console.log(JSON.parse(workspaceData?.js_users).length);
       setMembersList(JSON.parse(workspaceData.js_users));
       setState({
@@ -128,8 +133,32 @@ const AddWorkSpace = (props) => {
       includeBase64: true,
     }).then((image) => {
       console.log('pics:', image);
-      setAvatar(image);
-      setState({ ...state, isImageUploaded: true });
+      setImageLoader(true);
+      setAvatar(image.data);
+
+      const data = {
+        image: `data:image/image/png;base64,${image.data}`,
+      };
+
+      axios({
+        url: serverUrl + 'global/image',
+        method: 'post',
+        data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          console.log('image response:', response.data.globals.file_upload_url);
+          setAvatar(response.data.globals.file_upload_url);
+          setImageLoader(false);
+          setState({ ...state, isImageUploaded: true });
+        })
+        .catch((err) => {
+          console.log('error in Image:', err);
+          console.log('error in Image:', err.response);
+          setImageLoader(false);
+        });
     });
   };
 
@@ -151,6 +180,7 @@ const AddWorkSpace = (props) => {
   };
 
   const onSave = async () => {
+    let patternImage = '';
     const usersData = [uid];
     setLoader(true);
     if (state.workspaceName === '') {
@@ -161,15 +191,25 @@ const AddWorkSpace = (props) => {
       setError('description required');
       // alert('Description is required');
       setLoader(false);
-    } else if (!avatar) {
-      alert('Image is required');
-      setLoader(false);
     }
+    // else if (!avatar) {
+    //   alert('Image is required');
+    //   setLoader(false);
+    // }
     // else if (membersList.length === 0) {
     //   alert('At least select one member');
     //   setLoader(false);
     // }
     else {
+      if (!avatar) {
+        const myData = {
+          text: 'Hellyos!',
+        };
+        const imageResponse = await dispatch(generatePatternImage(myData));
+        console.log('response here:', imageResponse);
+        patternImage = imageResponse.data.globals.file_upload_url;
+      }
+
       console.log('user:::', membersList);
       membersList.forEach((user) => {
         if (typeof user === 'object' && user !== null) {
@@ -192,9 +232,7 @@ const AddWorkSpace = (props) => {
         ws_users: usersData,
         ws_type: JSON.stringify(workspaceType),
         ws_is_verified: isVerified,
-        ws_featured_image: !state.isImageUploaded
-          ? avatar.path
-          : `data:image/jpeg;base64,${avatar.data}`,
+        ws_featured_image: avatar ? avatar : patternImage,
         ws_type_options: workSpaceTypes,
       };
 
@@ -313,18 +351,21 @@ const AddWorkSpace = (props) => {
                 onPress={openPicker}
                 activeOpacity={0.7}
                 style={styles.buttonStyle}>
-                <Entypo name="camera" size={20} color="#fff" />
-                <Text style={styles.buttonText}>Add photo</Text>
+                {imageLoader ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <>
+                    <Entypo name="camera" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>Add photo</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </View>
 
             {avatar ? (
               <View style={[styles.inputContainer, { alignItems: 'center' }]}>
                 <View style={{ position: 'relative' }}>
-                  <Image
-                    style={styles.uploadImg}
-                    source={{ uri: avatar.path }}
-                  />
+                  <Image style={styles.uploadImg} source={{ uri: avatar }} />
                   <TouchableOpacity
                     onPress={cancelImage}
                     style={styles.crossIcon}>

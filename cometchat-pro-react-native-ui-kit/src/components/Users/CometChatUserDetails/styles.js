@@ -3,7 +3,11 @@ import { heightRatio, widthRatio, deviceHeight } from '../../../utils/consts';
 import theme from '../../../resources/theme';
 
 export default StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
+  container: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingTop: 20,
+  },
   itemLinkStyle: {
     fontSize: 15,
     lineHeight: 20,
@@ -38,10 +42,11 @@ export default StyleSheet.create({
   },
   reactionDetailsContainer: {
     backgroundColor: 'white',
-    paddingVertical: 20,
-    borderRadius: 20,
+    paddingVertical: 0,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     flex: 1,
-    minHeight: deviceHeight,
+    // minHeight: deviceHeight,
   },
   avatarStyle: {
     width: 48,

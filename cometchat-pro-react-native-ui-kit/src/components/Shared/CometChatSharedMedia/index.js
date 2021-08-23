@@ -244,8 +244,8 @@ export default class CometChatSharedMedia extends React.Component {
     const bgColor = currentTheme.backgroundColor.lightGrey;
 
     const template = (message) => {
-      console.log('TYPED::', messageType);
       if (messageType === CometChat.MESSAGE_TYPE.IMAGE && message.data.url) {
+        console.log('TYPED::', message);
         return (
           <TouchableOpacity
             style={[
@@ -380,9 +380,9 @@ export default class CometChatSharedMedia extends React.Component {
             renderItem={({ item }) => {
               return template(item);
             }}
-            style={{
-              height: deviceHeight - 280 * heightRatio,
-            }}
+            // style={{
+            //   height: deviceHeight - 280 * heightRatio,
+            // }}
             columnWrapperStyle={styles.mediaItemColumnStyle}
             contentContainerStyle={
               messages?.length ? null : styles.mediaItemStyle
@@ -393,7 +393,7 @@ export default class CometChatSharedMedia extends React.Component {
             onEndReached={this.getMessages}
           />
         </View>
-        <DropDownAlert ref={(ref) => (this.dropDownAlertRef = ref)} />
+        {/* <DropDownAlert ref={(ref) => (this.dropDownAlertRef = ref)} /> */}
       </View>
     );
   }

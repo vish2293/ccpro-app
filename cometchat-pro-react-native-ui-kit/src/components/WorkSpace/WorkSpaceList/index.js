@@ -25,7 +25,7 @@ const WorkSpaceList = (props) => {
   const isLoading = useSelector((state) => state.reducer.loader);
   const workList = useSelector((state) => state.reducer.allWorkspaces);
   const global = workList?.globals?.ws_upload_url
-    ? workList.globals.ws_upload_url
+    ? workList.globals.ws_upload_url.replace('http', 'https')
     : '';
   console.log('worklist::::', workList);
   /**

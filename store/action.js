@@ -425,6 +425,7 @@ export const generatePatternImage = (data) => {
         return res;
       })
       .catch((err) => {
+        console.log('error:', err);
         console.log('error:', err.response);
         return err.response;
       });

@@ -233,65 +233,62 @@ export default class CometChatUserDetails extends React.Component {
         visible={this.props.open}
         onRequestClose={() => this.props.actionGenerated(actions.CLOSE_DETAIL)}>
         <View style={style.container}>
-          <BottomSheet
+          {/* <BottomSheet
             ref={this.sheetRef}
             snapPoints={[deviceHeight - 80, 0]}
             borderRadius={30}
             initialSnap={0}
-            enabledInnerScrolling={false}
+            enabledInnerScrolling={true}
             enabledContentTapInteraction
             overdragResistanceFactor={10}
             renderContent={() => {
-              return (
-                <View style={style.reactionDetailsContainer}>
-                  <View
-                    style={[
-                      style.headerStyle,
-                      { borderColor: this.viewTheme.borderColor.primary },
-                    ]}>
-                    <TouchableOpacity
-                      style={style.headerCloseStyle}
-                      onPress={() =>
-                        this.props.actionGenerated(actions.CLOSE_DETAIL)
-                      }>
-                      <Icon
-                        name="keyboard-arrow-left"
-                        size={24}
-                        color="#000000"
-                        style={{ marginRight: 5 }}
-                      />
-                    </TouchableOpacity>
-                    <Text style={style.headerTitleStyle}>Details</Text>
-                  </View>
-                  <View style={style.userDetailContainer}>
-                    {avatar}
-                    <View style={style.userDetail}>
-                      <View>
-                        <Text style={style.userName}>
-                          {this.props.item.name}
-                        </Text>
-                      </View>
-                      {this.props.item &&
-                      this.props.item?.blockedByMe ? null : (
-                        <Text style={style.statusText} numberOfLines={1}>
-                          {this.state.status}
-                        </Text>
-                      )}
-                    </View>
-                  </View>
-                  <View style={style.optionsContainer}>
-                    {action}
-                    {blockUserView}
-
-                    {sharedMediaView}
-                  </View>
+              return ( */}
+          <View style={style.reactionDetailsContainer}>
+            <View
+              style={[
+                style.headerStyle,
+                { borderColor: this.viewTheme.borderColor.primary },
+              ]}>
+              <TouchableOpacity
+                style={style.headerCloseStyle}
+                onPress={() =>
+                  this.props.actionGenerated(actions.CLOSE_DETAIL)
+                }>
+                <Icon
+                  name="keyboard-arrow-left"
+                  size={24}
+                  color="#000000"
+                  style={{ marginRight: 5 }}
+                />
+              </TouchableOpacity>
+              <Text style={style.headerTitleStyle}>Details</Text>
+            </View>
+            <View style={style.userDetailContainer}>
+              {avatar}
+              <View style={style.userDetail}>
+                <View>
+                  <Text style={style.userName}>{this.props.item.name}</Text>
                 </View>
-              );
+                {this.props.item && this.props.item?.blockedByMe ? null : (
+                  <Text style={style.statusText} numberOfLines={1}>
+                    {this.state.status}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <View style={style.optionsContainer}>
+              {action}
+              {blockUserView}
+
+              {sharedMediaView}
+            </View>
+          </View>
+          {/* );
             }}
             onCloseEnd={() => {
               this.props.actionGenerated(actions.CLOSE_DETAIL);
             }}
-          />
+          /> */}
         </View>
         <DropDownAlert ref={(ref) => (this.dropDownAlertRef = ref)} />
       </Modal>
