@@ -9,4 +9,4 @@ export const calc = (x = 100) => {
   return deviceHeight - x * heightRatio;
 };
 
-export const serverUrl = 'https://ccpro.webcase.me:3001/';
+export const serverUrl = 'http://ccpro.webcase.me:3001/';

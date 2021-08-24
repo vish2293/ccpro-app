@@ -240,7 +240,7 @@ const AddGroups = (props) => {
     } else {
       if (!avatar) {
         const data = {
-          text: 'hello',
+          text: `${new Date()}`,
         };
 
         const imageResponse = await dispatch(generatePatternImage(data));

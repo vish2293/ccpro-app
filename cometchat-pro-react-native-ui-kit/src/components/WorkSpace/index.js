@@ -37,6 +37,7 @@ export default function WorkSpace(props) {
   const uid = useSelector((state) => state.reducer.user.uid);
 
   useEffect(() => {
+    console.log('work data:', workList);
     console.log('slected:', getSelectedSpace);
   }, [getSelectedSpace]);
 
@@ -77,7 +78,7 @@ export default function WorkSpace(props) {
       console.log('uid', uid);
       const data = {
         user_id: uid,
-        ws_pinned: [workspace.st_guid],
+        us_workspaces: [workspace.st_guid],
       };
       await dispatch(onPinnedWorkspace(data));
       setIndex(-1);
@@ -94,7 +95,7 @@ export default function WorkSpace(props) {
     console.log('uid', uid);
     const data = {
       user_id: uid,
-      ws_unpinned: [workspace.st_guid],
+      us_workspaces: [workspace.st_guid],
     };
     await dispatch(onUnPinnedWorkspace(data));
     setPinnedIndex(-1);

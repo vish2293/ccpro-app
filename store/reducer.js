@@ -147,7 +147,14 @@ const getAllTeams = (state, action) => {
 const setNewTeam = (state, action) => {
   console.log('data in reducer:***:::', action.payload);
   const copyOfList = Array.from(state.allTeamsList);
-  copyOfList.push(action.payload);
+  const selectedWorkSpace = state.selectedWorkSpace;
+  console.log('selected::', selectedWorkSpace);
+
+  if (
+    selectedWorkSpace?.in_workspace_id === action.payload.metadata.workspace_id
+  ) {
+    copyOfList.push(action.payload);
+  }
 
   return {
     ...state,
@@ -200,7 +207,7 @@ const setPinnedWorkspace = (state, action) => {
   const copyOfList = { ...state.workSpace };
   console.log('all work data::', copyOfList);
   const index = copyOfList.data.findIndex(
-    (a) => a.st_guid === action.payload.ws_pinned[0]
+    (a) => a.st_guid === action.payload.us_workspaces[0]
   );
   console.log('found::', copyOfList.data[index]);
   copyOfList.data[index].in_pinned = 1;
@@ -218,7 +225,7 @@ const setUnPinnedWorkspace = (state, action) => {
   const copyOfList = { ...state.workSpace };
   console.log('all work data::', copyOfList);
   const index = copyOfList.data.findIndex(
-    (a) => a.st_guid === action.payload.ws_unpinned[0]
+    (a) => a.st_guid === action.payload.us_workspaces[0]
   );
   console.log('found::', copyOfList.data[index]);
   copyOfList.data[index].in_pinned = 0;

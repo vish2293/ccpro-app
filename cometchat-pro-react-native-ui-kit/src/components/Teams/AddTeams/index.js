@@ -196,13 +196,15 @@ const AddTeam = (props) => {
       // alert('Workspace is required');
       setError('workspace required');
       setLoader(false);
-    } else if (membersList.length === 0) {
-      alert('At least select one member');
-      setLoader(false);
-    } else {
+    }
+    // else if (membersList.length === 0) {
+    //   alert('At least select one member');
+    //   setLoader(false);
+    // }
+    else {
       if (!avatar) {
         const data = {
-          text: 'Testimage',
+          text: `${new Date()}`,
         };
         const imageResponse = await dispatch(generatePatternImage(data));
         console.log('response here:', imageResponse);

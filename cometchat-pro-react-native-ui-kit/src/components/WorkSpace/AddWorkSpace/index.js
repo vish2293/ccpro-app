@@ -203,7 +203,7 @@ const AddWorkSpace = (props) => {
     else {
       if (!avatar) {
         const myData = {
-          text: 'Hellyos!',
+          text: `${new Date()}`,
         };
         const imageResponse = await dispatch(generatePatternImage(myData));
         console.log('response here:', imageResponse);

@@ -11,12 +11,14 @@ import {
   Keyboard,
   Platform,
   BackHandler,
+  Modal,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDIcon from 'react-native-vector-icons/AntDesign';
 import { CometChat } from '@cometchat-pro/react-native-chat';
 import Sound from 'react-native-sound';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import style from './styles';
 
@@ -38,6 +40,7 @@ import CometChatManager from '../../../utils/controller';
 import { GroupDetailManager } from '../../Groups/CometChatGroupDetails/controller';
 import ParsedText from 'react-native-parsed-text';
 import { parseEmojis } from '../../../functions';
+import EmojiSelector, { Categories } from 'react-native-emoji-selector';
 
 export default class CometChatMessageComposer extends React.PureComponent {
   static contextType = CometChatContext;
@@ -606,6 +609,14 @@ export default class CometChatMessageComposer extends React.PureComponent {
     });
   };
 
+  toggleEmojiPicker = () => {
+    const { emojiViewer } = this.state;
+    this.setState({
+      composerActionsVisible: false,
+      emojiViewer: !emojiViewer,
+    });
+  };
+
   /**
    * handler to toggle create poll screen
    * @param
@@ -759,6 +770,20 @@ export default class CometChatMessageComposer extends React.PureComponent {
       this.endTyping(typingMetadata);
       this.props.actionGenerated(actions.STOP_REACTION);
     }, typingInterval);
+  };
+
+  onSendEmoji = (emoji) => {
+    console.log('emoji:', emoji);
+    this.toggleEmojiPicker();
+    this.setState(
+      {
+        messageInput: emoji,
+        messageType: 'text',
+      },
+      () => {
+        this.sendTextMessage();
+      },
+    );
   };
 
   render() {
@@ -949,7 +974,7 @@ export default class CometChatMessageComposer extends React.PureComponent {
         actionGenerated={this.actionHandler}
       />
     );
-    console.log('regex::', this.state.regex);
+
     return (
       <View>
         {this.state.showUsers && (
@@ -1019,10 +1044,34 @@ export default class CometChatMessageComposer extends React.PureComponent {
             <TouchableOpacity
               style={style.reactionBtnStyle}
               disabled={disabled}
+              onPress={this.toggleEmojiPicker}>
+              <Fontisto name="smiley" size={22} color="gray" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={style.reactionBtnStyle}
+              disabled={disabled}
               onPress={this.toggleStickerPicker}>
               <Icon name="sticker-circle-outline" size={25} color="gray" />
             </TouchableOpacity>
           </View>
+
+          <Modal
+            visible={this.state.emojiViewer}
+            onRequestClose={this.toggleEmojiPicker}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: '#fff',
+              }}>
+              <EmojiSelector
+                showHistory={true}
+                showSearchBar={false}
+                category={Categories.emotion}
+                onEmojiSelected={(emoji) => this.onSendEmoji(emoji)}
+              />
+            </View>
+          </Modal>
         </View>
       </View>
     );
