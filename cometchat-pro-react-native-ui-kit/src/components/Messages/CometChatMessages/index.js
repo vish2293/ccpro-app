@@ -38,6 +38,7 @@ import DropDownAlert from '../../Shared/DropDownAlert';
 import BottomSheet from 'reanimated-bottom-sheet';
 import style from './styles';
 import CometChatUserProfile from '../../Users/CometChatUserProfile';
+import { connect } from 'react-redux';
 
 class CometChatMessages extends React.PureComponent {
   static contextType = CometChatContext;
@@ -1075,6 +1076,7 @@ class CometChatMessages extends React.PureComponent {
               // widgetconfig={route.params.widgetconfig}
               loggedInUser={params.loggedInUser}
               actionGenerated={this.actionHandler}
+              selectedTab={this.props.selectedTab}
             />
             {liveReactionView}
             {messageComposer}
@@ -1102,4 +1104,10 @@ class CometChatMessages extends React.PureComponent {
   }
 }
 
-export default CometChatMessages;
+const mapStateToProps = ({ reducer }) => {
+  return {
+    selectedTab: reducer.selectedTab,
+  };
+};
+
+export default connect(mapStateToProps)(CometChatMessages);

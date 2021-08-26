@@ -428,3 +428,10 @@ export const generatePatternImage = (data) => {
       });
   };
 };
+
+export const selectTab = (data) => {
+  return {
+    type: actionTypes.SELECTED_TAB,
+    payload: data,
+  };
+};

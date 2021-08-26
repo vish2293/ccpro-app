@@ -975,6 +975,17 @@ export default class CometChatMessageComposer extends React.PureComponent {
       />
     );
 
+    const hasImageOS = `has_img_${Platform.OS === 'ios' ? 'apple' : 'google'}`;
+
+    const emojiVersion = (e) => {
+      const version = parseFloat(Platform.Version);
+      if (version < 23) {
+        return parseFloat(e['added_in']) <= 0.6 && e[hasImageOS] === true;
+      } else {
+        return parseFloat(e['added_in']) <= 11 && e[hasImageOS] === true;
+      }
+    };
+
     return (
       <View>
         {this.state.showUsers && (
@@ -1058,18 +1069,24 @@ export default class CometChatMessageComposer extends React.PureComponent {
 
           <Modal
             visible={this.state.emojiViewer}
-            onRequestClose={this.toggleEmojiPicker}>
+            onRequestClose={this.toggleEmojiPicker}
+            transparent>
             <View
               style={{
                 flex: 1,
-                backgroundColor: '#fff',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                justifyContent: 'flex-end',
               }}>
-              <EmojiSelector
-                showHistory={true}
-                showSearchBar={false}
-                category={Categories.emotion}
-                onEmojiSelected={(emoji) => this.onSendEmoji(emoji)}
-              />
+              <View style={{ flex: 0.55, backgroundColor: '#fff' }}>
+                <EmojiSelector
+                  columns={8}
+                  showHistory={true}
+                  showSearchBar={false}
+                  category={Categories.emotion}
+                  onEmojiSelected={(emoji) => this.onSendEmoji(emoji)}
+                  shouldInclude={(e) => emojiVersion(e)}
+                />
+              </View>
             </View>
           </Modal>
         </View>

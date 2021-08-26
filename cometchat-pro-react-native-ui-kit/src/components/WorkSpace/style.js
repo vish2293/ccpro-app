@@ -73,6 +73,12 @@ module.exports = StyleSheet.create({
     borderRadius: 5,
     left: -5,
   },
+  popRoleStyle: {
+    backgroundColor: '#fff',
+    height: 290,
+    width: '90%',
+    borderRadius: 5,
+  },
   whiteBorder: {
     backgroundColor: '#fff',
     padding: 5,
@@ -112,5 +118,49 @@ module.exports = StyleSheet.create({
     paddingHorizontal: 20,
     zIndex: 2,
     borderRadius: 3,
+  },
+  workspaceRowRole: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  subHeadingRole: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  imgRoleStyle: {
+    height: 45,
+    width: 45,
+    borderRadius: 100 / 2,
+  },
+  roleText: {
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  labelText: {
+    fontStyle: 'italic',
+    fontWeight: 'normal',
+    color: '#7f7f7f',
+  },
+  noteText: {
+    fontWeight: 'normal',
+    color: '#7f7f7f',
+  },
+  redCircle: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    backgroundColor: 'red',
+    height: 17,
+    width: 17,
+    borderRadius: 100 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notiText: {
+    color: '#fff',
+    fontSize: 10,
   },
 });

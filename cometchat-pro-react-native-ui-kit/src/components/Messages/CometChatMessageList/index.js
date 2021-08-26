@@ -1066,34 +1066,41 @@ class CometChatMessageList extends React.PureComponent {
    */
   getComponent = (message, key) => {
     let component;
+    if (this.props.selectedTab === 'Call') {
+      switch (message.category) {
+        case 'call':
+          component = this.getCallMessageComponent(message, key);
+          break;
+      }
+    } else {
+      switch (message.category) {
+        case 'action':
+          component = this.getActionMessageComponent(message, key);
+          break;
+        case 'call':
+          component = this.getCallMessageComponent(message, key);
+          break;
+        case 'message':
+          if (
+            this.loggedInUser.uid === message?.sender?.uid ||
+            this.loggedInUser.uid === message?.data?.sender?.uid
+          ) {
+            component = this.getSenderMessageComponent(message, key);
+          } else {
+            component = this.getReceiverMessageComponent(message, key);
+          }
+          break;
+        case 'custom':
+          if (this.loggedInUser.uid === message.sender.uid) {
+            component = this.getSenderCustomMessageComponent(message, key);
+          } else {
+            component = this.getReceiverCustomMessageComponent(message, key);
+          }
 
-    switch (message.category) {
-      case 'action':
-        component = this.getActionMessageComponent(message, key);
-        break;
-      case 'call':
-        component = this.getCallMessageComponent(message, key);
-        break;
-      case 'message':
-        if (
-          this.loggedInUser.uid === message?.sender?.uid ||
-          this.loggedInUser.uid === message?.data?.sender?.uid
-        ) {
-          component = this.getSenderMessageComponent(message, key);
-        } else {
-          component = this.getReceiverMessageComponent(message, key);
-        }
-        break;
-      case 'custom':
-        if (this.loggedInUser.uid === message.sender.uid) {
-          component = this.getSenderCustomMessageComponent(message, key);
-        } else {
-          component = this.getReceiverCustomMessageComponent(message, key);
-        }
-
-        break;
-      default:
-        break;
+          break;
+        default:
+          break;
+      }
     }
 
     return component;

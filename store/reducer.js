@@ -17,6 +17,7 @@ const initialState = {
   allTeamsList: [],
   groupList: [],
   usersList: [],
+  selectedTab: '',
 };
 
 const authStart = (state, action) => {
@@ -245,6 +246,13 @@ const getUsersList = (state, action) => {
   };
 };
 
+const setTab = (state, action) => {
+  return {
+    ...state,
+    selectedTab: action.payload,
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
@@ -287,8 +295,9 @@ const reducer = (state = initialState, action) => {
       return setUnPinnedWorkspace(state, action);
     case actionTypes.GET_USERS_LIST:
       return getUsersList(state, action);
+    case actionTypes.SELECTED_TAB:
+      return setTab(state, action);
     case actionTypes.READ_ALL:
-      console.log('acctionnonon', action.payload);
       return {
         ...state,
         chatRead: { ...state.chatRead, ...action.payload },

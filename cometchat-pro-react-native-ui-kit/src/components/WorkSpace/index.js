@@ -13,6 +13,7 @@ import style from './style';
 import { heightRatio } from '../../utils/consts';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectWorkSpace,
@@ -104,11 +105,69 @@ export default function WorkSpace(props) {
   return (
     <SafeAreaView style={style.safeArea}>
       <View style={style.container}>
+        <Popover
+          popoverStyle={style.popRoleStyle}
+          from={
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={[style.moreBox, { marginRight: 20, marginLeft: 0 }]}>
+              <AntDesign name="plus" size={18} color="#fff" />
+            </TouchableOpacity>
+          }>
+          <View style={{ padding: 15 }}>
+            <Text style={style.swictherHeading}>Switch Role</Text>
+            <TextInput
+              value={search}
+              style={style.searchInput}
+              placeholder="Search for Workspaces"
+              onChangeText={onChangeHandler}
+            />
+
+            <View style={[style.workspaceRowRole, { marginTop: 10 }]}>
+              <TouchableOpacity style={style.whiteBorder}>
+                <Image
+                  style={style.imgRoleStyle}
+                  source={require('../../../../dummy.jpg')}
+                />
+                <View style={style.redCircle}>
+                  <Text style={style.notiText}>5</Text>
+                </View>
+              </TouchableOpacity>
+
+              <View>
+                <Text style={style.roleText}>
+                  Amanda wallace <Text style={style.labelText}>You!</Text>
+                </Text>
+              </View>
+            </View>
+
+            <Text style={style.subHeadingRole}>
+              Workspaces and Roles you are a member of:
+            </Text>
+            <View style={style.workspaceRowRole}>
+              <TouchableOpacity style={style.whiteBorder}>
+                <Image
+                  style={style.imgRoleStyle}
+                  source={require('../../../../dummy.jpg')}
+                />
+                <View style={style.redCircle}>
+                  <Text style={style.notiText}>2</Text>
+                </View>
+              </TouchableOpacity>
+
+              <View>
+                <Text style={style.roleText}>Goodgrid</Text>
+                <Text style={style.noteText}>Workspace</Text>
+              </View>
+            </View>
+          </View>
+        </Popover>
+
         <View style={[style.moreBox, { marginRight: 10, marginLeft: 0 }]}>
           <Ionicons name="chatbox-outline" size={18} color="#fff" />
         </View>
         {workList?.data &&
-          workList.data.slice(0, 4).map((item, index) => {
+          workList.data.slice(0, 3).map((item, index) => {
             return (
               <TouchableOpacity
                 key={index}
