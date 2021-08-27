@@ -49,7 +49,6 @@ const AddUsers = (props) => {
   const [groupsData, setGroupData] = useState(undefined);
 
   const onChangeHandler = (name, val) => {
-    console.log('handler:', name, val);
     setState({
       ...state,
       [name]: val,

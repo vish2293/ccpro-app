@@ -292,7 +292,7 @@ export const getSingleWorkSpaces = (id) => {
         console.log('single work', res.data);
         dispatch({
           type: actionTypes.ADD_WORK_SPACE,
-          payload: res.data.data,
+          payload: { ...res.data.data, in_pinned: 0 },
         });
       })
       .catch((err) => {

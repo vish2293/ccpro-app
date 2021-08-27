@@ -888,47 +888,8 @@ class CometChatMessageList extends React.PureComponent {
 
   getSenderCustomMessageComponent = (message, key) => {
     let component;
-    if (Object.prototype.hasOwnProperty.call(message, 'deletedAt')) {
-      component = (
-        <CometChatDeleteMessageBubble
-          theme={this.props.theme}
-          key={key}
-          item={this.props.item}
-          type={this.props.type}
-          message={message}
-          messageOf={enums.MESSAGE_OF_SENDER}
-        />
-      );
-    } else {
+    if (this.props.selectedTab === 'Call') {
       switch (message.type) {
-        case enums.CUSTOM_TYPE_POLL:
-          component = (
-            <CometChatSenderPollMessageBubble
-              loggedInUser={this.loggedInUser}
-              theme={this.props.theme}
-              key={key}
-              item={this.props.item}
-              type={this.props.type}
-              message={message}
-              actionGenerated={this.props.actionGenerated}
-              showMessage={this.props?.showMessage}
-            />
-          );
-          break;
-        case enums.CUSTOM_TYPE_STICKER:
-          component = (
-            <CometChatSenderStickerMessageBubble
-              loggedInUser={this.loggedInUser}
-              theme={this.props.theme}
-              key={key}
-              item={this.props.item}
-              type={this.props.type}
-              message={message}
-              actionGenerated={this.props.actionGenerated}
-              showMessage={this.props?.showMessage}
-            />
-          );
-          break;
         case 'meeting':
           component = (
             <CometChatSenderDirectCallBubble
@@ -943,6 +904,63 @@ class CometChatMessageList extends React.PureComponent {
         default:
           break;
       }
+    } else {
+      if (Object.prototype.hasOwnProperty.call(message, 'deletedAt')) {
+        component = (
+          <CometChatDeleteMessageBubble
+            theme={this.props.theme}
+            key={key}
+            item={this.props.item}
+            type={this.props.type}
+            message={message}
+            messageOf={enums.MESSAGE_OF_SENDER}
+          />
+        );
+      } else {
+        switch (message.type) {
+          case enums.CUSTOM_TYPE_POLL:
+            component = (
+              <CometChatSenderPollMessageBubble
+                loggedInUser={this.loggedInUser}
+                theme={this.props.theme}
+                key={key}
+                item={this.props.item}
+                type={this.props.type}
+                message={message}
+                actionGenerated={this.props.actionGenerated}
+                showMessage={this.props?.showMessage}
+              />
+            );
+            break;
+          case enums.CUSTOM_TYPE_STICKER:
+            component = (
+              <CometChatSenderStickerMessageBubble
+                loggedInUser={this.loggedInUser}
+                theme={this.props.theme}
+                key={key}
+                item={this.props.item}
+                type={this.props.type}
+                message={message}
+                actionGenerated={this.props.actionGenerated}
+                showMessage={this.props?.showMessage}
+              />
+            );
+            break;
+          case 'meeting':
+            component = (
+              <CometChatSenderDirectCallBubble
+                loggedInUser={this.loggedInUser}
+                key={key}
+                message={message}
+                {...this.props}
+                actionGenerated={this.props.actionGenerated}
+              />
+            );
+            break;
+          default:
+            break;
+        }
+      }
     }
     return component;
   };
@@ -953,46 +971,8 @@ class CometChatMessageList extends React.PureComponent {
    */
   getReceiverCustomMessageComponent = (message, key) => {
     let component;
-    if (Object.prototype.hasOwnProperty.call(message, 'deletedAt')) {
-      component = (
-        <CometChatDeleteMessageBubble
-          theme={this.props.theme}
-          key={key}
-          item={this.props.item}
-          type={this.props.type}
-          message={message}
-          messageOf={enums.MESSAGE_OF_RECEIVER}
-        />
-      );
-    } else {
+    if (this.props.selectedTab === 'Call') {
       switch (message.type) {
-        case enums.CUSTOM_TYPE_POLL:
-          component = (
-            <CometChatReceiverPollMessageBubble
-              loggedInUser={this.loggedInUser}
-              theme={this.props.theme}
-              key={key}
-              item={this.props.item}
-              type={this.props.type}
-              message={message}
-              actionGenerated={this.props.actionGenerated}
-              showMessage={this.props?.showMessage}
-            />
-          );
-          break;
-        case enums.CUSTOM_TYPE_STICKER:
-          component = (
-            <CometChatReceiverStickerMessageBubble
-              loggedInUser={this.loggedInUser}
-              theme={this.props.theme}
-              key={key}
-              item={this.props.item}
-              type={this.props.type}
-              message={message}
-              actionGenerated={this.props.actionGenerated}
-            />
-          );
-          break;
         case 'meeting':
           component = (
             <CometChatReceiverDirectCallBubble
@@ -1006,6 +986,62 @@ class CometChatMessageList extends React.PureComponent {
           break;
         default:
           break;
+      }
+    } else {
+      if (Object.prototype.hasOwnProperty.call(message, 'deletedAt')) {
+        component = (
+          <CometChatDeleteMessageBubble
+            theme={this.props.theme}
+            key={key}
+            item={this.props.item}
+            type={this.props.type}
+            message={message}
+            messageOf={enums.MESSAGE_OF_RECEIVER}
+          />
+        );
+      } else {
+        switch (message.type) {
+          case enums.CUSTOM_TYPE_POLL:
+            component = (
+              <CometChatReceiverPollMessageBubble
+                loggedInUser={this.loggedInUser}
+                theme={this.props.theme}
+                key={key}
+                item={this.props.item}
+                type={this.props.type}
+                message={message}
+                actionGenerated={this.props.actionGenerated}
+                showMessage={this.props?.showMessage}
+              />
+            );
+            break;
+          case enums.CUSTOM_TYPE_STICKER:
+            component = (
+              <CometChatReceiverStickerMessageBubble
+                loggedInUser={this.loggedInUser}
+                theme={this.props.theme}
+                key={key}
+                item={this.props.item}
+                type={this.props.type}
+                message={message}
+                actionGenerated={this.props.actionGenerated}
+              />
+            );
+            break;
+          case 'meeting':
+            component = (
+              <CometChatReceiverDirectCallBubble
+                loggedInUser={this.loggedInUser}
+                key={key}
+                message={message}
+                actionGenerated={this.props.actionGenerated}
+                {...this.props}
+              />
+            );
+            break;
+          default:
+            break;
+        }
       }
     }
 
@@ -1070,6 +1106,14 @@ class CometChatMessageList extends React.PureComponent {
       switch (message.category) {
         case 'call':
           component = this.getCallMessageComponent(message, key);
+          break;
+        case 'custom':
+          if (this.loggedInUser.uid === message.sender.uid) {
+            component = this.getSenderCustomMessageComponent(message, key);
+          } else {
+            component = this.getReceiverCustomMessageComponent(message, key);
+          }
+
           break;
       }
     } else {

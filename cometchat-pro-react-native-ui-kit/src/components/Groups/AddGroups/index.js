@@ -145,7 +145,6 @@ const AddGroups = (props) => {
   }, []);
 
   const onChangeHandler = (name, val) => {
-    console.log('handler:', name, val);
     setError('');
     setState({
       ...state,

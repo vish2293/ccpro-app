@@ -127,7 +127,7 @@ const addNewWorkSpace = (state, action) => {
   } else {
     copyOfAllList.data.push(action.payload);
     copyofUserWorkList.data.push(action.payload);
-    console.log('copy of user:', copyOfAllList);
+    console.log('copy of user:', copyofUserWorkList);
   }
   return {
     ...state,

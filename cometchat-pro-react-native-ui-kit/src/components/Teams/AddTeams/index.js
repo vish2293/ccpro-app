@@ -109,7 +109,6 @@ const AddTeam = (props) => {
   }, [workList]);
 
   const onChangeHandler = (name, val) => {
-    console.log('handler:', name, val);
     setError('');
     setState({
       ...state,

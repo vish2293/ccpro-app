@@ -197,6 +197,9 @@ class CometChatOutgoingCall extends React.PureComponent {
       })
       .catch((error) => {
         logger('[CallScreen] acceptCall -- error', error);
+        this.setState({
+          outgoingCallScreen: false,
+        });
         this.props.actionGenerated(actions.CALL_ERROR, error);
       });
   };
