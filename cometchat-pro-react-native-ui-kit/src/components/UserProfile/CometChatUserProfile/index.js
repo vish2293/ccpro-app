@@ -120,7 +120,7 @@ const CometChatUserProfile = (props) => {
         </View>
         <ScrollView>
           <View style={styles.infoItemsContainer}>
-            <View style={styles.infoItem}>
+            {/* <View style={styles.infoItem}>
               {notificationIcon}
               <Text style={styles.infoItemText}>Notifications</Text>
             </View>
@@ -131,7 +131,7 @@ const CometChatUserProfile = (props) => {
             <View style={styles.infoItem}>
               {chatIcon}
               <Text style={styles.infoItemText}>Chats</Text>
-            </View>
+            </View> */}
             <TouchableOpacity onPress={goToWorkScreen} style={styles.infoItem}>
               {workIcon}
               <Text style={styles.infoItemText}>Workspaces</Text>
@@ -144,15 +144,15 @@ const CometChatUserProfile = (props) => {
               {groupsIcon}
               <Text style={styles.infoItemText}>Groups</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={goToUsersList} style={styles.infoItem}>
+            {/* <TouchableOpacity onPress={goToUsersList} style={styles.infoItem}>
               {userIcon}
               <Text style={styles.infoItemText}>Users</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
-          <View style={styles.infoItemHeadingContainer}>
+          {/* <View style={styles.infoItemHeadingContainer}>
             <Text style={styles.infoItemHeadingText}>Other</Text>
-          </View>
-          <View style={styles.infoItemsContainer}>
+          </View> */}
+          {/* <View style={styles.infoItemsContainer}>
             <View style={styles.infoItem}>
               {helpIcon}
               <Text style={styles.infoItemText}>Help</Text>
@@ -161,7 +161,7 @@ const CometChatUserProfile = (props) => {
               {problemIcon}
               <Text style={styles.infoItemText}>Report a Problem</Text>
             </View>
-          </View>
+          </View> */}
         </ScrollView>
       </View>
     </SafeAreaView>

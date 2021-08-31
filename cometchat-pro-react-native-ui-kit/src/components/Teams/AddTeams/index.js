@@ -123,7 +123,7 @@ const AddTeam = (props) => {
 
   const goBack = () => {
     const { navigation } = props;
-    navigation.goBack();
+    navigation.pop();
   };
 
   const openPicker = () => {

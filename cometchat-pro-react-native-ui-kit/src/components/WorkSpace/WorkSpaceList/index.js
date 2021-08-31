@@ -18,9 +18,16 @@ import { getAllWorkSpaces } from '../../../../../store/action';
 
 const WorkSpaceList = (props) => {
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.reducer.user);
 
   useLayoutEffect(() => {
-    dispatch(getAllWorkSpaces());
+    console.log('user info::', userInfo);
+    const data = {
+      user_id: userInfo.uid,
+      user_role: 'organisation',
+      search: '',
+    };
+    dispatch(getAllWorkSpaces(data));
   }, []);
   const isLoading = useSelector((state) => state.reducer.loader);
   const workList = useSelector((state) => state.reducer.allWorkspaces);

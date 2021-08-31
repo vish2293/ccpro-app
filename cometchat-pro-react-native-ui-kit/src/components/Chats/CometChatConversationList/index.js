@@ -94,233 +94,241 @@ class CometChatConversationList extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    try {
-      const previousItem = JSON.stringify(prevProps.item);
-      const currentItem = JSON.stringify(this.props.item);
+    if (this.state.textInputValue !== '') {
+      return false;
+    } else {
+      try {
+        const previousItem = JSON.stringify(prevProps.item);
+        const currentItem = JSON.stringify(this.props.item);
 
-      console.log('prev item::', prevProps);
+        // console.log('prev item::', prevProps);
 
-      // if different conversation is selected
-      if (previousItem !== currentItem) {
-        if (Object.keys(this.props.item).length === 0) {
-          this.chatListRef.scrollTop = 0;
-          this.setState({ selectedConversation: {} });
-        } else {
-          const conversationList = [...this.state.conversationList];
-          const conversationObj = conversationList.find((c) => {
-            if (
-              (c.conversationType === this.props.type &&
-                this.props.type === 'user' &&
-                c.conversationWith.uid === this.props.item.uid) ||
-              (c.conversationType === this.props.type &&
-                this.props.type === CometChat.ACTION_TYPE.TYPE_GROUP &&
-                c.conversationWith.guid === this.props.item.guid)
-            ) {
-              return c;
-            }
+        // if different conversation is selected
+        if (previousItem !== currentItem) {
+          if (Object.keys(this.props.item).length === 0) {
+            this.chatListRef.scrollTop = 0;
+            this.setState({ selectedConversation: {} });
+          } else {
+            const conversationList = [...this.state.conversationList];
+            const conversationObj = conversationList.find((c) => {
+              if (
+                (c.conversationType === this.props.type &&
+                  this.props.type === 'user' &&
+                  c.conversationWith.uid === this.props.item.uid) ||
+                (c.conversationType === this.props.type &&
+                  this.props.type === CometChat.ACTION_TYPE.TYPE_GROUP &&
+                  c.conversationWith.guid === this.props.item.guid)
+              ) {
+                return c;
+              }
 
-            return false;
-          });
-
-          if (conversationObj) {
-            const conversationKey = conversationList.indexOf(conversationObj);
-            const newConversationObj = {
-              ...conversationObj,
-              unreadMessageCount: 0,
-            };
-
-            conversationList.splice(conversationKey, 1, newConversationObj);
-            this.setState({
-              conversationList,
-              selectedConversation: newConversationObj,
+              return false;
             });
-          }
-        }
-      }
 
-      // if user is blocked/unblocked, update conversationList in state
-      if (
-        prevProps.item &&
-        Object.keys(prevProps.item).length &&
-        prevProps.item.uid === this.props.item.uid &&
-        prevProps.item?.blockedByMe !== this.props.item?.blockedByMe
-      ) {
-        const conversationList = [...this.state.conversationList];
-
-        // search for user
-        const convKey = conversationList.findIndex(
-          (c) =>
-            c.conversationType === 'user' &&
-            c.conversationWith.uid === this.props.item.uid,
-        );
-        if (convKey > -1) {
-          conversationList.splice(convKey, 1);
-
-          this.setState({ conversationList });
-        }
-      }
-
-      if (
-        prevProps.groupToUpdate &&
-        (prevProps.groupToUpdate.guid !== this.props.groupToUpdate.guid ||
-          (prevProps.groupToUpdate.guid === this.props.groupToUpdate.guid &&
-            (prevProps.groupToUpdate.membersCount !==
-              this.props.groupToUpdate.membersCount ||
-              prevProps.groupToUpdate.scope !==
-                this.props.groupToUpdate.scope)))
-      ) {
-        const conversationList = [...this.state.conversationList];
-        const { groupToUpdate } = this.props;
-
-        const convKey = conversationList.findIndex(
-          (c) =>
-            c.conversationType === 'group' &&
-            c.conversationWith.guid === groupToUpdate.guid,
-        );
-        if (convKey > -1) {
-          const convObj = conversationList[convKey];
-
-          const convWithObj = { ...convObj.conversationWith };
-
-          const newConvWithObj = {
-            ...convWithObj,
-            scope: groupToUpdate.scope,
-            membersCount: groupToUpdate.membersCount,
-          };
-          const newConvObj = { ...convObj, conversationWith: newConvWithObj };
-
-          conversationList.splice(convKey, 1, newConvObj);
-          this.setState({ conversationList });
-        }
-      }
-
-      console.log('messageToMarkRead:::', this.props.messageToMarkRead);
-      console.log('last message:::::::', this.props.lastMessage);
-
-      if (prevProps.messageToMarkRead !== this.props.messageToMarkRead) {
-        console.log('hello Iam in');
-        const message = this.props.messageToMarkRead;
-        this.makeConversation(message)
-          .then((response) => {
-            const {
-              conversationKey,
-              conversationObj,
-              conversationList,
-            } = response;
-            console.log('conversationKey', conversationKey);
-            if (conversationKey > -1) {
-              const unreadMessageCount = this.makeUnreadMessageCount(
-                conversationObj,
-                'decrement',
-              );
-              const lastMessageObj = this.makeLastMessage(
-                message,
-                conversationObj,
-              );
-
+            if (conversationObj) {
+              const conversationKey = conversationList.indexOf(conversationObj);
               const newConversationObj = {
                 ...conversationObj,
-                lastMessage: lastMessageObj,
-                unreadMessageCount,
+                unreadMessageCount: 0,
               };
-              console.log('final *******', newConversationObj);
-              conversationList.splice(conversationKey, 1);
-              conversationList.unshift(newConversationObj);
-              this.setState({ conversationList: conversationList });
-            }
-          })
-          .catch((error) => {
-            console.log('error', error);
-            const errorCode = error?.message || 'ERROR';
-            this.dropDownAlertRef?.showMessage('error', errorCode);
-            logger(
-              'This is an error in converting message to conversation',
-              error,
-            );
-          });
-      }
 
-      if (prevProps.lastMessage !== this.props.lastMessage) {
-        const { lastMessage } = this.props;
-        const conversationList = [...this.state.conversationList];
-        const conversationKey = conversationList.findIndex(
-          (c) => c.conversationId === lastMessage.conversationId,
-        );
-
-        if (conversationKey > -1) {
-          const conversationObj = conversationList[conversationKey];
-          const newConversationObj = { ...conversationObj, lastMessage };
-
-          conversationList.splice(conversationKey, 1);
-          conversationList.unshift(newConversationObj);
-          this.setState({ conversationList: conversationList });
-        } else {
-          // TODO: dont know what to do here
-          const chatListMode = this.UIKitSettingsBuilder.chatListMode;
-          const chatListFilterOptions = UIKitSettings.chatListFilterOptions;
-          if (chatListMode !== chatListFilterOptions['USERS_AND_GROUPS']) {
-            if (
-              (chatListMode === chatListFilterOptions['USERS'] &&
-                lastMessage.receiverType === CometChat.RECEIVER_TYPE.GROUP) ||
-              (chatListMode === chatListFilterOptions['GROUPS'] &&
-                lastMessage.receiverType === CometChat.RECEIVER_TYPE.USER)
-            ) {
-              return false;
+              conversationList.splice(conversationKey, 1, newConversationObj);
+              this.setState({
+                conversationList,
+                selectedConversation: newConversationObj,
+              });
             }
           }
-
-          const getConversationId = () => {
-            let conversationId = null;
-            if (this.getContext().type === CometChat.RECEIVER_TYPE.USER) {
-              const users = [this.loggedInUser.uid, this.getContext().item.uid];
-              conversationId = users.sort().join('_user_');
-            } else if (
-              this.getContext().type === CometChat.RECEIVER_TYPE.GROUP
-            ) {
-              conversationId = `group_${this.getContext().item.guid}`;
-            }
-
-            return conversationId;
-          };
-
-          let newConversation = new CometChat.Conversation();
-          newConversation.setConversationId(getConversationId());
-          newConversation.setConversationType(this.getContext().type);
-          newConversation.setConversationWith(this.getContext().item);
-          newConversation.setLastMessage(lastMessage);
-          newConversation.setUnreadMessageCount(0);
-
-          conversationList.unshift(newConversation);
-          this.setState({ conversationList: conversationList });
-          // this.getContext().setLastMessage({});
         }
-      }
 
-      if (
-        prevProps.groupToDelete &&
-        prevProps.groupToDelete.guid !== this.props.groupToDelete.guid
-      ) {
-        let conversationList = [...this.state.conversationList];
-        const groupKey = conversationList.findIndex(
-          (member) =>
-            member.conversationWith.guid === this.props.groupToDelete.guid,
-        );
-        if (groupKey > -1) {
-          conversationList.splice(groupKey, 1);
-          this.setState({ conversationList: conversationList });
-          if (conversationList.length === 0) {
-            this.decoratorMessage = 'No chats found';
+        // if user is blocked/unblocked, update conversationList in state
+        if (
+          prevProps.item &&
+          Object.keys(prevProps.item).length &&
+          prevProps.item.uid === this.props.item.uid &&
+          prevProps.item?.blockedByMe !== this.props.item?.blockedByMe
+        ) {
+          const conversationList = [...this.state.conversationList];
+
+          // search for user
+          const convKey = conversationList.findIndex(
+            (c) =>
+              c.conversationType === 'user' &&
+              c.conversationWith.uid === this.props.item.uid,
+          );
+          if (convKey > -1) {
+            conversationList.splice(convKey, 1);
+
+            this.setState({ conversationList });
           }
         }
-      }
 
-      // Get chat when workspace selected
-      if (prevProps.selectedWorkSpace !== this.props.selectedWorkSpace) {
-        console.log('I called chats:::');
-        this.componentDidMount();
+        if (
+          prevProps.groupToUpdate &&
+          (prevProps.groupToUpdate.guid !== this.props.groupToUpdate.guid ||
+            (prevProps.groupToUpdate.guid === this.props.groupToUpdate.guid &&
+              (prevProps.groupToUpdate.membersCount !==
+                this.props.groupToUpdate.membersCount ||
+                prevProps.groupToUpdate.scope !==
+                  this.props.groupToUpdate.scope)))
+        ) {
+          const conversationList = [...this.state.conversationList];
+          const { groupToUpdate } = this.props;
+
+          const convKey = conversationList.findIndex(
+            (c) =>
+              c.conversationType === 'group' &&
+              c.conversationWith.guid === groupToUpdate.guid,
+          );
+          if (convKey > -1) {
+            const convObj = conversationList[convKey];
+
+            const convWithObj = { ...convObj.conversationWith };
+
+            const newConvWithObj = {
+              ...convWithObj,
+              scope: groupToUpdate.scope,
+              membersCount: groupToUpdate.membersCount,
+            };
+            const newConvObj = { ...convObj, conversationWith: newConvWithObj };
+
+            conversationList.splice(convKey, 1, newConvObj);
+            this.setState({ conversationList });
+          }
+        }
+
+        // console.log('messageToMarkRead:::', this.props.messageToMarkRead);
+        // console.log('previousToMarkRead:::', prevProps.messageToMarkRead);
+        // console.log('last message:::::::', this.props.lastMessage);
+
+        if (prevProps.messageToMarkRead !== this.props.messageToMarkRead) {
+          console.log('hello Iam in');
+          const message = this.props.messageToMarkRead;
+          this.makeConversation(message)
+            .then((response) => {
+              const {
+                conversationKey,
+                conversationObj,
+                conversationList,
+              } = response;
+              console.log('conversationKey', conversationKey);
+              if (conversationKey > -1) {
+                const unreadMessageCount = this.makeUnreadMessageCount(
+                  conversationObj,
+                  'decrement',
+                );
+                const lastMessageObj = this.makeLastMessage(
+                  message,
+                  conversationObj,
+                );
+
+                const newConversationObj = {
+                  ...conversationObj,
+                  lastMessage: lastMessageObj,
+                  unreadMessageCount,
+                };
+                console.log('final *******', newConversationObj);
+                conversationList.splice(conversationKey, 1);
+                conversationList.unshift(newConversationObj);
+                this.setState({ conversationList: conversationList });
+              }
+            })
+            .catch((error) => {
+              console.log('error', error);
+              const errorCode = error?.message || 'ERROR';
+              this.dropDownAlertRef?.showMessage('error', errorCode);
+              logger(
+                'This is an error in converting message to conversation',
+                error,
+              );
+            });
+        }
+
+        if (prevProps.lastMessage !== this.props.lastMessage) {
+          const { lastMessage } = this.props;
+          const conversationList = [...this.state.conversationList];
+          const conversationKey = conversationList.findIndex(
+            (c) => c.conversationId === lastMessage.conversationId,
+          );
+
+          if (conversationKey > -1) {
+            const conversationObj = conversationList[conversationKey];
+            const newConversationObj = { ...conversationObj, lastMessage };
+
+            conversationList.splice(conversationKey, 1);
+            conversationList.unshift(newConversationObj);
+            this.setState({ conversationList: conversationList });
+          } else {
+            // TODO: dont know what to do here
+            const chatListMode = this.UIKitSettingsBuilder.chatListMode;
+            const chatListFilterOptions = UIKitSettings.chatListFilterOptions;
+            if (chatListMode !== chatListFilterOptions['USERS_AND_GROUPS']) {
+              if (
+                (chatListMode === chatListFilterOptions['USERS'] &&
+                  lastMessage.receiverType === CometChat.RECEIVER_TYPE.GROUP) ||
+                (chatListMode === chatListFilterOptions['GROUPS'] &&
+                  lastMessage.receiverType === CometChat.RECEIVER_TYPE.USER)
+              ) {
+                return false;
+              }
+            }
+
+            const getConversationId = () => {
+              let conversationId = null;
+              if (this.getContext().type === CometChat.RECEIVER_TYPE.USER) {
+                const users = [
+                  this.loggedInUser.uid,
+                  this.getContext().item.uid,
+                ];
+                conversationId = users.sort().join('_user_');
+              } else if (
+                this.getContext().type === CometChat.RECEIVER_TYPE.GROUP
+              ) {
+                conversationId = `group_${this.getContext().item.guid}`;
+              }
+
+              return conversationId;
+            };
+
+            let newConversation = new CometChat.Conversation();
+            newConversation.setConversationId(getConversationId());
+            newConversation.setConversationType(this.getContext().type);
+            newConversation.setConversationWith(this.getContext().item);
+            newConversation.setLastMessage(lastMessage);
+            newConversation.setUnreadMessageCount(0);
+
+            conversationList.unshift(newConversation);
+            this.setState({ conversationList: conversationList });
+            // this.getContext().setLastMessage({});
+          }
+        }
+
+        if (
+          prevProps.groupToDelete &&
+          prevProps.groupToDelete.guid !== this.props.groupToDelete.guid
+        ) {
+          let conversationList = [...this.state.conversationList];
+          const groupKey = conversationList.findIndex(
+            (member) =>
+              member.conversationWith.guid === this.props.groupToDelete.guid,
+          );
+          if (groupKey > -1) {
+            conversationList.splice(groupKey, 1);
+            this.setState({ conversationList: conversationList });
+            if (conversationList.length === 0) {
+              this.decoratorMessage = 'No chats found';
+            }
+          }
+        }
+
+        // Get chat when workspace selected
+        if (prevProps.selectedWorkSpace !== this.props.selectedWorkSpace) {
+          console.log('I called chats:::');
+          this.componentDidMount();
+        }
+      } catch (error) {
+        logger(error);
       }
-    } catch (error) {
-      logger(error);
     }
   }
 
@@ -944,7 +952,9 @@ class CometChatConversationList extends React.Component {
     return (
       <View style={[styles.conversationHeaderStyle]}>
         <View style={styles.headingContainer}>
-          <Text style={styles.conversationHeaderTitleStyle}>Chats</Text>
+          <Text style={styles.conversationHeaderTitleStyle}>
+            {this.props.selectedTab === 'Call' ? 'Calls' : 'Chats'}
+          </Text>
           <TouchableOpacity onPress={this.goToAdd} style={{ borderRadius: 20 }}>
             {this.createChat}
           </TouchableOpacity>
@@ -993,7 +1003,7 @@ class CometChatConversationList extends React.Component {
    * component to show if conversation list length is 0
    * @param
    */
-  listEmptyContainer = () => {
+  listEmptyContainer = (filteredUsers) => {
     // for loading purposes....
     return (
       <View style={styles.contactMsgStyle}>
@@ -1004,7 +1014,9 @@ class CometChatConversationList extends React.Component {
               color: `${this.theme.color.secondary}`,
             },
           ]}>
-          {this.decoratorMessage}
+          {filteredUsers.length === 0 && this.state.textInputValue !== ''
+            ? 'No Chats Found'
+            : this.decoratorMessage}
         </Text>
       </View>
     );
@@ -1052,7 +1064,7 @@ class CometChatConversationList extends React.Component {
    * @param
    */
   endReached = () => {
-    this.getConversations();
+    // this.getConversations();
   };
 
   deleteConversations = (conversation) => {
@@ -1160,7 +1172,7 @@ class CometChatConversationList extends React.Component {
                   />
                 );
               }}
-              ListEmptyComponent={this.listEmptyContainer}
+              ListEmptyComponent={() => this.listEmptyContainer(filteredUsers)}
               onScroll={this.handleScroll}
               onEndReached={this.endReached}
               onEndReachedThreshold={0.3}
@@ -1179,6 +1191,7 @@ const mapStateToProps = ({ reducer }) => {
   return {
     chatRead: reducer.chatRead,
     selectedWorkSpace: reducer.selectedWorkSpace,
+    selectedTab: reducer.selectedTab,
   };
 };
 

@@ -31,7 +31,6 @@ const GroupsList = (props) => {
     (state) => state.reducer.selectedWorkSpace,
   );
 
-  console.log('worklist::::', selectedWorkspace);
   /**
    * Retrieve logged in user details
    * @param

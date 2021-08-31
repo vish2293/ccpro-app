@@ -251,13 +251,14 @@ export const getWorkSpacesTypes = (data) => {
   };
 };
 
-export const getAllWorkSpaces = () => {
+export const getAllWorkSpaces = (data) => {
   return (dispatch, state) => {
     const token = state().reducer.jwtToken;
 
     axios({
       url: serverUrl + 'workspaces',
       method: 'get',
+      params: data,
       headers: {
         Authorization: `Bearer ${token}`,
       },

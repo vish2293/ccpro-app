@@ -114,6 +114,7 @@ class CometChatTeamList extends React.Component {
   };
 
   componentDidMount() {
+    console.log('runnnn');
     try {
       this.navListener = this.props.navigation.addListener('focus', () => {
         this.decoratorMessage = 'Loading...';
@@ -158,112 +159,119 @@ class CometChatTeamList extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    try {
-      if (
-        prevProps.selectedWorkSpace.st_guid !==
-        this.props.selectedWorkSpace.st_guid
-      ) {
-        this.decoratorMessage = 'Loading...';
-        this.getTeams();
-      }
-      if (prevState.textInputFocused !== this.state.textInputFocused) {
-        this.textInputRef.current.focus();
-      }
+    if (this.state.textInputValue !== '') {
+      return false;
+    } else {
+      try {
+        if (
+          prevProps.selectedWorkSpace.st_guid !==
+          this.props.selectedWorkSpace.st_guid
+        ) {
+          this.decoratorMessage = 'Loading...';
+          this.getTeams();
+        }
+        if (prevState.textInputFocused !== this.state.textInputFocused) {
+          this.textInputRef.current.focus();
+        }
 
-      const previousItem = JSON.stringify(prevProps.item);
-      const currentItem = JSON.stringify(this.props.item);
+        const previousItem = JSON.stringify(prevProps.item);
+        const currentItem = JSON.stringify(this.props.item);
 
-      // if different group is selected
-      if (previousItem !== currentItem) {
-        if (Object.keys(this.props.item).length === 0) {
-          this.setState({ selectedGroup: {} });
-        } else {
-          const grouplist = [...this.state.grouplist];
+        // if different group is selected
+        if (previousItem !== currentItem) {
+          if (Object.keys(this.props.item).length === 0) {
+            this.setState({ selectedGroup: {} });
+          } else {
+            const grouplist = [...this.state.grouplist];
 
-          // search for user
-          const groupKey = grouplist.findIndex(
-            (g) => g.guid === this.props.item.guid,
+            // search for user
+            const groupKey = grouplist.findIndex(
+              (g) => g.guid === this.props.item.guid,
+            );
+            if (groupKey > -1) {
+              const groupObj = { ...grouplist[groupKey] };
+              this.setState({ selectedGroup: groupObj });
+            }
+          }
+        }
+
+        if (
+          prevProps.groupToLeave &&
+          prevProps.groupToLeave.guid !== this.props.groupToLeave.guid
+        ) {
+          const groups = [...this.state.grouplist];
+          const groupKey = groups.findIndex(
+            (member) => member.guid === this.props.groupToLeave.guid,
+          );
+
+          if (groupKey > -1) {
+            const { groupToLeave } = this.props;
+            const groupObj = { ...groups[groupKey] };
+            const membersCount = parseInt(groupToLeave.membersCount) - 1;
+
+            const newGroupObj = { ...groupObj, membersCount, hasJoined: false };
+
+            groups.splice(groupKey, 1, newGroupObj);
+            this.setState({ grouplist: groups });
+          }
+        }
+
+        if (
+          prevProps.groupToDelete &&
+          prevProps.groupToDelete.guid !== this.props.groupToDelete.guid
+        ) {
+          const groups = [...this.state.grouplist];
+          const groupKey = groups.findIndex(
+            (member) => member.guid === this.props.groupToDelete.guid,
           );
           if (groupKey > -1) {
-            const groupObj = { ...grouplist[groupKey] };
-            this.setState({ selectedGroup: groupObj });
+            groups.splice(groupKey, 1);
+            this.setState({ grouplist: groups });
+            if (groups.length === 0) {
+              this.decoratorMessage = 'No groups found';
+            }
           }
         }
-      }
 
-      if (
-        prevProps.groupToLeave &&
-        prevProps.groupToLeave.guid !== this.props.groupToLeave.guid
-      ) {
-        const groups = [...this.state.grouplist];
-        const groupKey = groups.findIndex(
-          (member) => member.guid === this.props.groupToLeave.guid,
-        );
+        if (
+          prevProps.groupToUpdate &&
+          (prevProps.groupToUpdate.guid !== this.props.groupToUpdate.guid ||
+            (prevProps.groupToUpdate.guid === this.props.groupToUpdate.guid &&
+              (prevProps.groupToUpdate.membersCount !==
+                this.props.groupToUpdate.membersCount ||
+                prevProps.groupToUpdate.scope !==
+                  this.props.groupToUpdate.scope)))
+        ) {
+          const groups = [...this.state.grouplist];
+          const { groupToUpdate } = this.props;
 
-        if (groupKey > -1) {
-          const { groupToLeave } = this.props;
-          const groupObj = { ...groups[groupKey] };
-          const membersCount = parseInt(groupToLeave.membersCount) - 1;
+          const groupKey = groups.findIndex(
+            (group) => group.guid === groupToUpdate.guid,
+          );
+          if (groupKey > -1) {
+            const groupObj = groups[groupKey];
+            const newGroupObj = {
+              ...groupObj,
+              ...groupToUpdate,
+              scope: groupToUpdate.scope,
+              membersCount: groupToUpdate.membersCount,
+            };
 
-          const newGroupObj = { ...groupObj, membersCount, hasJoined: false };
-
-          groups.splice(groupKey, 1, newGroupObj);
-          this.setState({ grouplist: groups });
-        }
-      }
-
-      if (
-        prevProps.groupToDelete &&
-        prevProps.groupToDelete.guid !== this.props.groupToDelete.guid
-      ) {
-        const groups = [...this.state.grouplist];
-        const groupKey = groups.findIndex(
-          (member) => member.guid === this.props.groupToDelete.guid,
-        );
-        if (groupKey > -1) {
-          groups.splice(groupKey, 1);
-          this.setState({ grouplist: groups });
-          if (groups.length === 0) {
-            this.decoratorMessage = 'No groups found';
+            groups.splice(groupKey, 1, newGroupObj);
+            this.setState({ grouplist: groups });
           }
         }
+      } catch (error) {
+        logger(error);
       }
-
-      if (
-        prevProps.groupToUpdate &&
-        (prevProps.groupToUpdate.guid !== this.props.groupToUpdate.guid ||
-          (prevProps.groupToUpdate.guid === this.props.groupToUpdate.guid &&
-            (prevProps.groupToUpdate.membersCount !==
-              this.props.groupToUpdate.membersCount ||
-              prevProps.groupToUpdate.scope !==
-                this.props.groupToUpdate.scope)))
-      ) {
-        const groups = [...this.state.grouplist];
-        const { groupToUpdate } = this.props;
-
-        const groupKey = groups.findIndex(
-          (group) => group.guid === groupToUpdate.guid,
-        );
-        if (groupKey > -1) {
-          const groupObj = groups[groupKey];
-          const newGroupObj = {
-            ...groupObj,
-            ...groupToUpdate,
-            scope: groupToUpdate.scope,
-            membersCount: groupToUpdate.membersCount,
-          };
-
-          groups.splice(groupKey, 1, newGroupObj);
-          this.setState({ grouplist: groups });
-        }
-      }
-    } catch (error) {
-      logger(error);
     }
   }
 
   componentWillUnmount() {
     this.GroupListManager = null;
+    this.setState({
+      textInputValue: '',
+    });
   }
 
   /**
@@ -545,21 +553,21 @@ class CometChatTeamList extends React.Component {
         textInputValue: e,
       },
 
-      () => {
-        if (this.timeout) {
-          clearTimeout(this.timeout);
-        }
+      // () => {
+      //   if (this.timeout) {
+      //     clearTimeout(this.timeout);
+      //   }
 
-        this.timeout = setTimeout(() => {
-          this.GroupListManager = new GroupListManager(e);
-          this.setState({ teamList: [] }, () => this.getTeams());
-        }, 500);
-      },
+      //   this.timeout = setTimeout(() => {
+      //     this.GroupListManager = new GroupListManager(e);
+      //     this.setState({ teamList: [] }, () => this.getTeams());
+      //   }, 500);
+      // },
     );
   };
 
   endReached = () => {
-    this.getGroups();
+    // this.getGroups();
   };
 
   /**
@@ -707,7 +715,7 @@ class CometChatTeamList extends React.Component {
     }
   };
 
-  listEmptyContainer = () => {
+  listEmptyContainer = (filteredUsers) => {
     // for loading purposes....
     return (
       <View style={styles.contactMsgStyle}>
@@ -718,7 +726,9 @@ class CometChatTeamList extends React.Component {
               color: `${this.theme.color.secondary}`,
             },
           ]}>
-          {this.decoratorMessage}
+          {filteredUsers.length === 0 && this.state.textInputValue !== ''
+            ? 'No Teams Found'
+            : this.decoratorMessage}
         </Text>
       </View>
     );
@@ -923,6 +933,7 @@ class CometChatTeamList extends React.Component {
                           </TouchableOpacity>
                         </View>
                         <View style={styles.nextBtnContainer}>
+                          his.state.teamList{' '}
                           <TouchableOpacity
                             onPress={() => {
                               this.joinGroup(this.state.passwordFeedback);
@@ -961,6 +972,14 @@ class CometChatTeamList extends React.Component {
       this.createGroup = null;
     }
 
+    let filteredUsers = this.state.teamList.filter((user) => {
+      return (
+        user?.name
+          ?.toLowerCase()
+          .indexOf(this.state.textInputValue.toLowerCase()) !== -1
+      );
+    });
+
     return (
       <CometChatContextProvider ref={(el) => (this.contextProviderRef = el)}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -978,7 +997,7 @@ class CometChatTeamList extends React.Component {
               </View>
               {this.ListHeaderComponent()}
               <FlatList
-                data={this.state.teamList}
+                data={filteredUsers}
                 contentContainerStyle={{ flexGrow: 1 }}
                 scrollEnabled
                 keyExtractor={(item, index) => item.uid + '_' + index}
@@ -1029,7 +1048,9 @@ class CometChatTeamList extends React.Component {
                     </Collapse>
                   );
                 }}
-                ListEmptyComponent={this.listEmptyContainer}
+                ListEmptyComponent={() =>
+                  this.listEmptyContainer(filteredUsers)
+                }
                 onScroll={this.handleScroll}
                 onEndReached={this.endReached}
                 onEndReachedThreshold={0.3}
